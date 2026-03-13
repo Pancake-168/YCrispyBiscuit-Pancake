@@ -1,0 +1,159 @@
+:root {
+  /* ==========================================================================
+     1. 核心设计系统 (Core Design System)
+     风格参考: GitHub (Primer Design System)
+     特点: 务实、高对比度、信息密度适中、开发者友好
+     ========================================================================== */
+
+  /* 字体系统 (Typography) */
+  --font-family: '优设标题黑';
+ 
+  --font-size-xs: 18px;  /* 再调大 */
+  --font-size-sm: 20px;  /* 再调大，原 16px */
+  --font-size-base: 22px; /* 再调大，原 18px */
+  --font-size-lg: 26px;  /* 再调大 */
+  --font-size-xl: 30px;  /* 再调大 */
+  --font-size-2xl: 38px; /* 再调大 */
+  --font-size-3xl: 46px; /* 再调大 */
+  --font-size-4xl: 54px; /* 再调大 */
+
+  --line-height-condensed: 1.25;
+  --line-height-default: 1.5;
+
+  --font-weight-normal: 200;  /* 改回 normal，避免字体不支持细体导致粗 */
+  --font-weight-bold: 600; /* GitHub 通常用 600 作为加粗 */
+
+  /* 间距系统 (Spacing) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 40px;
+
+  /* 形状系统 (Shape) */
+  --radius-sm: 3px;
+  --radius-md: 6px;     /* GitHub 标准圆角 */
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* 动效 (Motion) */
+  --duration-fast: 0.2s;
+  --ease-out: cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+/* ==========================================================================
+   2. 主题配色 (Color Schemes)
+   ========================================================================== */
+
+/*
+   Theme: Light (Default) - GitHub Light
+*/
+:root, [data-theme="light"] {
+  /* 背景 */
+  --bg-canvas: #ffffff;           /* 主背景 */
+  --bg-canvas-subtle: #f6f8fa;    /* 侧边栏/区块背景 */
+  --bg-canvas-inset: #ffffff;     /* 输入框背景 */
+
+  /* 文字 */
+  --fg-default: #24292f;          /* 主文字 (接近纯黑) */
+  --fg-muted: #57606a;            /* 次要文字 (灰) */
+  --fg-subtle: #6e7781;           /* 辅助文字 */
+
+  /* 边框 */
+  --border-default: #d0d7de;      /* 标准边框 */
+  --border-muted: #d8dee4;        /* 弱边框 */
+
+  /* 强调色 (Blue) */
+  --accent-fg: #0969da;           /* 链接/按钮色 */
+  --accent-emphasis: #0969da;     /* 按钮背景 */
+  --accent-on-emphasis: #ffffff;  /* 按钮文字 */
+
+  /* 状态 */
+  --success-fg: #1a7f37;
+  --danger-fg: #cf222e;
+}
+
+/*
+   Theme: Dark - GitHub Dark
+*/
+[data-theme="dark"] {
+  /* 背景 */
+  --bg-canvas: #0d1117;           /* 深灰黑 */
+  --bg-canvas-subtle: #161b22;    /* 稍浅 */
+  --bg-canvas-inset: #010409;     /* 输入框深黑 */
+
+  /* 文字 */
+  --fg-default: #c9d1d9;          /* 灰白 */
+  --fg-muted: #8b949e;            /* 灰蓝 */
+  --fg-subtle: #6e7681;
+
+  /* 边框 */
+  --border-default: #30363d;
+  --border-muted: #21262d;
+
+  /* 强调色 */
+  --accent-fg: #58a6ff;           /* 亮蓝 */
+  --accent-emphasis: #1f6feb;
+  --accent-on-emphasis: #ffffff;
+
+  /* 状态 */
+  --success-fg: #3fb950;
+  --danger-fg: #f85149;
+}
+
+/*
+   Theme: Blue (Light Variant) - GitHub Light High Contrast / Blue Tint
+   保持 Light 的结构，微调色相
+*/
+[data-theme="blue"] {
+  /* 背景 - 极淡蓝 */
+  --bg-canvas: #faffff;
+  --bg-canvas-subtle: #f0f8ff;
+  --bg-canvas-inset: #ffffff;
+
+  /* 文字 - 深蓝灰 */
+  --fg-default: #051d4d;
+  --fg-muted: #365275;
+  --fg-subtle: #54759e;
+
+  /* 边框 */
+  --border-default: #cce3f7;
+  --border-muted: #dae9f7;
+
+  /* 强调色 */
+  --accent-fg: #0550ae;
+  --accent-emphasis: #0550ae;
+  --accent-on-emphasis: #ffffff;
+
+  --success-fg: #1a7f37;
+  --danger-fg: #cf222e;
+}
+
+/*
+   Theme: Red (Light Variant)
+   保持 Light 的结构，微调色相
+*/
+[data-theme="red"] {
+  /* 背景 - 极淡红 */
+  --bg-canvas: #fffbfc;
+  --bg-canvas-subtle: #fff0f0;
+  --bg-canvas-inset: #ffffff;
+
+  /* 文字 - 深红灰 */
+  --fg-default: #4d0505;
+  --fg-muted: #753636;
+  --fg-subtle: #9e5454;
+
+  /* 边框 */
+  --border-default: #f7cccc;
+  --border-muted: #f7dada;
+
+  /* 强调色 */
+  --accent-fg: #cf222e;
+  --accent-emphasis: #cf222e;
+  --accent-on-emphasis: #ffffff;
+
+  --success-fg: #1a7f37;
+  --danger-fg: #cf222e;
+}

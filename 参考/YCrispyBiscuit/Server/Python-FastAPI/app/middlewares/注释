@@ -1,0 +1,22 @@
+# RequestIDMiddleware 功能说明
+# 这个中间件用于为每个 HTTP 请求分配一个唯一的请求 ID。
+# 如果请求头中包含 "X-Request-ID"，则使用它；否则生成一个新的 UUID。
+# 请求 ID 存储在 request.state.request_id 中，供后续处理使用。
+# 响应头中也会返回相同的 "X-Request-ID"，便于客户端跟踪请求。
+# 这有助于日志记录、调试和分布式系统中的请求追踪。
+
+import uuid
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi import Request
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # 获取或生成请求 ID
+        rid = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        # 存储在请求状态中
+        request.state.request_id = rid
+        # 处理请求
+        response = await call_next(request)
+        # 在响应头中添加请求 ID
+        response.headers["X-Request-ID"] = rid
+        return response

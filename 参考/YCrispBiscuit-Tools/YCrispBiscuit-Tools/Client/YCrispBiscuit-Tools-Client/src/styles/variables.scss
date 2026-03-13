@@ -1,0 +1,107 @@
+// 基础变量
+:root {
+  --drawer-toggle-bg: #ececec;
+  --drawer-toggle-hover-bg: #d4d4d4;
+  --drawer-toggle-active-bg: #5865F2;
+  --drawer-bg: #f7f8fa;
+  --color-error-bg: #ffeaea;
+  --function-hover-bg: #e6e8fa;
+  --grid-dot-color: rgba(0,0,0,0.06);
+  --empty-bg: rgba(255,255,255,0.85);
+  // 间距系统
+  --space-unit: 8px;
+  --space-xxs: calc(var(--space-unit) * 0.5);
+  --space-xs: calc(var(--space-unit) * 1);
+  --space-sm: calc(var(--space-unit) * 1.5);
+  --space-md: calc(var(--space-unit) * 2);
+  --space-lg: calc(var(--space-unit) * 3);
+  --space-xl: calc(var(--space-unit) * 4);
+
+  // 字体系统
+  --font-size-base: 14px;
+  --font-size-sm: 12px;
+  --font-size-lg: 16px;
+
+  // 圆角
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  // 过渡动画
+  --transition-duration: 0.3s;
+  --transition-timing: ease;
+
+
+   --code-bg: #f6f8fa;
+   --table-bg: #fff;
+}
+
+// 浅色主题变量
+[data-theme="light"] {
+  --drawer-toggle-bg: #ececec;
+  --drawer-toggle-hover-bg: #d4d4d4;
+  --drawer-toggle-active-bg: #5865F2;
+  --drawer-bg: #f7f8fa;
+  --color-error-bg: #ffeaea;
+  --function-hover-bg: #e6e8fa;
+  --grid-dot-color: rgba(0,0,0,0.06);
+  --empty-bg: rgba(255,255,255,0.85);
+  --scrollbar-thumb-bg: #e3e5e8;
+  --scrollbar-thumb-hover-bg: #c7c9cb;
+  --color-primary-hover: #4752c4;
+  --color-secondary: #bfc2c7;
+  --color-primary: #5865F2;
+  --color-success: #43b581;
+  --color-warning: #faa61a;
+  --color-error: #f04747;
+
+  --text-color: #23272a;
+  --text-color-secondary: #8e9297;
+
+  --bg-color: #f7f8fa;
+  --bg-color-secondary: #fff;
+
+  --border-color: #e3e5e8;
+
+  --code-bg: #f3f4f6;
+  --table-bg: #fff;
+
+
+
+  --workspace-bg: #f0f2f5; // 浅色
+}
+
+// 深色主题变量
+[data-theme="dark"] {
+  --drawer-toggle-bg: #23272a;
+  --drawer-toggle-hover-bg: #313338;
+  --drawer-toggle-active-bg: #5865F2;
+  --drawer-bg: #23272a;
+  --color-error-bg: #3a1a1a;
+  --function-hover-bg: #232a3a;
+  --grid-dot-color: rgba(255,255,255,0.08);
+  --empty-bg: rgba(40,44,52,0.85);
+  --scrollbar-thumb-bg: #202225;
+  --scrollbar-thumb-hover-bg: #40444b;
+  --color-primary-hover: #4752c4;
+  --color-secondary: #4f545c;
+  --color-primary: #5865F2;
+  --color-success: #43b581;
+  --color-warning: #faa61a;
+  --color-error: #f04747;
+
+  --text-color: #f2f3f5;
+  --text-color-secondary: #b9bbbe;
+
+  --bg-color: #313338;
+  --bg-color-secondary: #23272a;
+
+  --border-color: #42454a;
+
+  --code-bg: #23272a;
+  --table-bg: #2f3136;
+
+
+
+  --workspace-bg: #23272a; // 深色
+}

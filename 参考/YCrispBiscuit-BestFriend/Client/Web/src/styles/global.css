@@ -1,0 +1,92 @@
+
+@import './variables.css';
+
+/* 定义自定义字体 优设标题黑 */
+@font-face {
+    font-family: '优设标题黑';
+    src: url('../assets/font/优设标题黑.ttf') format('truetype');
+    font-weight: 200;  /* 试试改成 200，看看字体文件是否支持细体 */
+    font-style: normal;
+}
+
+/* 全局样式应用 */
+body {
+    /* 字体设置 */
+    font-family: var(--font-family);
+    font-size: var(--font-size-lg); /* GitHub 默认字号调大 */
+    font-weight: var(--font-weight-normal);
+   
+    line-height: var(--line-height-default);
+
+    /* 颜色设置 */
+    background-color: var(--bg-canvas);
+    color: var(--fg-default);
+
+    /* 平滑过渡 */
+    transition: background-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    overflow: hidden;
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 链接默认样式 */
+a {
+    color: var(--accent-fg);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: underline; /* GitHub 风格链接悬停带下划线 */
+}
+
+/* 按钮默认样式 */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid var(--border-default); /* GitHub 按钮通常有边框 */
+    background-color: var(--bg-canvas-subtle);
+    color: var(--fg-default);
+    border-radius: var(--radius-md);
+    padding: 4px 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: var(--border-muted);
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+}

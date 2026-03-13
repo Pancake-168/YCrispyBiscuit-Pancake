@@ -1,0 +1,5 @@
+[
+    {"name": "Docs", "url": "/docs"},
+    {"name": "openapi_url", "url": "/openapi.json"},
+    {"name": "Redoc", "url": "/redoc"}
+]

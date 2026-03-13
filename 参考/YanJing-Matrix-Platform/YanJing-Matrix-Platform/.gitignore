@@ -1,0 +1,54 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor & System
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Shared Node.js (Client & Server)
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/dist-electron/
+**/release/
+*.local
+
+# Python
+.venv/
+venv/
+env/
+.env/
+.pip-cache/
+pip-cache/
+.cache/pip/
+pip-wheel-metadata/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Kotlin / Spring Boot (Gradle)
+.gradle/
+**/build/
+**/bin/
+*.class
+
+# Rust
+**/target/
+
+# Infrastructure / Config (Explicitly NOT ignored per user request)
+!.env
+!.env.*
+**/release/
+

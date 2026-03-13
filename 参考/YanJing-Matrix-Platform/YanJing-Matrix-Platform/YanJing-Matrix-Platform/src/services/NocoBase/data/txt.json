@@ -1,0 +1,1998 @@
+{
+  "data": {
+    "applications": [
+      {
+        "createdAt": "2026-02-04T08:07:10.867Z",
+        "updatedAt": "2026-02-04T08:07:10.867Z",
+        "name": "2xEw88IJKMyn6HSw7D",
+        "displayName": "测试组织",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-07T08:00:54.449Z",
+        "updatedAt": "2026-01-07T08:00:54.449Z",
+        "name": "3Fy6sUOoCHncNb0ypY",
+        "displayName": "my organization 5",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-02-04T03:40:21.554Z",
+        "updatedAt": "2026-02-04T03:40:21.554Z",
+        "name": "4I4CiHRHpI17VuxXGA",
+        "displayName": "测试组织2",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-02-05T02:11:57.127Z",
+        "updatedAt": "2026-02-05T02:11:57.127Z",
+        "name": "8C7UNoqvyhHp4l6Js9",
+        "displayName": "代号",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-14T11:07:05.552Z",
+        "updatedAt": "2026-01-14T11:07:05.552Z",
+        "name": "A_SYSTEM_APPLICATION",
+        "displayName": "Application System",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": true
+        }
+      },
+      {
+        "createdAt": "2026-01-11T12:04:32.924Z",
+        "updatedAt": "2026-01-11T12:04:32.924Z",
+        "name": "A_SYSTEM_ORGANIZATION_TEST",
+        "displayName": "Organization System Test",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-05T05:57:22.339Z",
+        "updatedAt": "2026-01-05T05:57:22.339Z",
+        "name": "A_SYSTEM_SSO",
+        "displayName": "SSO System",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": true
+        }
+      },
+      {
+        "createdAt": "2026-01-13T09:01:06.938Z",
+        "updatedAt": "2026-01-13T09:01:06.938Z",
+        "name": "data_agent",
+        "displayName": "数据治理Agent",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": true,
+          "authManager": {}
+        }
+      },
+      {
+        "createdAt": "2026-01-09T07:46:24.338Z",
+        "updatedAt": "2026-01-09T07:46:24.338Z",
+        "name": "dEFAfaaaXYiJOLVT3S",
+        "displayName": "组织A",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-07T08:25:22.681Z",
+        "updatedAt": "2026-01-07T08:25:22.681Z",
+        "name": "FJYVTekV6jckxUeVTV",
+        "displayName": "my organization 6",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-08T06:49:50.998Z",
+        "updatedAt": "2026-01-08T06:49:50.998Z",
+        "name": "FyAGEmnzxDHzhuai9M",
+        "displayName": "organization",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-15T02:52:52.473Z",
+        "updatedAt": "2026-01-15T02:52:52.473Z",
+        "name": "hQJb6whvcy2Wn28pJK",
+        "displayName": "测试组织",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-14T08:36:52.654Z",
+        "updatedAt": "2026-01-14T08:36:52.654Z",
+        "name": "iGrXrTKnNgle8Epp4l",
+        "displayName": "我的组织",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-09T08:49:33.117Z",
+        "updatedAt": "2026-01-09T08:49:33.117Z",
+        "name": "JcKBXWFd451aaAI2ln",
+        "displayName": "测试组织",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-07T08:09:33.875Z",
+        "updatedAt": "2026-01-07T08:09:33.875Z",
+        "name": "Jw1FXZfBKipWTrUNuq",
+        "displayName": "20260107",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-15T02:59:22.219Z",
+        "updatedAt": "2026-01-15T02:59:22.219Z",
+        "name": "K7D4texhIVuSFtConI",
+        "displayName": "中科浙数",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-09T07:32:19.602Z",
+        "updatedAt": "2026-01-09T07:32:19.602Z",
+        "name": "mDW8kXw73cKDDWwPgw",
+        "displayName": "zzz",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-02-03T08:59:33.280Z",
+        "updatedAt": "2026-02-03T08:59:33.280Z",
+        "name": "_mvp",
+        "displayName": "mvp",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-08T09:02:10.579Z",
+        "updatedAt": "2026-01-08T09:02:10.579Z",
+        "name": "ndMJHT6wW7BIjcnOhr",
+        "displayName": "组织1",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-02-04T03:28:55.820Z",
+        "updatedAt": "2026-02-04T03:28:55.820Z",
+        "name": "PepaPXH5ijwK9NFZ4O",
+        "displayName": "测试组织",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-15T02:10:23.384Z",
+        "updatedAt": "2026-01-15T02:10:23.384Z",
+        "name": "project_management_system",
+        "displayName": "项目管理系统",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "running",
+        "options": {
+          "autoStart": true,
+          "authManager": {}
+        }
+      },
+      {
+        "createdAt": "2026-01-08T06:55:12.078Z",
+        "updatedAt": "2026-01-08T06:55:12.078Z",
+        "name": "Ri8KIsrYTChZphqTvB",
+        "displayName": "organization",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-12T08:28:41.118Z",
+        "updatedAt": "2026-01-12T08:28:41.118Z",
+        "name": "XDbGBNBKxxAtnIIZVW",
+        "displayName": "lv org",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-07T09:02:04.392Z",
+        "updatedAt": "2026-01-07T09:02:04.392Z",
+        "name": "xFbZZrG68z9Yste2WW",
+        "displayName": "20260107",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      },
+      {
+        "createdAt": "2026-01-08T06:32:23.459Z",
+        "updatedAt": "2026-01-08T06:32:23.459Z",
+        "name": "YFaUwltpTXT2xKsuSN",
+        "displayName": "organization",
+        "cname": null,
+        "pinned": null,
+        "icon": null,
+        "status": "stopped",
+        "options": {
+          "autoStart": false
+        }
+      }
+    ],
+    "collections": [
+      {
+        "key": "28qxgmdeclm",
+        "name": "roles",
+        "title": "{{t(\"Roles\")}}",
+        "inherit": false,
+        "hidden": false,
+        "description": "Role data",
+        "origin": "@nocobase/plugin-acl",
+        "dumpRules": "required",
+        "migrationRules": [
+          "overwrite",
+          "schema-only"
+        ],
+        "autoGenId": false,
+        "model": "RoleModel",
+        "filterTargetKey": "name",
+        "titleField": "title",
+        "sortable": true,
+        "underscored": false,
+        "from": "db2cm",
+        "unavailableActions": []
+      },
+      {
+        "key": "4grrk04lgqt",
+        "name": "a_agent_session",
+        "title": "a_agent_session",
+        "inherit": false,
+        "hidden": false,
+        "description": "",
+        "autoGenId": true,
+        "filterTargetKey": "id",
+        "logging": true,
+        "createdAt": true,
+        "createdBy": true,
+        "updatedAt": true,
+        "updatedBy": true,
+        "unavailableActions": []
+      },
+      {
+        "key": "8hjgv7rm9vs",
+        "name": "a_user_config",
+        "title": "a_user_config",
+        "inherit": false,
+        "hidden": false,
+        "description": "",
+        "autoGenId": true,
+        "filterTargetKey": "id",
+        "logging": true,
+        "createdAt": true,
+        "createdBy": true,
+        "updatedAt": true,
+        "updatedBy": true,
+        "unavailableActions": []
+      },
+      {
+        "key": "mglmw5tffwu",
+        "name": "a_ua",
+        "title": "a_ua",
+        "inherit": false,
+        "hidden": false,
+        "description": "",
+        "autoGenId": true,
+        "filterTargetKey": "id",
+        "logging": true,
+        "createdAt": true,
+        "createdBy": true,
+        "updatedAt": true,
+        "updatedBy": true,
+        "unavailableActions": []
+      },
+      {
+        "key": "p2f89y468cl",
+        "name": "users",
+        "title": "{{t(\"Users\")}}",
+        "inherit": false,
+        "hidden": false,
+        "description": null,
+        "origin": "@nocobase/plugin-users",
+        "dumpRules": {
+          "group": "user"
+        },
+        "migrationRules": [
+          "schema-only",
+          "overwrite",
+          "schema-only",
+          "overwrite",
+          "skip"
+        ],
+        "sortable": "sort",
+        "model": "UserModel",
+        "titleField": "nickname",
+        "createdBy": true,
+        "updatedBy": true,
+        "logging": true,
+        "shared": true,
+        "underscored": false,
+        "from": "db2cm",
+        "filterTargetKey": "id",
+        "unavailableActions": []
+      }
+    ],
+    "roles": [
+      {
+        "createdAt": "2025-12-31T03:46:51.016Z",
+        "updatedAt": "2025-12-31T03:46:51.372Z",
+        "name": "admin",
+        "title": "{{t(\"Admin\")}}",
+        "description": null,
+        "strategy": {
+          "actions": [
+            "create",
+            "view",
+            "update",
+            "destroy",
+            "export",
+            "importXlsx"
+          ]
+        },
+        "default": false,
+        "hidden": false,
+        "allowConfigure": true,
+        "allowNewMenu": true,
+        "snippets": [
+          "pm",
+          "pm.*",
+          "ui.*"
+        ],
+        "allowNewMobileMenu": true,
+        "allowNewAiEmployee": true
+      },
+      {
+        "createdAt": "2025-12-31T03:46:51.020Z",
+        "updatedAt": "2026-01-06T11:08:20.180Z",
+        "name": "member",
+        "title": "{{t(\"Member\")}}",
+        "description": null,
+        "strategy": {
+          "actions": [
+            "view:own",
+            "create"
+          ]
+        },
+        "default": true,
+        "hidden": false,
+        "allowConfigure": null,
+        "allowNewMenu": true,
+        "snippets": [
+          "!app",
+          "!pm",
+          "!pm.*",
+          "!ui.*"
+        ],
+        "allowNewMobileMenu": true,
+        "allowNewAiEmployee": true
+      },
+      {
+        "createdAt": "2025-12-31T03:46:51.009Z",
+        "updatedAt": "2025-12-31T03:46:51.009Z",
+        "name": "root",
+        "title": "{{t(\"Root\")}}",
+        "description": null,
+        "strategy": null,
+        "default": false,
+        "hidden": true,
+        "allowConfigure": null,
+        "allowNewMenu": false,
+        "snippets": [
+          "pm",
+          "pm.*",
+          "ui.*"
+        ],
+        "allowNewMobileMenu": false,
+        "allowNewAiEmployee": true
+      }
+    ],
+    "users": [
+      {
+        "createdAt": "2025-12-31T03:46:51.032Z",
+        "updatedAt": "2025-12-31T03:46:51.032Z",
+        "id": 1,
+        "nickname": "Zkzs Admin",
+        "username": "zkzs",
+        "email": "zkzs@zheshu.tech",
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-05T07:20:55.208Z",
+        "updatedAt": "2026-02-02T03:29:28.530Z",
+        "id": 2,
+        "nickname": "蝎子莱莱",
+        "username": "xiezilailai78",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": 1770001573815,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 2
+      },
+      {
+        "createdAt": "2026-01-05T07:32:28.874Z",
+        "updatedAt": "2026-01-05T07:32:28.874Z",
+        "id": 3,
+        "nickname": null,
+        "username": "niegy4",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-05T07:36:35.375Z",
+        "updatedAt": "2026-01-05T07:36:35.375Z",
+        "id": 4,
+        "nickname": null,
+        "username": "niegy5",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-05T07:49:12.654Z",
+        "updatedAt": "2026-01-05T07:49:12.654Z",
+        "id": 5,
+        "nickname": null,
+        "username": "niegy6",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-05T07:51:02.508Z",
+        "updatedAt": "2026-01-05T07:51:02.508Z",
+        "id": 6,
+        "nickname": null,
+        "username": "niegy7",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-06T07:12:06.532Z",
+        "updatedAt": "2026-01-06T07:12:06.532Z",
+        "id": 7,
+        "nickname": null,
+        "username": "niekunkun1",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-07T06:41:43.471Z",
+        "updatedAt": "2026-01-07T06:41:43.471Z",
+        "id": 12,
+        "nickname": null,
+        "username": "ycb20260104",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-07T06:51:39.723Z",
+        "updatedAt": "2026-01-07T06:51:39.723Z",
+        "id": 13,
+        "nickname": null,
+        "username": "ycb20260103",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-07T07:58:21.062Z",
+        "updatedAt": "2026-01-07T07:58:21.062Z",
+        "id": 14,
+        "nickname": null,
+        "username": "ycb20260102",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-12T07:51:55.438Z",
+        "updatedAt": "2026-01-13T07:44:26.671Z",
+        "id": 21,
+        "nickname": "吕调阳",
+        "username": "lvtiaoyang2",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-12T10:40:20.838Z",
+        "updatedAt": "2026-01-12T10:40:20.838Z",
+        "id": 22,
+        "nickname": null,
+        "username": "93m1h6Ci0N1YOtBn",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-12T10:42:11.211Z",
+        "updatedAt": "2026-01-12T10:42:11.321Z",
+        "id": 23,
+        "nickname": "测试机器人",
+        "username": "kL5QMaVWbhcRTD3h",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:08:50.214Z",
+        "updatedAt": "2026-01-13T06:08:50.329Z",
+        "id": 24,
+        "nickname": "测试机器人",
+        "username": "ehQlnL739v7VNhUS",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:09:52.121Z",
+        "updatedAt": "2026-01-13T06:09:52.233Z",
+        "id": 25,
+        "nickname": "测试机器人",
+        "username": "LJOb8NoCBcg0LCUp",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:12:55.010Z",
+        "updatedAt": "2026-01-13T06:12:55.123Z",
+        "id": 26,
+        "nickname": "测试机器人",
+        "username": "2v18F8J8kHuj6jtH",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:16:35.327Z",
+        "updatedAt": "2026-01-13T06:16:35.443Z",
+        "id": 27,
+        "nickname": "测试机器人",
+        "username": "f1SVeFxBJFy51cRG",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:34:59.352Z",
+        "updatedAt": "2026-01-13T06:34:59.459Z",
+        "id": 28,
+        "nickname": "测试机器人",
+        "username": "PH9C5XxTbIikgsST",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T06:49:19.680Z",
+        "updatedAt": "2026-01-13T06:49:19.787Z",
+        "id": 29,
+        "nickname": "测试机器人",
+        "username": "ffdLuJzCCA9ZoCFy",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-13T07:20:17.575Z",
+        "updatedAt": "2026-01-13T07:20:17.688Z",
+        "id": 30,
+        "nickname": "测试机器人",
+        "username": "tAiLXgoZsi0JXBXS",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T06:54:46.028Z",
+        "updatedAt": "2026-01-14T06:54:46.137Z",
+        "id": 31,
+        "nickname": "测试",
+        "username": "AxDLqe0PN8UATLjj",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T07:54:17.060Z",
+        "updatedAt": "2026-01-14T07:54:17.167Z",
+        "id": 32,
+        "nickname": "测试助手",
+        "username": "5L1dZBWerTVJ2uzu",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T07:55:30.408Z",
+        "updatedAt": "2026-01-14T07:55:30.514Z",
+        "id": 33,
+        "nickname": "测试人偶",
+        "username": "j6pPj6lf9XFNZpvE",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T07:56:19.736Z",
+        "updatedAt": "2026-01-14T07:56:19.842Z",
+        "id": 34,
+        "nickname": "自动测试机器人",
+        "username": "UEfrxiIKOlFc6q7C",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T08:30:36.682Z",
+        "updatedAt": "2026-01-19T09:05:56.485Z",
+        "id": 35,
+        "nickname": "李调阳",
+        "username": "litiaoyang3",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T09:30:18.003Z",
+        "updatedAt": "2026-01-14T09:30:18.116Z",
+        "id": 36,
+        "nickname": "测试机器人",
+        "username": "Mt9ATPzMfHkGEGdP",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T09:50:10.731Z",
+        "updatedAt": "2026-01-14T09:50:10.840Z",
+        "id": 38,
+        "nickname": "测试",
+        "username": "uDsYRIqpnkQd2k52",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T09:56:05.249Z",
+        "updatedAt": "2026-01-14T09:56:05.358Z",
+        "id": 39,
+        "nickname": "测试机器人2",
+        "username": "vqhJSD7eAdRqhs1n",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T09:56:19.391Z",
+        "updatedAt": "2026-01-14T09:56:19.502Z",
+        "id": 40,
+        "nickname": "测试2",
+        "username": "NZWqyd2A5RvZ3Kqe",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-14T10:45:23.708Z",
+        "updatedAt": "2026-01-14T10:45:23.708Z",
+        "id": 41,
+        "nickname": null,
+        "username": "ycb",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-14T10:48:02.345Z",
+        "updatedAt": "2026-01-14T10:48:02.345Z",
+        "id": 42,
+        "nickname": null,
+        "username": "ycb1",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-14T10:51:50.185Z",
+        "updatedAt": "2026-01-14T10:51:50.185Z",
+        "id": 43,
+        "nickname": null,
+        "username": "ycb20260114",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-14T10:53:29.906Z",
+        "updatedAt": "2026-01-14T10:53:29.906Z",
+        "id": 44,
+        "nickname": null,
+        "username": "ycb20260115",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-15T06:32:14.968Z",
+        "updatedAt": "2026-01-15T06:32:15.076Z",
+        "id": 46,
+        "nickname": "项目管理助手",
+        "username": "xiD1V7xesJ4dqbOw",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T06:47:04.470Z",
+        "updatedAt": "2026-01-15T06:47:04.580Z",
+        "id": 47,
+        "nickname": "项目管理助手2",
+        "username": "9rZm0eevXw9f6u2Z",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T06:49:47.311Z",
+        "updatedAt": "2026-01-15T06:49:47.422Z",
+        "id": 48,
+        "nickname": "测试机器人2",
+        "username": "ty4Nwc8AyWqIJKfV",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T06:51:23.399Z",
+        "updatedAt": "2026-01-15T06:51:23.508Z",
+        "id": 49,
+        "nickname": "测试机器人2",
+        "username": "wwIS4E8QZXLxyCpp",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T06:52:13.296Z",
+        "updatedAt": "2026-01-15T06:52:13.400Z",
+        "id": 50,
+        "nickname": "项目管理助手",
+        "username": "XK2Zvgjm4DqPouWb",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T06:52:42.602Z",
+        "updatedAt": "2026-01-15T06:52:42.712Z",
+        "id": 51,
+        "nickname": "项目管理助手3",
+        "username": "zIjkGQnaFPBDRAQ0",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-15T08:04:29.137Z",
+        "updatedAt": "2026-02-24T07:51:20.013Z",
+        "id": 52,
+        "nickname": "ycb20260117",
+        "username": "ycb20260117",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-16T07:45:16.758Z",
+        "updatedAt": "2026-01-19T09:05:12.774Z",
+        "id": 53,
+        "nickname": "数据治理Agent",
+        "username": "RzVWLZDpu6Ksaij8",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-19T08:19:37.362Z",
+        "updatedAt": "2026-01-19T08:19:37.362Z",
+        "id": 54,
+        "nickname": null,
+        "username": "zyh",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-19T09:46:25.219Z",
+        "updatedAt": "2026-01-19T09:46:25.333Z",
+        "id": 55,
+        "nickname": "回声机器人",
+        "username": "SR08nwdwnnw2NOGV",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-19T09:47:42.557Z",
+        "updatedAt": "2026-01-19T09:47:42.663Z",
+        "id": 56,
+        "nickname": "回声机器人",
+        "username": "kK2hOpqU7P3OGzWi",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-19T09:48:40.840Z",
+        "updatedAt": "2026-01-19T09:48:40.951Z",
+        "id": 57,
+        "nickname": "回声机器人",
+        "username": "EI4S4a8CxbMVlXzj",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-21T06:23:33.046Z",
+        "updatedAt": "2026-01-21T06:23:33.160Z",
+        "id": 58,
+        "nickname": "鲨鱼回声机器人",
+        "username": "8L1ziOf7x02YNC3Y",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-26T03:00:32.817Z",
+        "updatedAt": "2026-01-28T06:43:02.451Z",
+        "id": 59,
+        "nickname": "聂冠宇",
+        "username": "聂冠宇",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-26T15:43:23.484Z",
+        "updatedAt": "2026-01-26T15:43:23.484Z",
+        "id": 60,
+        "nickname": null,
+        "username": "secretaryagent",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-01-27T03:07:16.216Z",
+        "updatedAt": "2026-01-27T03:07:16.318Z",
+        "id": 61,
+        "nickname": "李调阳-bot",
+        "username": "Ee3G6scqCqYDrDGr",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-27T03:18:39.871Z",
+        "updatedAt": "2026-01-27T03:18:39.975Z",
+        "id": 62,
+        "nickname": "李调阳-bot",
+        "username": "kwDfyI2wPjevoaIQ",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-27T08:22:11.460Z",
+        "updatedAt": "2026-01-27T08:22:11.564Z",
+        "id": 63,
+        "nickname": "李调阳的助手",
+        "username": "bZzRWYaG84A8exCM",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-28T03:31:48.352Z",
+        "updatedAt": "2026-01-28T03:31:48.454Z",
+        "id": 64,
+        "nickname": "聂冠宇的助手",
+        "username": "gicTOXVGZTdlYojD",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-28T07:29:50.571Z",
+        "updatedAt": "2026-01-28T07:29:50.672Z",
+        "id": 65,
+        "nickname": "ycb的助手",
+        "username": "ztmiHXXPwjFmDBk0",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-29T03:05:59.026Z",
+        "updatedAt": "2026-01-29T03:15:38.249Z",
+        "id": 66,
+        "nickname": "lumingye",
+        "username": "lumingye",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-01-29T03:14:21.828Z",
+        "updatedAt": "2026-01-29T03:14:21.925Z",
+        "id": 67,
+        "nickname": "lumingye的助手",
+        "username": "LcvUersHFKHpif9K",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T07:45:02.952Z",
+        "updatedAt": "2026-02-25T02:41:57.720Z",
+        "id": 68,
+        "nickname": "dev依酥饼",
+        "username": "11111111111",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T07:45:04.484Z",
+        "updatedAt": "2026-02-02T07:45:04.594Z",
+        "id": 69,
+        "nickname": "依酥饼的助手",
+        "username": "I2qaV2lGKPFPUUCa",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T07:48:56.707Z",
+        "updatedAt": "2026-02-02T07:48:56.811Z",
+        "id": 71,
+        "nickname": "李调阳的助手",
+        "username": "5ZV85SbYH2D0iCBR",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T09:05:27.012Z",
+        "updatedAt": "2026-02-02T09:05:27.119Z",
+        "id": 75,
+        "nickname": "李调阳的助手",
+        "username": "biXOLj6eGxFDzCls",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T09:57:39.681Z",
+        "updatedAt": "2026-02-02T09:57:39.787Z",
+        "id": 77,
+        "nickname": "李调阳的助手",
+        "username": "xMhWt1UaQWuB7UQN",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T10:03:30.731Z",
+        "updatedAt": "2026-02-02T10:03:30.853Z",
+        "id": 78,
+        "nickname": "李调阳",
+        "username": "13781242324",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-02T10:03:32.300Z",
+        "updatedAt": "2026-02-02T10:03:32.408Z",
+        "id": 79,
+        "nickname": "李调阳的助手",
+        "username": "vpOqBQlkQALIoYfy",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-04T03:26:26.837Z",
+        "updatedAt": "2026-02-04T03:26:26.959Z",
+        "id": 80,
+        "nickname": "珈艾露",
+        "username": "22222222222",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-04T03:26:28.374Z",
+        "updatedAt": "2026-02-04T03:26:28.481Z",
+        "id": 81,
+        "nickname": "珈艾露的助手",
+        "username": "z0IP4UBt1Lc7tYCW",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-04T03:27:47.329Z",
+        "updatedAt": "2026-02-04T03:27:47.329Z",
+        "id": 82,
+        "nickname": null,
+        "username": "ycb20260129",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-02-04T03:28:33.900Z",
+        "updatedAt": "2026-02-04T03:28:34.011Z",
+        "id": 83,
+        "nickname": "ycb20260129的助手",
+        "username": "tNupswbuA8DwlFXh",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-24T07:50:13.064Z",
+        "updatedAt": "2026-02-24T07:50:13.170Z",
+        "id": 84,
+        "nickname": "ycb20260117的助手",
+        "username": "XNWRvxGoOkupjSQo",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-25T08:34:08.713Z",
+        "updatedAt": "2026-02-25T08:34:08.713Z",
+        "id": 85,
+        "nickname": null,
+        "username": "ycb20260225",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": null
+      },
+      {
+        "createdAt": "2026-02-26T02:42:23.930Z",
+        "updatedAt": "2026-02-26T02:42:24.042Z",
+        "id": 86,
+        "nickname": "通用助手",
+        "username": "cTEx4Ja5r9Ie7eZL",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-26T08:05:09.990Z",
+        "updatedAt": "2026-02-26T08:05:10.101Z",
+        "id": 87,
+        "nickname": "MVP",
+        "username": "fwaE0vzrc98rhV4U",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      },
+      {
+        "createdAt": "2026-02-26T08:19:10.623Z",
+        "updatedAt": "2026-02-26T08:19:10.728Z",
+        "id": 88,
+        "nickname": "zyh的助手",
+        "username": "YejqxRg5FEhxwchC",
+        "email": null,
+        "phone": null,
+        "passwordChangeTz": null,
+        "appLang": null,
+        "systemSettings": {},
+        "createdById": null,
+        "updatedById": 1
+      }
+    ],
+    "uiSchemas": [
+      {
+        "x-uid": "06kc63t2tcp",
+        "name": "submit",
+        "title": "{{ t(\"Submit\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useUpdateProfileActionProps",
+        "x-component-props": {
+          "type": "primary",
+          "htmlType": "submit"
+        }
+      },
+      {
+        "x-uid": "07fnab9cn6b",
+        "name": "submit",
+        "title": "{{ t(\"Submit\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useCreateActionProps",
+        "x-component-props": {
+          "type": "primary",
+          "htmlType": "submit"
+        }
+      },
+      {
+        "x-uid": "13aeqx4n8pc",
+        "name": "create",
+        "type": "void",
+        "x-component": "FormV2",
+        "x-use-component-props": "useCreateFormBlockProps"
+      },
+      {
+        "x-uid": "1gx8vjfpfyj",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "1mrmxx3bpin",
+        "name": "phone",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.phone"
+      },
+      {
+        "x-uid": "2p3hwl1t4t3",
+        "name": "ho8eqjf2vfi",
+        "type": "void",
+        "x-component": "FlowRoute"
+      },
+      {
+        "x-uid": "2txbwypv8h5",
+        "name": "nickname",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "3nzowetczvd",
+        "name": "nickname",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "498595u7sbl",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "4suajycmzsf",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "4x1jdtafhy2",
+        "name": "roles",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.roles"
+      },
+      {
+        "x-uid": "7w19lzi8uky",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "8qhpowjc8fr",
+        "name": "nickname",
+        "type": "string",
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.nickname"
+      },
+      {
+        "x-uid": "8qm0yv5q8dv",
+        "name": "cancel",
+        "title": "{{ t(\"Cancel\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useCancelActionProps"
+      },
+      {
+        "x-uid": "9jq3ksv4oes",
+        "name": "form",
+        "type": "void",
+        "x-decorator": "FormBlockProvider",
+        "x-decorator-props": {
+          "collection": "users",
+          "dataSource": "main"
+        },
+        "x-use-decorator-props": "useCreateFormBlockDecoratorProps"
+      },
+      {
+        "x-uid": "9merwut89oj",
+        "name": "cancel",
+        "title": "{{ t(\"Cancel\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useCancelActionProps"
+      },
+      {
+        "x-uid": "9noro7js0fz",
+        "name": "username",
+        "type": "string",
+        "required": true,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.username"
+      },
+      {
+        "x-uid": "9wkgf4el74f",
+        "name": "form",
+        "type": "void",
+        "x-decorator": "FormBlockProvider",
+        "x-decorator-props": {
+          "collection": "users",
+          "dataSource": "main",
+          "action": "get"
+        },
+        "x-use-decorator-props": "useEditFormBlockDecoratorProps"
+      },
+      {
+        "x-uid": "bxvo6awxpj2",
+        "name": "username",
+        "type": "string",
+        "required": true,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.username"
+      },
+      {
+        "x-uid": "cg0zc16tyhn",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "ddvrbirglp2",
+        "name": "password",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "dgmg18a5cpq",
+        "name": "footer",
+        "type": "void",
+        "x-component": "Action.Drawer.FootBar"
+      },
+      {
+        "x-uid": "dpm4nrx1th3",
+        "name": "email",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "dw5ebow7c2x",
+        "name": "nickname",
+        "type": "string",
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.nickname"
+      },
+      {
+        "x-uid": "enioworsm77",
+        "name": "grid",
+        "type": "void",
+        "x-component": "Grid",
+        "x-initializer": "form:configureFields"
+      },
+      {
+        "x-uid": "ezeqpuo2ss8",
+        "name": "footer",
+        "type": "void",
+        "x-component": "Action.Drawer.FootBar"
+      },
+      {
+        "x-uid": "fcstftd8asd",
+        "name": "form",
+        "type": "void",
+        "x-decorator": "FormBlockProvider",
+        "x-decorator-props": {
+          "collection": "users",
+          "dataSource": "main",
+          "action": "get"
+        },
+        "x-use-decorator-props": "useEditFormBlockDecoratorProps"
+      },
+      {
+        "x-uid": "fmphr3toscr",
+        "name": "phone",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "foz7rgnfgr2",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "ggnpxh3wj9d",
+        "name": "footer",
+        "type": "void",
+        "x-component": "Action.Drawer.FootBar"
+      },
+      {
+        "x-uid": "hajz2n2ck2u",
+        "name": "grid",
+        "type": "void",
+        "x-component": "Grid",
+        "x-initializer": "form:configureFields"
+      },
+      {
+        "x-uid": "hiz8oq38jor",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "hj2ky8wnqw7",
+        "name": "cancel",
+        "title": "{{ t(\"Cancel\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useCancelActionProps"
+      },
+      {
+        "x-uid": "i5lqhsl36ep",
+        "name": "username",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "k24irixsovl",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "k5pj40oehb1",
+        "name": "email",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.email"
+      },
+      {
+        "x-uid": "k7e0kv60muu",
+        "name": "roles",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "ka1bekbjkqq",
+        "name": "username",
+        "type": "string",
+        "required": true,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.username"
+      },
+      {
+        "x-uid": "lihbb81k7ld",
+        "name": "submit",
+        "title": "{{ t(\"Submit\") }}",
+        "x-component": "Action",
+        "x-use-component-props": "useUpdateActionProps",
+        "x-component-props": {
+          "type": "primary",
+          "htmlType": "submit"
+        }
+      },
+      {
+        "x-uid": "ll3u45u24s4",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "mem83rpufie",
+        "name": "grid",
+        "type": "void",
+        "x-component": "Grid",
+        "x-initializer": "form:configureFields"
+      },
+      {
+        "x-uid": "nocobase-admin-profile-create-form",
+        "name": "fxdpkc2rtzm",
+        "type": "void"
+      },
+      {
+        "x-uid": "nocobase-admin-profile-edit-form",
+        "name": "xj6j8qu3qk8",
+        "type": "void"
+      },
+      {
+        "x-uid": "nocobase-user-profile-edit-form",
+        "name": "ysveag3mmi5",
+        "type": "void"
+      },
+      {
+        "x-uid": "o8iw2acqsky",
+        "name": "roles",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "oe7264wcayo",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "qfls53mx1or",
+        "name": "phone",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.phone"
+      },
+      {
+        "x-uid": "qgarvmc67th",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "qwo8vjavcvr",
+        "name": "phone",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "qx7un2apjze",
+        "name": "username",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "robnt7andto",
+        "name": "email",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.email"
+      },
+      {
+        "x-uid": "s0n40cwn3re",
+        "name": "username",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "tdnznccv6p4",
+        "name": "edit",
+        "type": "void",
+        "x-component": "FormV2",
+        "x-use-component-props": "useEditFormBlockProps"
+      },
+      {
+        "x-uid": "tmyq8sr1il5",
+        "name": "edit",
+        "type": "void",
+        "x-component": "FormV2",
+        "x-use-component-props": "useEditFormBlockProps"
+      },
+      {
+        "x-uid": "u0ix11uzzw3",
+        "name": "nickname",
+        "type": "string",
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.nickname"
+      },
+      {
+        "x-uid": "ukjfjyi26i5",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "ulgwksdgcs1",
+        "name": "col",
+        "type": "void",
+        "x-component": "Grid.Col"
+      },
+      {
+        "x-uid": "wa54zcjdkc5",
+        "name": "roles",
+        "type": "string",
+        "required": false,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.roles"
+      },
+      {
+        "x-uid": "we7h408uen4",
+        "name": "email",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "wljcrex0f9u",
+        "name": "nickname",
+        "type": "void",
+        "x-component": "Grid.Row"
+      },
+      {
+        "x-uid": "xjqtoxk6lq8",
+        "name": "password",
+        "type": "string",
+        "required": true,
+        "x-toolbar": "FormItemSchemaToolbar",
+        "x-settings": "fieldSettings:FormItem",
+        "x-component": "CollectionField",
+        "x-decorator": "FormItem",
+        "x-component-props": {},
+        "x-collection-field": "users.password"
+      }
+    ]
+  },
+  "errors": {
+    "me": {
+      "message": "Request failed with status code 404",
+      "status": 404,
+      "url": "users:me"
+    },
+    "uiRoutes": {
+      "message": "Request failed with status code 404",
+      "status": 404,
+      "url": "uiRoutes:getAccessible"
+    }
+  }
+}

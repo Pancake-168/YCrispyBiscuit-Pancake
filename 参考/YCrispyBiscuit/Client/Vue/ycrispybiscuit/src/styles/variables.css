@@ -1,0 +1,75 @@
+:root {
+  /* Default Dark Theme (Soft Dark - GitHub style inspiration) */
+  --bg-color: #0d1117;
+  --text-color: #c9d1d9;
+  --text-muted: #8b949e;
+  
+  /* Glass / Surface - Dark Base */
+  --glass-bg: rgba(22, 27, 34, 0.70);
+  --glass-border: 1px solid rgba(240, 246, 252, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(1, 4, 9, 0.37);
+  --glass-blur: blur(12px) saturate(180%);
+  
+  /* Brand Colors */
+  --primary-color: #238636; /* Green */
+  --primary-hover: #2ea043;
+  --danger-color: #f85149; /* Red */
+  --danger-hover: #da3633;
+  --warning-color: #d29922; /* Yellow/Orange */
+  --info-color: #58a6ff;   /* Blue */
+  --btn-text: #ffffff;
+  
+  /* Interactive States */
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --active-bg: rgba(255, 255, 255, 0.15);
+  
+  /* UI Metrics */
+  --radius-sm: 6px;
+  --radius-md: 12px; /* Card defaults */
+  --radius-lg: 24px;
+  --input-bg: rgba(13, 17, 23, 0.8);
+
+  /* Typography */
+  --font-xs: 0.625rem;  /* 10px */
+  --font-sm: 0.75rem;   /* 12px */
+  --font-base: 0.875rem; /* 14px */
+  --font-md: 1rem;      /* 16px */
+  --font-lg: 1.25rem;   /* 20px */
+  --font-xl: 1.5rem;    /* 24px */
+  --font-2xl: 2rem;     /* 32px */
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Component Specific */
+  --titlebar-height: 32px;
+  --control-btn-width: 46px;
+  --logo-size-sm: 16px;
+  --logo-size-lg: 80px;
+}
+
+[data-theme="light"] {
+  /* Light Theme */
+  --bg-color: #f6f8fa;
+  --text-color: #24292f;
+  --text-muted: #57606a;
+  
+  /* Glass / Surface - Light Base */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  --glass-blur: blur(12px) saturate(180%);
+  
+  /* Colors */
+  --primary-color: #2da44e;
+  --primary-hover: #2c974b;
+  --danger-color: #cf222e;
+  --danger-hover: #a40e26;
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --btn-text: #ffffff;
+}

@@ -1,0 +1,144 @@
+
+
+已知bug：
+1. 房间房主踢人后会导致此房间在自己列表中消失？怀疑是触发了什么监听？
+2. 对于房间的分类过程，我需要加上全局遮罩，不然你让用户看到房间一个一个在列表中变化，这不太合理。
+3. 房间分类结果本地存储一份，长期存储，不然每次加载都太慢了。
+4. 右下角弹出的系统提示，我发现每次登录上线后都会给我刷一大堆，这个不合理，登录上线后不要出现提示，默认用户会注意到列表中的未读红点，但后续接收到新消息时且处于后台才能给出提示。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+暂缓：
+1. 生成式UI（JsonRenderer）完整计划
+
+前置补充：
+编写时所有文件命名风格需统一，比如这是nocobaseUI渲染器，则命名需要加上NocobaseUI这几个字母（无论什么文件：utils、type、service、components等等）
+编写时涉及到css的部分，除了某些具备特殊意义的按钮可以硬编码颜色外，其余css请按照全局css变量完成。
+
+1.1 梳理UI生成目标范围
+	- 明确输入：NocoBase 的 uiSchemas / collections / records
+	- 明确输出：可渲染的 Vue 组件树
+	- 确认组件范围：Grid / Grid.Row / Grid.Col / CollectionField / FormV2 / Action / Action.Drawer.FootBar / FlowRoute
+	- 确认模式：只读 / 编辑 / 提交
+	- 权限要求：在 token 授权范围内覆盖所有可执行的真实操作（增删查改并可提交）
+	- 覆盖完整类型与行为：x-decorator / x-use-decorator-props / x-use-component-props / x-toolbar / x-settings / dataSource / uiRoutes
+	- 目标页面形态：表单（create/edit/profile）、列表/表格（records）、流程/路由（FlowRoute）
+	- 目标字段形态：文本/数字/日期/选择/关系/密码/附件等字段类型
+	- 目标动作形态：提交/取消/更新/创建/删除/跳转/触发流程
+	- 目标数据形态：单记录编辑 + 多记录列表 + 关系字段联动
+
+1.2 设计Schema节点模型
+	- 定义标准节点结构（id/name/type/component/decorator/props/decoratorProps/children/slots/bindings/layout/meta）
+	- 统一字段映射：x-uid -> id，x-component -> component，x-decorator -> decorator
+	- 绑定字段映射：x-collection-field / x-dataSource / x-initializer / x-toolbar / x-settings
+	- 节点分层：Layout（Grid/Row/Col）、Form（FormV2/Decorator）、Field（CollectionField）、Action、Flow
+	- 约定节点排序与父子关系规则（按 uiSchemas 顺序 + parent/children 关系）
+	- 支持 Void 节点与容器节点（type=void 的仅用于结构）
+	- 定义 Unknown 节点降级策略（保留占位与原始 meta）
+
+1.3 编写Schema适配器
+	- uiSchemas 数组 -> 节点树
+	- 过滤无效节点 / 合并重复节点 / 保持布局顺序
+	- 解析 x-component / x-decorator / x-component-props / x-decorator-props
+	- 解析 x-use-component-props / x-use-decorator-props
+	- 解析 x-collection-field / x-dataSource / x-initializer / x-toolbar / x-settings
+	- 建立 parent/children 关系（含空容器与 Void 节点）
+	- 输出可调试的原始 meta 快照
+
+1.4 编写渲染注册表
+	- x-component -> Vue 组件映射
+	- 基础组件：Grid/Row/Col/FormV2/CollectionField/Action/Action.Drawer.FootBar/FlowRoute/Unknown
+	- 装饰器与组件 props 解析：FormBlockProvider + use*Props 系列
+	- 注册字段控件映射（Input/Select/DatePicker/Checkbox/Upload/Table/Password/TextArea）
+	- 统一 Unknown 组件占位与提示
+
+1.5 编写递归渲染器
+	- 递归渲染节点树
+	- 处理布局类组件结构
+	- 统一 Unknown 节点渲染
+	- 支持 slots 与 children 渲染
+	- 处理 Action.Drawer.FootBar 等特殊容器
+
+1.6 实现字段绑定层
+	- 解析 x-collection-field（如 users.username）
+	- 读取 records + collections 元数据
+	- 只读 / 编辑模式的 value 绑定
+	- 关系字段（如 users.roles）与枚举/选项加载
+	- x-toolbar / x-settings 的字段级配置透传
+	- 字段类型 -> 组件类型推断（含 password/email/phone 等）
+	- 处理默认值 / required / 校验规则
+
+1.7 实现数据加载层
+	- 选择 appName / collectionName 拉取 records
+	- 支持分页 / 过滤参数
+	- 复用 getCollectionDataByApplication
+	- 支持单记录加载（by id）与多记录列表
+	- 处理 dataSource 对应的 records 集合
+
+1.8 实现表单编辑与提交
+	- 表单 state 管理
+	- Action submit / cancel 行为
+	- create / update / delete / get 请求
+	- 解析 dataSource 并绑定到记录源（如 main）
+	- 解析 useCreateActionProps / useUpdateActionProps / useUpdateProfileActionProps
+	- 表单脏检查与提交前校验
+	- 提交成功/失败提示与状态回滚
+
+1.9 实现权限与可见性
+	- 解析 x-acl 或自定义规则
+	- 无权限隐藏或禁用
+	- uiRoutes:getAccessible 接入与页面可见性联动（若可用）
+	- 权限降级策略（只读替代/按钮禁用）
+
+1.10 增强组件覆盖面
+	- Input / Select / DatePicker / Checkbox / Upload / Table / Password / TextArea 等
+	- 支持 x-component-props 透传
+	- Action 的 icon/confirm/variant 等常用 props 透传
+
+1.11 管理页集成
+	- 在 NocoBase 管理页增加 UI 渲染预览区
+	- 支持 JSON 视图 / 渲染视图切换
+	- 支持选择不同记录预览
+	- 增加 appName / collectionName / recordId 选择器
+
+1.12 错误与调试可视化
+	- 输出节点树 / 绑定快照 / 未识别组件列表
+	- 提供复制节点配置能力
+	- 记录 schema 解析警告与运行时渲染错误
+
+1.13 性能与缓存
+	- schemaAdapter 缓存
+	- 大表分页 / 虚拟列表
+	- 避免重复解析与重复请求
+
+1.14 验收清单
+	- Grid 布局
+	- CollectionField 绑定
+	- 子应用切换（appHeader/appParam兜底）
+	- 只读与编辑流程
+	- 关系字段显示与编辑
+	- Action 提交与权限控制
+	- 异常回退
+
+N. 不太重要的:
+a. 一些加载转圈圈（？
+f. 右侧内容区的markdown
+g. electron的本地存储？
+h. 两份官网
+
+
+
+
+
+

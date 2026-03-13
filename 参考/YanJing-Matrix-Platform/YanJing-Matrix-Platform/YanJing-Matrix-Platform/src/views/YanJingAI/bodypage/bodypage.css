@@ -1,0 +1,2265 @@
+.session1 {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - 68px);
+    opacity: 1;
+
+    /* 自动布局 */
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    align-self: stretch;
+
+    /* 白色 */
+    background: #FFFFFF;
+    overflow: hidden;
+
+    z-index: 1;
+}
+
+.session11 {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    border-radius: 20px;
+    opacity: 1;
+
+    flex-grow: 1;
+    align-self: stretch;
+
+    /* 淡紫渐变 */
+    background: linear-gradient(65deg, #DCDBFD 0%, #FFFFFF 53%, #EBDFFC 99%);
+    overflow: hidden;
+
+    z-index: 0;
+}
+
+.session111 {
+
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    pointer-events: none;
+}
+
+.img1 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* translate(-50%, -50%) 用于绝对居中 */
+    /* 可以修改 rotate(度数) 来旋转，修改 scale(倍数) 来缩放，修改 translate 来微调位置 */
+    transform: translate(-50%, -30%) rotate(0deg) scale(1.5);
+    width: 1463px;
+    height: 1208px;
+    opacity: 0.6;
+    transform-origin: center center;
+    /* 确保缩放和旋转都绕中心点进行 */
+    transition: transform 10s linear;
+}
+
+.session11:hover .img1 {
+    transform: translate(-50%, -32%) rotate(2deg) scale(1.55);
+}
+
+.img1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.img2 {
+    position: absolute;
+    left: 50%;
+    bottom: -70px;
+    transform: translateX(-50%);
+    width: 1201px;
+    height: 208px;
+    opacity: 1;
+    transition: transform 0.8s ease;
+}
+
+.session11:hover .img2 {
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.img2 img {
+    width: 100%;
+    height: auto;
+}
+
+.session112 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -65%);
+    width: 100%;
+    max-width: 600px;
+    opacity: 1;
+
+    /* 自动布局 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 24px;
+    z-index: 2;
+}
+
+.session1121 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 16px;
+    border-radius: 1000px;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    border: 3px solid #D9D9FB;
+}
+
+.session1122 {
+    width: 100%;
+    opacity: 1;
+}
+
+.session1123 {
+    padding-top: 0.5rem;
+    width: 100%;
+    opacity: 1;
+}
+
+.session1124 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 16px;
+}
+
+.session11241 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 184px;
+    height: 48px;
+    gap: 8px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.session11241:hover {
+    box-shadow: 0px 4px 15px rgba(26, 50, 185, 0.4);
+    transform: translateY(-2px);
+}
+
+
+.icon2 {
+    /* 自动布局子元素 */
+    position: static;
+    left: 119px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+
+    z-index: 1;
+}
+
+.session11242 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 184px;
+    height: 48px;
+    gap: 8px;
+    border-radius: 10px;
+    background: #36304B;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.session11242:hover {
+    background: #4A4463;
+    transform: translateY(-2px);
+}
+
+.icon1 {
+    /* 自动布局子元素 */
+    position: static;
+    left: 24px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+
+    z-index: 0;
+}
+
+.text1 {
+    font-family: MiSans;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    letter-spacing: 0.2em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+}
+
+.text2 {
+    font-family: MiSans;
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: 0.05em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    /* 黑色 */
+    color: #000000;
+}
+
+.text3 {
+    margin-top: 1rem;
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    letter-spacing: 0.05em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    /* 研境深紫灰 */
+    color: #36304B;
+}
+
+.text3 p {
+    margin: 0;
+}
+
+.text4 {
+    font-family: MiSans;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 120%;
+    letter-spacing: 0.04em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    /* 白色 */
+    color: #FFFFFF;
+}
+
+.text5 {
+    font-family: MiSans;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: 0.04em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    /* 白色 */
+    color: #FFFFFF;
+}
+
+
+
+
+.session2 {
+    position: relative;
+    width: 100%;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 48px;
+    gap: 64px;
+    align-self: stretch;
+    background: #FFFFFF;
+    z-index: 2;
+}
+
+.session21 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+}
+
+.text6 {
+    font-family: MiSans;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 120%;
+    text-align: center;
+    color: #000000;
+}
+
+.text7 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    color: #868686;
+}
+
+.session22 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0px;
+    gap: 32px;
+}
+
+.session221 {
+    width: 388px;
+    min-height: 488px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 40px;
+    box-sizing: border-box;
+    background: #D9D9FB;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: default;
+}
+
+
+
+
+.session222 {
+    width: 388px;
+    min-height: 488px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 40px;
+    box-sizing: border-box;
+    background:#EBDFFC;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: default;
+}
+
+
+
+
+.session223 {
+    width: 388px;
+    min-height: 488px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 40px;
+    box-sizing: border-box;
+    background:#EDEAF7;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    cursor: default;
+}
+
+
+
+
+.session2211 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+    align-self: stretch;
+    margin-bottom: 24px;
+    transition: transform 0.3s ease;
+}
+
+.session221:hover .session2211 .session222:hover .session223:hover{
+    transform: translateX(4px);
+}
+
+.session22111 {
+    width: 48px;
+    height: 48px;
+    border-radius: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #D9D9FB;
+    box-sizing: border-box;
+    border: 4px solid #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+
+
+.text8 {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: 500;
+    color: #36304B;
+}
+
+.session22112 {
+    display: flex;
+    flex-direction: column;
+}
+
+.text9 {
+    font-family: MiSans;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: #36304B;
+    
+}
+
+.text10 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    color: #36304B;
+    text-align: center;
+}
+
+.session2212 {
+    position: relative;
+    width: 186px;
+    height: 186px;
+    margin-bottom: 24px;
+    /* 关键修复：移除白色背景 */
+    background: transparent;
+}
+
+.img3 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.img3 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.5s ease;
+}
+
+.session221:hover .img3 img {
+    transform: scale(1.1) rotate(2deg);
+}
+
+.session222:hover .img3 img {
+    transform: scale(1.1) rotate(2deg);
+}
+
+
+.session223:hover .img3 img {
+    transform: scale(1.1) rotate(2deg);
+}
+
+
+.session2213 {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-self: stretch;
+    align-items: center;
+}
+
+.text11 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #36304B;
+}
+
+.session22131 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: stretch;
+}
+
+.session221311,
+.session221312,
+.session221313 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: all 0.3s ease;
+  
+}
+
+/* 1/3 左对齐，2 右对齐 */
+.session221311,
+.session221313 {
+    align-self: flex-start;
+}
+
+.session221312 {
+    align-self: flex-end;
+}
+
+.session221311:hover,
+.session221312:hover,
+.session221313:hover {
+    transform: translateX(8px);
+}
+
+.session221312:hover {
+    transform: translateX(-8px);
+}
+
+.session2213111,
+.session2213131 {
+    width: 24px;
+    height: 32px;
+}
+
+.icon3,
+.icon51 {
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+}
+
+.icon4 {
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+
+}
+
+.icon3 img,
+.icon4 img,
+.icon51 img {
+    width: 100%;
+    height: 100%;
+}
+
+.session2213112,
+.session2213132 {
+    flex-grow: 1;
+    height: 32px;
+    border-radius: 0px 1000px 1000px 0px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #FFFFFF;
+}
+
+.session2213121 {
+    flex-grow: 1;
+    height: 32px;
+    border-radius: 1000px 0px 0px 1000px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #FFFFFF;
+}
+
+/* 让气泡宽度跟随文字长度 */
+.session2213112,
+.session2213121,
+.session2213132 {
+    flex: 0 0 auto;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.session2213122 {
+    width: 24px;
+    height: 32px;
+}
+
+.text12 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: #36304B;
+    white-space: nowrap;
+}
+
+.text13 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: #36304B;
+    white-space: nowrap;
+}
+
+.text14 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: #36304B;
+    white-space: nowrap;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***session3部分***/
+
+.session3 {
+    position: relative;
+    width: 100%;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 48px;
+    gap: 64px;
+    align-self: stretch;
+    background: #FFFFFF;
+    z-index: 3;
+}
+
+.session31 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+}
+
+.text141 {
+    font-family: MiSans;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #000000;
+}
+
+.text15 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.text15 p {
+    margin: 0;
+    font-family: MiSans;
+    font-size: 18px;
+    line-height: 150%;
+    text-align: center;
+}
+
+.text15 .subtitle-line1 {
+    font-weight: 500;
+    color: #868686;
+}
+
+.text15 .subtitle-line2 {
+    font-weight: 500;
+    color: #868686;
+}
+
+.text15 .highlight {
+    font-weight: 600;
+    color: #36304B;
+}
+
+.session32 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    gap: 48px;
+}
+
+.session321 {
+    width: 100%;
+    min-height: 400px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 12px;
+    gap: 32px;
+    background: #D9D9FB;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.session321:hover {
+    box-shadow: 0px 20px 40px rgba(54, 48, 75, 0.08);
+    transform: translateY(-4px);
+}
+
+
+
+
+.session322 {
+    width: 100%;
+    min-height: 400px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 12px;
+    padding-left: 36px;
+    gap: 32px;
+    background:#EBDFFC;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.session322:hover {
+    box-shadow: 0px 20px 40px rgba(54, 48, 75, 0.08);
+    transform: translateY(-4px);
+}
+
+
+
+
+.session323 {
+    width: 100%;
+    min-height: 400px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 12px;
+    gap: 32px;
+    background:#EDEAF7;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.session323:hover {
+    box-shadow: 0px 20px 40px rgba(54, 48, 75, 0.08);
+    transform: translateY(-4px);
+}
+
+.session3211 {
+    position: relative;
+    flex: 1.2;
+    min-height: 384px;
+    border-radius: 12px;
+    background: #443D5D;
+    overflow: hidden;
+}
+
+.session32111 {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0px;
+    gap: 12px;
+    z-index: 2;
+}
+
+.session321111 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    border-radius: 1000px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border: 1px solid #D9D9FB;
+    transition: all 0.3s ease;
+}
+
+.session321111:hover {
+    background: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.text16 {
+    font-family: MiSans;
+    font-size: 10px;
+    font-weight: 500;
+    color: #36304B;
+    white-space: nowrap;
+}
+
+.img4 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img4 img {
+    width: 105%;
+    height: 105%;
+    object-fit: cover;
+    transition: transform 8s ease-out;
+}
+
+
+.session3212 {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    padding: 12px 0;
+    gap: 24px;
+}
+
+.session32121 {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0px;
+    gap: 20px;
+}
+
+.session321211 {
+    display: flex;
+    width: fit-content;
+    padding: 6px 16px;
+    border-radius: 1000px;
+    background: #36304B;
+    border: 1px solid #D9D9FB;
+}
+
+.session321211-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.text17 {
+    font-family: MiSans;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+
+.learn-more {
+    margin-left: 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: #36304B;
+    opacity: 0.7;
+}
+
+.icon5 {
+    width: 56px;
+    height: 56px;
+}
+
+.icon5 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.session321212 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.text18 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    color: #36304B;
+    line-height: 1.2;
+}
+
+.text19 {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.text19 p {
+    margin: 0;
+    font-family: MiSans;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #36304B;
+    opacity: 0.8;
+}
+
+.text19 p.highlight {
+    font-weight: 600;
+    opacity: 1;
+}
+
+.session32122 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.session321221 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+
+
+/* 如果是反向布局，朝右偏移 */
+.session3212:first-child+.session3211 .session321221:hover {
+    transform: translateX(4px);
+}
+
+.text20 {
+    font-family: MiSans;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: #868686;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***session4部分***/
+.session4 {
+    position: relative;
+    width: 100%;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 80px 16px;
+    align-self: stretch;
+    background: #FFFFFF;
+    z-index: 4;
+}
+
+.session41 {
+    width: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 48px;
+    gap: 64px;
+    align-self: stretch;
+    background: #EDEAF7;
+}
+
+.session411 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.text4111 {
+    font-family: MiSans;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #000000;
+}
+
+.text4112 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #868686;
+}
+
+.text4112 p {
+    margin: 0;
+}
+
+.session412 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.session4121 {
+    width: 388px;
+    min-height: 480px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 32px;
+    background: #FFFFFF;
+    box-shadow: 0px 20px 40px rgba(191, 168, 255, 0.15);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-sizing: border-box;
+    cursor: default;
+}
+
+
+
+.session41211 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    align-self: stretch;
+    margin-bottom: 24px;
+}
+
+.session412111 {
+    width: 48px;
+    height: 48px;
+    border-radius: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FFFFFF;
+    border: 4px solid #D9D9FB;
+    transition: transform 0.3s ease;
+}
+
+
+
+.text412111 {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: 600;
+    color: #36304B;
+}
+
+.text412112 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    color: #36304B;
+}
+
+.session41212 {
+    width: 186px;
+    height: 186px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img41212 {
+    width: 100%;
+    height: 100%;
+}
+
+.img41212 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.5s ease;
+}
+
+.session4121:hover .img41212 img {
+    transform: scale(1.08) rotate(2deg);
+}
+
+.text4121 {
+    font-family: MiSans;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #36304B;
+    opacity: 0.85;
+    align-self: stretch;
+    text-align: center;
+}
+
+.text4121 p {
+    margin: 0;
+}
+
+
+
+
+
+
+
+/****session5部分***/
+.session5 {
+    position: relative;
+    width: 100%;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 48px;
+    gap: 64px;
+    align-self: stretch;
+    background: #FFFFFF;
+    z-index: 5;
+}
+
+.session51 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.text511 {
+    font-family: MiSans;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 120%;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #000000;
+}
+
+.text512 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #868686;
+}
+
+.session52 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.session521 {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 32px;
+}
+
+/* 板块1：HTML顺序已改为 图片-文字 */
+.session5211 {
+    flex: 1;
+    height: 240px;
+    border-radius: 20px;
+    background: #EDEAF7;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row; /* 图片在前，文字在后 */
+    align-items: center;
+    justify-content: flex-start; /* 让内容靠左对齐 */
+    transition: all 0.4s ease;
+}
+
+/* 板块2：HTML顺序是 图片-文字，所以用 row 即可 */
+.session5212 {
+    flex: 1;
+    height: 240px;
+    border-radius: 20px;
+    background: #EDEAF7;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: all 0.4s ease;
+}
+
+
+
+.session52111,
+.session52121 {
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+    flex: 1;
+}
+
+.text521111,
+.text521211 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 120%;
+    color: #36304B;
+}
+
+.text521112,
+.text521212 {
+    font-family: MiSans;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #36304B;
+    opacity: 0.8;
+}
+
+.text521112 p,
+.text521212 p {
+    margin: 0;
+}
+
+.text521112 .highlight {
+    font-weight: 600;
+    opacity: 1;
+}
+
+.img5211,
+.img5212 {
+    width: 260px; /* 设定一个固定宽度比例 */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.img5211 img,
+.img5212 img {
+    height: 120%; /* 稍微溢出一点设计感 */
+    width: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.6s ease;
+}
+
+.session5211:hover .img5211 img,
+.session5212:hover .img5212 img {
+    transform: scale(1.1);
+}
+
+.session522 {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #443D5D;
+    transition: all 0.4s ease;
+    /* 开启 GPU 渲染优化 */
+    transform: translateZ(0);
+}
+
+
+
+.img522 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img522 img {
+    /* 使用设计稿宽度 1360px 避免强制拉伸 */
+    width: 1360px;
+    min-height: 100%;
+    object-fit: cover;
+    /* 优化缩放渲染质量 */
+    image-rendering: -webkit-optimize-contrast;
+    transition: transform 12s ease-out;
+}
+
+.session522:hover .img522 img {
+    transform: scale(1.03);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*****session6部分******/
+.session6 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+     padding: 80px 48px;
+    gap: 64px;
+    width: 100%;
+    background: #FFFFFF;
+}
+
+.session61 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.text611 {
+    font-family: MiSans;
+    font-size: 30px;
+    font-weight: 600;
+    color: #000000;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.text612 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    color: #868686;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.session62 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1228px;
+    gap: 32px;
+}
+
+/* 顶部大卡片 */
+.session621 {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 8px 8px 48px;
+    gap: 32px;
+    box-sizing: border-box;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.session6211 {
+    width: 361px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 64px 0;
+    box-sizing: border-box;
+}
+
+.icon6211 {
+    width: 64px;
+    height: 64px;
+    transition: transform 0.3s ease;
+}
+
+.session621:hover .icon6211 {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.icon6211 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.session62111 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.text621111 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.text621112 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: #FFFFFF;
+    line-height: 1.8;
+}
+
+/* 大卡片右侧白底区域 */
+.session6212 {
+    flex: 1;
+    height: 381px;
+    background: #FFFFFF;
+    /* 模拟设计稿的点阵效果 */
+    background-image: radial-gradient(#E0E0E0 1px, transparent 1px);
+    background-size: 20px 20px;
+   
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 48px;
+    transition: all 0.3s ease;
+}
+
+
+
+.session62121, 
+.session62122, 
+.session62123 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.session62121:hover, .session62122:hover, .session62123:hover {
+    transform: translateY(-10px);
+}
+
+.session621211, .session621221, .session621231 {
+    width: 158px;
+    height: 158px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.session62121:hover .session621211, 
+.session62122:hover .session621221, 
+.session62123:hover .session621231 {
+    transform: scale(1.1);
+}
+
+.img621211, .img621221, .img621231 {
+    width: 237px;
+    height: 237px;
+    mix-blend-mode: multiply;
+}
+
+.img621211 img, .img621221 img, .img621231 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.session621212, .session621222, .session621232 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.text6212121, .text6212221, .text6212321 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #36304B;
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+
+
+.text6212122, .text6212222, .text6212322 {
+    font-size: 11px;
+    color: #36304B;
+    text-align: center;
+    line-height: 1.8;
+}
+
+/* 下方两张卡片 */
+.session622, .session623 {
+    flex: 1;
+    min-width: 500px;
+    height: 384px;
+    border-radius: 10px;
+    padding: 72px 48px 48px 48px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+.session622 {
+    background: #D9D9FB;
+}
+
+.session623 {
+    background: #EBDFFC;
+}
+
+.icon622, .icon623 {
+    width: 64px;
+    height: 64px;
+    transition: transform 0.3s ease;
+}
+
+.session622:hover .icon622, .session623:hover .icon623 {
+    transform: scale(1.1);
+}
+
+.icon622 img, .icon623 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.session6221, .session6231 {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.text6221, .text6231 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    color: #36304B;
+    text-align: center;
+}
+
+.session62211, .session62311 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+
+
+/* 半卡片样式 (路径效果) */
+.session622111, .session623111 {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    height: 32px;
+    align-items: center;
+    
+    transition: transform 0.2s ease;
+}
+
+/* 左右层次对齐 */
+.session622111 {
+    align-self: flex-start;
+    width: 20vw;
+}
+
+.session622111:hover, .session623111:hover {
+    transform: translateX(5px);
+}
+
+.session6221111, .session6231111 {
+    width: 24.42px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.icon6221111, .icon6231111 {
+    width: 100%;
+    height: 100%;
+}
+
+.icon6221111 img, .icon6231111 img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill; /* 或者是 contain，填充整个区域以作为“盖子” */
+}
+
+.session6221112, .session6231112 {
+    background: #FFFFFF;
+    border-radius: 0 1000px 1000px 0;
+    padding: 0 16px 0 0; /* 左侧不给 padding，直接对接路径图片 */
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.text6221112, .text6231112 {
+    font-size: 13px;
+    color: #36304B;
+    line-height: normal;
+}
+
+/* 加入我们气泡 (相反逻辑：文字在前，路径在后并旋转) */
+.session622112 {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    height: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.session622112 {
+    align-self: flex-end;
+}
+
+.session622112:hover {
+    transform: scale(1.05);
+}
+
+.session6221121 {
+    background: #FFFFFF;
+    border-radius: 1000px 0 0 1000px;
+    padding: 0 0 0 16px; /* 右侧不给 padding */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+
+.text6221121 {
+    font-size: 13px;
+    color: #36304B;
+    transition: color 0.3s ease;
+}
+
+
+
+.session6221122 {
+    width: 24.42px;
+    height: 32px;
+    flex-shrink: 0;
+    transition: filter 0.3s ease;
+}
+
+.icon6221122 {
+    width: 100%;
+    height: 100%;
+}
+
+.icon6221122 img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+/* 生态伙伴图标行 */
+.session623112 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 24px;
+    gap: 16px;
+    background: #FFFFFF;
+    border-radius: 1000px;
+    border: 2px solid #D9D9FB;
+    width: fit-content;
+    box-shadow: 0 4px 10px rgba(54, 48, 75, 0.05);
+}
+
+.icon623112 {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.icon623112:hover {
+    transform: scale(1.15);
+}
+
+.icon623112 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+.icon623113 {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.icon623113:hover {
+    transform: scale(1.15);
+}
+
+.icon623113 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .img1 {
+        transition: none;
+        transform: translate(-50%, -30%) rotate(0deg) scale(1.5);
+    }
+
+    .session11:hover .img1 {
+        transform: translate(-50%, -30%) rotate(0deg) scale(1.5);
+    }
+    /* 通用调整 */
+    .session1, .session2, .session3, .session4, .session5, .session6 {
+        padding: 40px 20px !important;
+    }
+
+    /* Session 1 */
+    .session1 {
+        min-height: 560px; /* 给予固定最小高度，防止绝对定位内容塌陷 */
+        padding: 12px !important;
+    }
+    .session11 {
+        min-height: 540px;
+    }
+    .text2 {
+        font-size: 30px !important;
+        line-height: 1.3 !important;
+    }
+    .text3 {
+        font-size: 14px !important;
+        line-height: 1.6 !important;
+    }
+    .session112 {
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+        transform: translate(-50%, -50%);
+    }
+    .session1121 {
+        padding: 8px 16px !important;
+        transform: scale(0.9);
+    }
+    .session1124 {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    .session11241, .session11242 {
+        width: 100%;
+    }
+    .img1 {
+        transform: translate(-50%, -30%) scale(2.5);
+    }
+    .img2 {
+        width: 200%;
+        bottom: -20px;
+    }
+
+    /* Titles */
+    .text6, .text141, .text41, .text511, .text611 {
+        font-size: 30px !important;
+        line-height: 1.3 !important;
+        width: 100%;
+        display: block;
+        word-break: break-word;
+    }
+    .text7, .text142, .text42, .text512, .text612 {
+        font-size: 13px !important;
+        line-height: 1.6 !important;
+        color: rgba(0,0,0,0.6) !important;
+        margin-top: 8px;
+    }
+    /* 其余文字统一减小 2px（移动端） */
+    .text1 {
+        font-size: 14px !important;
+    }
+    .text4,
+    .text5 {
+        font-size: 11px !important;
+    }
+    .text8 {
+        font-size: 12px !important;
+    }
+    .text9 {
+        font-size: 11px !important;
+    }
+    .text11 {
+        font-size: 16px !important;
+    }
+    .text12,
+    .text13,
+    .text14 {
+        font-size: 11px !important;
+    }
+    .text15 p {
+        font-size: 16px !important;
+    }
+    .text17 {
+        font-size: 10px !important;
+    }
+    .text4111 {
+        font-size: 28px !important;
+    }
+    .text4112 {
+        font-size: 14px !important;
+    }
+    .text412111 {
+        font-size: 12px !important;
+    }
+    .text412112 {
+        font-size: 15px !important;
+    }
+    .text4121 {
+        font-size: 10px !important;
+    }
+    .text521112,
+    .text521212 {
+        font-size: 11px !important;
+    }
+    .text621111 {
+        font-size: 18px !important;
+    }
+    .text621112 {
+        font-size: 11px !important;
+    }
+    .text6221112,
+    .text6231112,
+    .text6221121 {
+        font-size: 11px !important;
+    }
+
+    /* Session 2 Cards */
+    .session22 {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 24px !important;
+        width: 100% !important;
+        padding: 0 12px !important;
+        box-sizing: border-box !important;
+    }
+    .session221 {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 32px 24px !important;
+        box-sizing: border-box !important;
+    }
+    .session222,
+    .session223 {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 32px 24px !important;
+        box-sizing: border-box !important;
+    }
+    .session2212 {
+        width: 140px !important;
+        height: 140px !important;
+        margin: 20px 0 !important;
+    }
+    .text10 {
+        font-size: 14px !important;
+    }
+    /* Session 2 气泡在移动端避免超出容器 */
+    .session22131 {
+        width: 100% !important;
+    }
+    .session221311,
+    .session221312,
+    .session221313 {
+        max-width: 100% !important;
+    }
+    .session2213112,
+    .session2213121,
+    .session2213132 {
+        max-width: calc(100% - 24px) !important; /* 预留前后图标宽度 */
+        padding: 0 12px !important;
+        box-sizing: border-box !important;
+    }
+    .text12,
+    .text13,
+    .text14 {
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* Session 3 Content */
+    .session32 {
+        flex-direction: column !important;
+        gap: 60px !important; /* 增加大项之间的间距 */
+    }
+    .session321 {
+        width: 100% !important;
+        padding: 0 !important;
+        flex-direction: column !important; /* 强制纵向 */
+        gap: 24px !important;
+        align-items: center !important;
+    }
+    /* Part 2 特殊处理：在移动端也保持 图像-文本 的顺序 */
+    .session321:nth-child(2) {
+        flex-direction: column-reverse !important;
+    }
+    .session322 {
+        width: 100% !important;
+        padding: 0 !important;
+        flex-direction: column !important; /* 强制纵向 */
+        gap: 24px !important;
+        align-items: center !important;
+    }
+    /* Part 2 特殊处理：在移动端也保持 图像-文本 的顺序 */
+    .session322:nth-child(2) {
+        flex-direction: column-reverse !important;
+    }
+    .session323 {
+        width: 100% !important;
+        padding: 0 !important;
+        flex-direction: column !important; /* 强制纵向 */
+        gap: 24px !important;
+        align-items: center !important;
+    }
+    /* Part 2 特殊处理：在移动端也保持 图像-文本 的顺序 */
+    .session323:nth-child(2) {
+        flex-direction: column-reverse !important;
+    }
+    
+    .session3211, .session3212 {
+        width: 100% !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+    .session32111, .session32122 {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+    .session321111, .session321221 {
+        padding: 8px 16px !important;
+        height: auto !important;
+        min-height: 40px !important;
+    }
+    .text16, .text20 {
+        font-size: 11px !important;
+    }
+    .session32121 {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 16px !important;
+    }
+    .session321212 {
+        align-items: center !important;
+    }
+    .text18 {
+        font-size: 14px !important;
+        text-align: center !important;
+    }
+    .text19 {
+        font-size: 10px !important;
+        text-align: center !important;
+    }
+    .img4 {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 90% !important;
+        height: auto !important;
+        margin: 10px auto !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    .img4 img {
+        width: 100% !important;
+        border-radius: 12px;
+    }
+
+    /* Session 4 Content */
+    .session41 {
+        flex-direction: column !important;
+        gap: 24px !important;
+        padding: 40px 20px !important;
+        box-sizing: border-box !important;
+    }
+    .session412 {
+        width: 100% !important;
+        gap: 16px !important;
+        box-sizing: border-box !important;
+    }
+    .session4121 {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 32px 24px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Session 5 Content */
+    .session521 {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    .session5211, .session5212 {
+        height: auto !important;
+        flex-direction: column !important;
+        padding: 40px 24px !important;
+        box-sizing: border-box !important;
+    }
+    .img5211, .img5212 {
+        width: 180px !important; /* 缩小装饰图 */
+        height: 180px !important;
+        margin-bottom: 24px;
+        order: 1;
+    }
+    .img5211 img, .img5212 img {
+        height: 100% !important;
+        width: auto !important;
+    }
+    .session52111, .session52121 {
+        padding: 0 !important;
+        align-items: center !important;
+        text-align: center !important;
+        order: 2;
+    }
+    .text521111, .text521211 {
+        font-size: 14px !important;
+    }
+    .session522 {
+        height: 260px !important;
+        margin-top: 10px;
+    }
+    .img522 img {
+        width: 250% !important; /* 背景图保持一定比例 */
+    }
+
+    /* Session 6 Content */
+    .session62 {
+        flex-direction: column !important;
+        gap: 24px !important;
+    }
+
+    .session621, .session622, .session623 {
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important; /* 关键：取消固定高度 */
+        padding: 40px 20px !important;
+        box-sizing: border-box !important;
+        flex-direction: column !important;
+        gap: 24px !important;
+        align-items: center !important;
+    }
+
+    .session6211 {
+        width: 100% !important;
+        height: auto !important;
+        padding: 0 !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .icon6211 {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .session6212 {
+        width: 100% !important;
+        height: auto !important;
+        flex: none !important;
+        padding: 32px 16px !important;
+        flex-direction: column !important;
+        gap: 40px !important;
+        background-size: 15px 15px !important;
+    }
+
+    .session62121, .session62122, .session62123 {
+        width: 100% !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    .session621211, .session621221, .session621231 {
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .img621211, .img621221, .img621231 {
+        width: 150px !important;
+        height: 150px !important;
+    }
+
+    .text6212121, .text6212221, .text6212321 {
+        font-size: 12px !important;
+    }
+
+    .text6212122, .text6212222, .text6212322 {
+        font-size: 8px !important;
+        line-height: 1.6 !important;
+        max-width: 280px;
+        opacity: 0.8;
+    }
+
+    /* 下方两个次级卡片适配 */
+    .session622, .session623 {
+        min-width: 0 !important;
+        padding: 32px 20px !important;
+        gap: 24px !important;
+        align-items: center !important;
+    }
+
+    .icon622, .icon623 {
+        width: 48px !important;
+        height: 48px !important;
+    }
+
+    .session6221, .session6231 {
+        width: 100% !important;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    .text6221, .text6231 {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .session62211, .session62311 {
+        width: 100% !important;
+        align-items: center !important;
+        gap: 16px !important;
+    }
+
+    /* 路径标签居中处理 */
+    .session622111, .session623111, .session622112 {
+        width: fit-content !important;
+        justify-content: center !important;
+        margin: 0 auto !important;
+    }
+
+    /* 修正 Session 6Partners 图标行 */
+    .session623112 {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        width: fit-content !important;
+        padding: 10px !important;
+        border-radius: 1000px !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
+    }
+
+    .icon623112 {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    .icon623113 {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}
+

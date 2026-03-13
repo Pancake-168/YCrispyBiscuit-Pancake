@@ -1,0 +1,377 @@
+.foot1 {
+    width: 100%;
+    background: #000000;
+    padding: 80px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    box-sizing: border-box;
+}
+
+.text1 {
+    font-family: MiSans;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    letter-spacing: 0.05em;
+    color: #FFFFFF;
+}
+
+.text1 p {
+    margin: 8px 0;
+}
+
+.foot11 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 32px;
+    gap: 8px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.foot11:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(154, 119, 253, 0.3);
+}
+
+.text11 {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+}
+
+.icon11 {
+    width: 24px;
+    height: 24px;
+}
+
+.icon11 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.foot2 {
+    width: 100%;
+    background: #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.foot21 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 80px 0 64px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
+}
+
+.foot211 {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 440px;
+}
+
+.icon211 {
+    height: 24px;
+    /* 匹配右侧文本标题的视觉高度 */
+    display: flex;
+    align-items: center;
+}
+
+.icon211 img {
+    height: 148px;
+    /* Logo 视觉高度，中心与容器对齐 */
+    width: auto;
+    display: block;
+}
+
+.text2111 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text2111 p {
+    margin: 0;
+}
+
+.text2112 {
+    font-family: MiSans;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.8;
+    color: #FFFFFF;
+    opacity: 0.8;
+}
+
+.text2112 p {
+    margin: 0;
+}
+
+.foot212 {
+    display: flex;
+    flex-direction: row;
+    gap: 80px;
+}
+
+.foot2121 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 24px 64px;
+    width: 280px;
+}
+
+.text2121 {
+    width: 100%;
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: 1.2;
+}
+
+.foot21211 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.text21211 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.text21211:hover {
+    color: #FFFFFF;
+}
+
+.foot2122 {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.text2122 {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: 1.2;
+}
+
+.foot21221 {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.text21221 {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(90deg, #1A32B9 0%, #9A77FD 51%, #D398FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text21222 {
+    font-family: MiSans;
+    font-size: 18px;
+    color: #FFFFFF;
+}
+
+.foot22 {
+    width: 100%;
+    max-width: 1228px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 0 64px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text221 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: #FFFFFF;
+    
+}
+
+.text222 {
+    font-family: MiSans;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.text222 {
+    /* 自动布局子元素 */
+    position: static;
+    left: 1034px;
+    top: 32px;
+    width: 180px;
+    height: 17px;
+    opacity: 1;
+
+    font-family: MiSans;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 120%;
+    letter-spacing: 0.04em;
+
+    font-variation-settings: "opsz" auto;
+    font-feature-settings: "kern" on;
+    /* 白色50% */
+    color: rgba(255, 255, 255, 0.5);
+
+    z-index: 1;
+}
+
+.foot22 .text222 {
+    margin-left: auto;
+    text-align: right;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .foot1 {
+        padding: 60px 24px;
+        gap: 32px;
+    }
+
+    .text1 {
+        font-size: 20px !important;
+        line-height: 1.4;
+    }
+
+    .foot2 {
+        padding: 0 24px;
+    }
+
+    .foot21 {
+        flex-direction: column !important;
+        padding: 48px 0;
+        gap: 48px;
+    }
+
+    .foot211 {
+        max-width: none;
+        align-items: center; /* 居中对齐更有秩序感 */
+        text-align: center;
+        gap: 24px;
+    }
+
+    .icon211 {
+        justify-content: center;
+        height: auto;
+    }
+
+    .icon211 img {
+        height: 100px !important; /* 缩小 LOGO */
+        width: auto;
+    }
+
+    .text1 {
+        font-size: 18px !important; /* 再次稍微缩小一点标题，适配窄屏 */
+        line-height: 1.4;
+    }
+
+    .text2111 {
+        font-size: 16px !important;
+    }
+
+    .text2112 {
+        font-size: 10px !important;
+        opacity: 0.7;
+    }
+
+    .foot212 {
+        flex-direction: column !important;
+        gap: 40px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .foot2121 {
+        width: 100%;
+        flex-direction: row !important; /* 在移动端尝试双列显示导航，节省空间 */
+        flex-wrap: wrap !important;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 32px 40px;
+    }
+
+    .foot21211 {
+        width: calc(50% - 20px) !important; /* 双列显示 */
+        align-items: center;
+        text-align: center;
+    }
+
+    .foot2121 .text2121 {
+        width: 100%; /* 导航标题占满一行 */
+        margin-bottom: -10px;
+    }
+
+    .foot2122 {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .text21221 {
+        font-size: 16px !important;
+    }
+
+    .text21222 {
+        font-size: 12px !important;
+    }
+
+    .foot22 {
+        flex-direction: column !important;
+        gap: 12px;
+        align-items: center !important;
+        padding: 32px 0;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .text221, .text222 {
+        width: 100%;
+        text-align: center;
+        left: auto !important;
+        position: static !important;
+        font-size: 10px !important;
+    }
+    .foot22 .text222 {
+        margin-left: 0 !important;
+        text-align: center !important;
+    }
+}

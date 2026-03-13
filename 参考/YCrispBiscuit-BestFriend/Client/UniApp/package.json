@@ -1,0 +1,8 @@
+{
+    "name": "uniapp-project",
+    "version": "1.0.0",
+    "main": "main.uts",
+    "dependencies": {
+        "pinia": "^3.0.4"
+    }
+}

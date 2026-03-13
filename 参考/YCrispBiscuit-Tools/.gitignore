@@ -1,0 +1,76 @@
+# ===== 永远不提交的文件 =====
+
+# 依赖目录
+node_modules/
+.gradle/
+.mvn/
+
+# 构建产物
+dist/
+dist-ssr/
+target/
+build/
+*.jar
+*.war
+
+# 日志和缓存
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.cache/
+.temp/
+.vite/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+
+
+
+
+
+# ===== Python & FastAPI Backend =====
+# 虚拟环境 (Virtual Environment) - 请使用 requirements.txt/pyproject.toml 安装依赖
+venv/
+env/
+.venv/
+
+# Python 缓存 & 测试产物
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python 打包产物
+*.egg-info/
+sdist/
+*.spec
+
+
+
+
+
+
+
+
+
+
+
+# 本地与日志
+*.local
+
+# Editor directories and files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

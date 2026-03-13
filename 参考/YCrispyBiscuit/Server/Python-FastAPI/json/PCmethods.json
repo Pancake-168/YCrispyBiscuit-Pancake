@@ -1,0 +1,32 @@
+[
+    {
+        "name": "MMD工作流",
+        "folder": [
+            {
+                "name": "MMD",
+                "path": "E:\\software\\MMD\\vmd_to_blender\\MMDBridge_v1.0.1\\MikuMikuDance_v932x64"
+            },
+            {
+                "name": "MMD_Out",
+                "path": "E:\\software\\MMD\\vmd_to_blender\\MMDBridge_v1.0.1\\MikuMikuDance_v932x64\\out"
+            },
+            {
+                "name": "MMD_Character",
+                "path": "E:\\resources\\blender\\MMD_Model\\character"
+            },
+            {
+                "name": "MMD_Motion",
+                "path": "E:\\resources\\blender\\MMD_Model\\act"
+            },
+            {
+                "name": "MMD_Camera",
+                "path": "E:\\resources\\blender\\MMD_Model\\camera"
+            },
+            {
+                "name": "Music",
+                "path": "E:\\resources\\music\\单曲"
+            }
+        ]
+    },
+    {}
+]

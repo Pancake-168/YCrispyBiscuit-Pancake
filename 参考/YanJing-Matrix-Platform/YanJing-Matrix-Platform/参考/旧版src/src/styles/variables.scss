@@ -1,0 +1,280 @@
+// 基础变量
+:root {
+  --drawer-toggle-bg: #eaeef2;
+  --drawer-toggle-hover-bg: #d0d7de;
+  --drawer-toggle-active-bg: #9a73e2;
+  --drawer-bg: #f6f8fa;
+  --color-error-bg: #ffebe9;
+  --function-hover-bg: #f6f8fa;
+  --grid-dot-color: rgba(154, 119, 253, 0.25);
+  --dm-bg-primary: #ffffff;      // 主背景
+  --dm-bg-secondary: #f6f8fa;    // 次级背景
+  --dm-bg-tertiary: #ffffff;     // 三级背景
+  --dm-header-primary: #24292f;  // 头部文本
+  --dm-text-normal: #24292f;     // 正常文本
+  --dm-text-muted: #57606a;      // 柔和文本
+  --dm-interactive-normal: #f6f8fa;  // 交互元素
+  --dm-interactive-hover: #eaeef2;   // 悬停状态
+  --dm-border: #d0d7de;          // 边框
+  --dm-green: #1a7f37;           // 成功色
+  --dm-yellow: #9a6700;          // 警告色
+  --dm-red: #d1242f;             // 错误色
+  --dm-blurple: #9a76dc;         // 主色调 rgba(255,255,255,0.85);
+  
+  // 间距系统
+  --space-unit: 8px;
+  --space-xxs: calc(var(--space-unit) * 0.5);
+  --space-xs: calc(var(--space-unit) * 1);
+  --space-sm: calc(var(--space-unit) * 1.5);
+  --space-md: calc(var(--space-unit) * 2);
+  --space-lg: calc(var(--space-unit) * 3);
+  --space-xl: calc(var(--space-unit) * 4);
+  --space-xxl: calc(var(--space-unit) * 6);
+
+  // 字体系统
+--font-family-base: 'MiSans', 'SF Pro', '思源黑体', 'Source Code Pro', 'SF Pro SC', 'SF Pro Display', 'SF Pro Text', 'Arial', 'sans-serif';
+  --font-size-base: 10px;
+  --font-size-title: 18px;
+  --font-size-title2:16px;
+  --font-size-btn: 12px;
+  --font-size-desc: 8px;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-xxl: 20px;
+  
+  // 字重系统
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  // 行高系统
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  // 圆角系统
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
+
+  // 阴影系统
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  // 过渡动画
+  --transition-duration: 0.3s;
+  --transition-duration-fast: 0.15s;
+  --transition-duration-slow: 0.5s;
+  --transition-timing: ease;
+  --transition-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  --color-black: #000000;
+  --color-white: #ffffff;
+  
+  // Z-index 层级系统
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+
+  // 基础颜色 (默认浅色主题)
+  --text-color: #36304B;
+  --text-color-secondary: #868686;
+  --bg-color: #FFFFFF;
+  --bg-color-secondary: #f6f8fa;
+  --bg-color-third: #ffffff;
+  --bg-color-fourth: #f5f2f2;
+  --bg-color-fifth: #e6e8eb;
+  --bg-color-6: #d9dde3; /*按钮内部白色字体*/
+  --bg-color-tertiary: #f6f8fa;
+  --bg-color-hover: rgba(54, 48, 75, 0.05);
+  --border-color: #d0d7de;
+  --code-bg: #f6f8fa;
+  --table-bg: #fff;
+}
+
+// 浅色主题变量
+[data-theme="light"] {
+  --drawer-toggle-bg: #eaeef2;
+  --drawer-toggle-hover-bg: #d0d7de;
+  --drawer-toggle-active-bg: #9A77FD;
+  --drawer-bg: #FFFFFF;
+  --color-error-bg: #ffebe9;
+  --function-hover-bg: #f6f8fa;
+  --grid-dot-color: rgba(154, 119, 253, 0.25);
+  --empty-bg: rgba(255,255,255,0.85);
+  --scrollbar-thumb-bg: #e3e5e8;
+  --scrollbar-thumb-hover-bg: #c7c9cb;
+  
+  // 主色调系统
+  --color-primary: #9A77FD;
+  --color-primary-hover: #805AD5;
+  --color-primary-active: #6B46C1;
+  --color-primary-light: rgba(154, 119, 253, 0.12);
+  --color-secondary: #6e7781;
+  --color-success: #1a7f37;
+  --color-success-light: rgba(26, 127, 55, 0.12);
+  --color-warning: #9a6700;
+  --color-warning-light: rgba(154, 103, 0, 0.14);
+  --color-error: #d1242f;
+  --color-error-light: rgba(209, 36, 47, 0.12);
+  --color-info: #0969da;
+  --color-info-light: rgba(9, 105, 218, 0.12);
+
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  // 文本颜色系统
+  --text-color: #36304B;
+  --text-color-secondary: #868686;
+  --text-color-tertiary: #a0a0a0;
+  --text-color-disabled: #c0c0c0;
+  --text-color-inverse: #ffffff;
+
+  // 背景颜色系统
+  --bg-color: #FFFFFF;
+  --bg-color-secondary: #fbfbff;
+  --bg-color-third: #ffffff;
+  --bg-color-fourth: #f5f2f2;
+  --bg-color-fifth: #e6e8eb;
+  --bg-color-6: #d9dde3; /*按钮内部白色字体*/
+    
+  --bg-color-tertiary: #faf6f6;
+  --bg-color-hover: rgba(54, 48, 75, 0.05);
+  --bg-color-active: rgba(54, 48, 75, 0.1);
+  --bg-color-disabled: #f5f5f5;
+  --bg-color-mask: rgba(27, 31, 36, 0.5);
+
+  // 边框颜色系统
+  --border-color: #d0d7de;
+  --border-color-light: #eaeef2;
+  --border-color-dark: #afb8c1;
+
+  // 代码和表格颜色
+  --code-bg: #f6f8fa;
+  --code-color: #36304B;
+  --table-bg: #fff;
+  --table-header-bg: #f6f8fa;
+  --table-hover-bg: rgba(54, 48, 75, 0.04);
+
+  --workspace-bg: #ffffff;
+
+  // DeviceManager 浅色主题变量
+  --dm-bg-primary: #f7f8fa;
+  --dm-bg-secondary: #ffffff;
+  --dm-bg-tertiary: #f0f2f5;
+  --dm-header-primary: #23272a;
+  --dm-text-normal: #23272a;
+  --dm-text-muted: #8e9297;
+  --dm-interactive-normal: #e3e5e8;
+  --dm-interactive-hover: #d1d3d6;
+  --dm-border: #d0d7de;
+  --dm-green: #1a7f37;
+  --dm-yellow: #9a6700;
+  --dm-red: #d1242f;
+  --dm-blurple: #9A77FD;
+}
+
+// 深色主题变量
+[data-theme="dark"] {
+  --drawer-toggle-bg: #2d2f33;       // 抽屉切换按钮背景
+  --drawer-toggle-hover-bg: #35373b;  // 抽屉切换按钮悬停
+  --drawer-toggle-active-bg: #a371f7; // 抽屉切换按钮激活
+  --drawer-bg: #1a1b1e;               // 抽屉背景
+  --color-error-bg: #490202;          // 错误背景
+  --function-hover-bg: #232529;       // 功能悬停背景
+  --grid-dot-color: rgba(255,255,255,0.08);  // 网格点颜色
+  --empty-bg: rgba(26,27,30,0.85);    // 空状态背景
+  --scrollbar-thumb-bg: #404248;      // 滚动条
+  --scrollbar-thumb-hover-bg: #4a4d52; // 滚动条悬停
+  
+  // 主色调系统
+  --color-primary: #a371f7;
+  --color-primary-hover: #8957e5;
+  --color-primary-active: #6e40c9;
+  --color-primary-light: rgba(163, 113, 247, 0.18);
+  --color-secondary: #4f545c;
+  --color-success: #3fb950;
+  --color-success-light: rgba(63, 185, 80, 0.18);
+  --color-warning: #d29922;
+  --color-warning-light: rgba(210, 153, 34, 0.18);
+  --color-error: #f85149;
+  --color-error-light: rgba(248, 81, 73, 0.18);
+  --color-info: #2f81f7;
+  --color-info-light: rgba(47, 129, 247, 0.16);
+
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  // 文本颜色系统 - 优化深色主题文本层次
+  --text-color: #e6edf3;           // GitHub Dark: fgDefault
+  --text-color-secondary: #7d8590; // GitHub Dark: fgMuted
+  --text-color-tertiary: #6e7681;
+  --text-color-disabled: #484f58;
+  --text-color-inverse: #0d1117;
+
+  // 背景颜色系统 - 重新设计的深色主题，更协调统一
+  --bg-color: #0d1117;
+  --bg-color-secondary: #161b22;
+  --bg-color-third: #161b22;
+  --bg-color-fourth: #21262d;
+  --bg-color-fifth: #30363d;
+  --bg-color-6: #30363d;
+
+  --bg-color-tertiary: #0d1117;
+  --bg-color-hover: rgba(255, 255, 255, 0.06);    // 悬停状态
+  --bg-color-active: rgba(255, 255, 255, 0.12);   // 激活状态
+  --bg-color-disabled: #161b22;
+  --bg-color-mask: rgba(0, 0, 0, 0.75);           // 遮罩层
+
+  // 边框颜色系统 - 与新背景色协调
+  --border-color: #30363d;
+  --border-color-light: #30363d;
+  --border-color-dark: #21262d;
+
+  // 代码和表格颜色 - 与新背景色协调
+  --code-bg: #161b22;
+  --code-color: #e6edf3;
+  --table-bg: #0d1117;
+  --table-header-bg: #161b22;
+  --table-hover-bg: #21262d;
+
+  --workspace-bg: #0d1117;
+
+  // DeviceManager 深色主题变量
+  --dm-bg-primary: #0d1117;
+  --dm-bg-secondary: #161b22;
+  --dm-bg-tertiary: #21262d;
+  --dm-header-primary: #e6edf3;
+  --dm-text-normal: #e6edf3;
+  --dm-text-muted: #7d8590;
+  --dm-interactive-normal: #21262d;
+  --dm-interactive-hover: #30363d;
+  --dm-border: #30363d;
+  --dm-green: #3fb950;
+  --dm-yellow: #d29922;
+  --dm-red: #f85149;
+  --dm-blurple: #a371f7;
+}

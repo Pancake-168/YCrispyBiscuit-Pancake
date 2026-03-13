@@ -1,0 +1,79 @@
+.title-bar {
+  height: 10px;
+  height: var(--titlebar-height);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  z-index: 9999;
+  position:absolute;
+  margin-left: auto;
+}
+
+.drag-region {
+  flex: 1;
+  height: 100%;
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-md);
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.app-logo {
+  width: var(--logo-size-sm);
+  height: var(--logo-size-sm);
+}
+
+.app-title {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.window-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.control-btn {
+  width: var(--control-btn-width);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: default;
+  transition: background 0.2s;
+}
+
+.control-btn:hover {
+  background: var(--hover-bg);
+}
+
+.btn-close:hover {
+  background: var(--danger-color) !important;
+}
+
+.icon {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: var(--text-color);
+  stroke-width: 1.2;
+}
+
+.btn-close:hover .icon {
+  stroke: white;
+}

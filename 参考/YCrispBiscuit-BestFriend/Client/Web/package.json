@@ -1,0 +1,61 @@
+{
+  "name": "ycrispbiscuit-bestfriend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "electron-main/index.js",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "node electron-main/dev-electron.cjs",
+    "dev:electron:all": "concurrently \"npm:dev\" \"npm:dev:electron\"",
+    "dev:electron:all:devtools": "set ELECTRON_OPEN_DEVTOOLS=true&& npm run dev:electron:all",
+    "dev:electron:all:nodevtools": "set ELECTRON_OPEN_DEVTOOLS=false&& npm run dev:electron:all",
+    "install:mirror": "npm install",
+    "build": "vue-tsc -b && vite build",
+    "build:electron": "set NODE_ENV=production && npm run build && electron-builder",
+    "preview": "vite preview",
+    "preview:electron": "electron ."
+  },
+  "dependencies": {
+    "@antv/infographic": "^0.2.1",
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/timeline": "^6.1.19",
+    "@fullcalendar/vue3": "^6.1.19",
+    "@rollup/rollup-win32-x64-msvc": "^4.53.2",
+    "echarts": "^6.0.0",
+    "matrix-js-sdk": "^39.3.0-rc.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "concurrently": "^9.2.1",
+    "electron": "^39.2.2",
+    "electron-builder": "^26.0.12",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.2",
+    "vue-tsc": "^3.1.3"
+  },
+  "build": {
+    "productName": "ycrispbiscuit",
+    "files": [
+      "dist/**",
+      "electron-main/**",
+      "package.json"
+    ],
+    "win": {
+      "icon": "electron-main/icon.ico"
+    },
+    "mac": {
+      "icon": "electron-main/icon.png"
+    },
+    "linux": {
+      "icon": "electron-main/icon.png"
+    }
+  }
+}

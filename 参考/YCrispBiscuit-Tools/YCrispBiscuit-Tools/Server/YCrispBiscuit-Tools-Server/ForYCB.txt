@@ -1,0 +1,37 @@
+项目结构详细分析：
+
+app/  # 主应用目录，相当于 Spring Boot 的 src/main/java
+├── __init__.py  # Python 包初始化文件
+├── main.py  # 项目入口，创建 FastAPI 实例，注册路由，类似 Spring Boot 的 Application.java
+├── api/  # 路由相关，类似 controller 包
+│   ├── __init__.py
+│   └── routes/  # 存放所有接口路由文件
+│       ├── __init__.py
+│       └── example.py  # 示例接口，类似 @RestController
+├── core/  # 配置、初始化等，类似 Spring Boot 的 config 包
+│   ├── __init__.py
+│   └── config.py  # 项目基础配置文件，存放数据库连接、环境变量、全局常量等，类似 application.yml
+├── models/  # 数据模型，类似 entity/dto/vo 包
+│   └── __init__.py
+├── services/  # 业务逻辑，类似 service 包
+│   └── __init__.py
+├── repository/  # 数据库操作相关，类似 Spring Boot 的 mapper 层（如 MyBatis 的 Mapper 接口）
+│   └── __init__.py
+└── utils/  # 工具函数，类似 util/common 包
+    └── __init__.py
+
+venv/  # Python 虚拟环境，类似 JDK 或 Maven/Gradle 的依赖管理目录
+
+requirements.txt  # 依赖包清单，类似 pom.xml 或 build.gradle
+
+说明：
+- main.py 是项目启动和路由注册的核心。
+- api/routes/ 目录下每个 py 文件都可以写成一个独立的接口模块。
+- models/ 用于定义数据结构（如 Pydantic 模型、ORM 模型等）。
+- services/ 用于实现具体业务逻辑。
+- core/ 用于存放全局配置、初始化等代码。
+- utils/ 存放通用工具函数。
+- repository/ 负责数据库操作，类似 Spring Boot 的 mapper 层。
+- venv/ 和 requirements.txt 用于 Python 环境和依赖管理。
+
+整体结构和 Spring Boot 的分层思想一致，便于维护和扩展。

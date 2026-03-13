@@ -1,0 +1,15 @@
+请放置自定义图标到 `Client/Vue/electron-main/` 目录：
+
+- 开发中（Electron 窗口图标）: 放 `icon.png`（推荐 256x256 或 512x512 PNG）。
+- 打包时（Windows）: 需要 `.ico` 格式，放 `icon.ico`。
+
+建议步骤：
+1. 准备一个 1024x1024 PNG（或方形高分辨率图）。
+2. 使用工具将 PNG 转为 ICO（包含多分辨率位图），例如：
+   - 在线转换器： https://convertico.com/ 或 https://icoconvert.com/
+   - 或在 mac/linux 上用 `convert`（ImageMagick）: convert icon.png -resize 256x256 icon.ico
+3. 将 `icon.png` 和 `icon.ico` 放入 `electron-main/`，然后重新运行开发或打包命令：
+   - 开发: `npm run dev:electron`（Electron 会自动检查并使用 icon.png）
+   - 打包: `npm run build:electron`（electron-builder 会使用 electron-main/icon.ico）
+
+注意：如果你希望我代为放入图标，请把图标文件上传，我可以把它放到正确位置并验证效果。

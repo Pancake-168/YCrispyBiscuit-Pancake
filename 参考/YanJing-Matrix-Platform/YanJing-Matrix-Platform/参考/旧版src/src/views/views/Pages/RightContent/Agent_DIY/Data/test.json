@@ -1,0 +1,76 @@
+{
+    "label": "StockDataFetcher",
+    "config": {
+        "name": "StockDataFetcher",
+        "metadata": {},
+        "workbench": [
+            {
+                "label": "StaticWorkbench",
+                "config": {
+                    "tools": [
+                        {
+                            "label": "FunctionTool",
+                            "config": {
+                                "name": "fetch_stock_data",
+                                "description": "Fetches stock data from APIs with retry logic and caching.",
+                                "source_code": "def fetch_stock_data(symbol: str, api_key: str):\n    import requests\n    from cachetools import cached, TTLCache\n    cache = TTLCache(maxsize=100, ttl=300)\n    @cached(cache)\n    def _fetch(symbol, api_key):\n        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}'\n        for _ in range(3):\n            try:\n                response = requests.get(url)\n                if response.status_code == 200:\n                    return response.json()\n            except Exception as e:\n                continue\n        return None\n    return _fetch(symbol, api_key)",
+                                "global_imports": [],
+                                "has_cancellation_support": false
+                            },
+                            "version": 1,
+                            "provider": "autogen_core.tools.FunctionTool",
+                            "description": "Create custom tools by wrapping standard Python functions.",
+                            "component_type": "tool",
+                            "component_version": 1
+                        }
+                    ]
+                },
+                "version": 1,
+                "provider": "autogen_core.tools.StaticWorkbench",
+                "description": "A workbench that provides a static set of tools that do not change after each tool execution.",
+                "component_type": "workbench",
+                "component_version": 1
+            }
+        ],
+        "description": "An agent that provides assistance with ability to use tools.",
+        "model_client": {
+            "label": "OpenAIChatCompletionClient",
+            "config": {
+                "model": "deepseek-v3-250324",
+                "api_key": "e12dc278-b410-40a8-b863-05c9dcae4cd3",
+                "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+                "model_info": {
+                    "family": "unknown",
+                    "vision": false,
+                    "json_output": true,
+                    "function_calling": true,
+                    "structured_output": true,
+                    "multiple_system_messages": true
+                }
+            },
+            "version": 1,
+            "provider": "autogen_ext.models.openai.OpenAIChatCompletionClient",
+            "description": "Chat completion client for OpenAI hosted models.",
+            "component_type": "model",
+            "component_version": 1
+        },
+        "model_context": {
+            "label": "UnboundedChatCompletionContext",
+            "config": {},
+            "version": 1,
+            "provider": "autogen_core.model_context.UnboundedChatCompletionContext",
+            "description": "An unbounded chat completion context that keeps a view of the all the messages.",
+            "component_type": "chat_completion_context",
+            "component_version": 1
+        },
+        "system_message": "Fetch real-time and historical stock market data from reliable APIs (e.g., Alpha Vantage, Yahoo Finance). Implement retry logic (3 attempts) and fallback to cached data if APIs fail.",
+        "model_client_stream": false,
+        "reflect_on_tool_use": false,
+        "tool_call_summary_format": "{result}"
+    },
+    "version": 2,
+    "provider": "autogen_agentchat.agents.AssistantAgent",
+    "description": "An agent that provides assistance with tool use.",
+    "component_type": "agent",
+    "component_version": 2
+}

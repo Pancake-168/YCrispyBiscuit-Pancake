@@ -1,0 +1,19 @@
+  .not-found {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: center;
+      text-align: center;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: var(--space-xl);
+  }
+
+  h1 {
+      margin-bottom: var(--space-sm);
+  }
+
+  p {
+      margin-bottom: var(--space-lg);
+  }

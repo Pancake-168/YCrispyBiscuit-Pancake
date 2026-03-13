@@ -1,0 +1,139 @@
+:root {
+  /* Default Dark Theme (YanJingAI2 inspired) */
+  --bg-color: #16131f;
+  --text-color: #efeaf9;
+  --text-muted: #b9b1c9;
+  
+  /* Glass / Surface - Dark Base */
+  --glass-bg: rgba(28, 22, 40, 0.72);
+  --glass-border: 0px solid rgba(211, 152, 255, 0.22);
+  --glass-shadow: 0 8px 28px 0 rgba(9, 5, 18, 0.45);
+  --glass-blur: blur(12px) saturate(180%);
+
+  /* Solid Surface */
+  --panel-bg: #1b1627;
+  
+  /* Brand Colors (No Blue) */
+  --primary-color: #9A77FD; /* Purple */
+  --primary-hover: #b08bff;
+  --danger-color: #e25555; /* Red */
+  --danger-hover: #cc4a4a;
+  --warning-color: #d3a0ff; /* Soft Purple */
+  --info-color: #D398FF;   /* Light Purple */
+  --btn-text: #ffffff;
+  --icon-filter: brightness(0) invert(1);
+  
+  /* Interactive States */
+  --hover-bg: rgba(154, 119, 253, 0.16);
+  --active-bg: rgba(154, 119, 253, 0.28);
+  
+  /* UI Metrics */
+  --radius-sm: 6px;
+  --radius-md: 12px; /* Card defaults */
+  --radius-lg: 24px;
+  --input-bg: rgba(22, 18, 31, 0.85);
+
+  /* Typography */
+  --font-xs: 0.625rem;  /* 10px */
+  --font-sm: 0.75rem;   /* 12px */
+  --font-base: 0.875rem; /* 14px */
+  --font-md: 1rem;      /* 16px */
+  --font-lg: 1.25rem;   /* 20px */
+  --font-xl: 1.5rem;    /* 24px */
+  --font-2xl: 2rem;     /* 32px */
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Component Specific */
+  --titlebar-height: 32px;
+  --control-btn-width: 46px;
+  --logo-size-sm: 16px;
+  --logo-size-lg: 80px;
+
+  /* Markdown (direct literals only) */
+  --md-subtle-text-color: #b9b1c9;
+  --md-link-color: #d398ff;
+  --md-link-visited-color: #c7a2f5;
+  --md-border-color: rgba(185, 177, 201, 0.35);
+  --md-code-bg: rgba(22, 19, 31, 0.85);
+  --md-code-color: #e86a7a;
+  --md-codeblock-bg: rgba(28, 22, 40, 0.9);
+  --md-codeblock-color: #efeaf9;
+  --md-quote-accent: #9a77fd;
+  --md-mention-color: #9a77fd;
+  --md-mention-bg: rgba(154, 119, 253, 0.16);
+  --md-mention-bg-hover: rgba(154, 119, 253, 0.26);
+  --md-table-header-bg: rgba(28, 22, 40, 0.8);
+  --md-table-row-base-bg: rgba(28, 22, 40, 0.72);
+  --md-table-row-alt-bg: rgba(154, 119, 253, 0.16);
+  --md-table-border-color: rgba(185, 177, 201, 0.35);
+  --md-transition-colors: 0.2s ease;
+
+  --md-copy-btn-top: 10px;
+  --md-copy-btn-right: 14px;
+  --md-copy-btn-radius: 6px;
+  --md-copy-btn-padding-y: 4px;
+  --md-copy-btn-padding-x: 8px;
+  --md-copy-btn-font-size: 14px;
+  --md-copy-btn-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] {
+  /* Light Theme (YanJingAI2 inspired) */
+  --bg-color: #FFFFFF;
+  --text-color: #36304B;
+  --text-muted: #868686;
+  
+  /* Glass / Surface - Light Base */
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-border: 0px solid rgba(154, 119, 253, 0.25);
+  --glass-shadow: 0 8px 24px 0 rgba(54, 48, 75, 0.12);
+  --glass-blur: blur(12px) saturate(180%);
+
+  /* Solid Surface */
+  --panel-bg: #ffffff;
+  
+  /* Colors (No Blue) */
+  --primary-color: #9A77FD;
+  --primary-hover: #b08bff;
+  --danger-color: #e25555;
+  --danger-hover: #cc4a4a;
+  --warning-color: #d3a0ff;
+  --info-color: #D398FF;
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --btn-text: #ffffff;
+  --icon-filter: none;
+
+  /* Markdown (direct literals only) */
+  --md-subtle-text-color: #868686;
+  --md-link-color: #9a77fd;
+  --md-link-visited-color: #7f5adf;
+  --md-border-color: rgba(54, 48, 75, 0.18);
+  --md-code-bg: rgba(245, 243, 251, 0.9);
+  --md-code-color: #b23c5a;
+  --md-codeblock-bg: rgba(255, 255, 255, 0.92);
+  --md-codeblock-color: #36304b;
+  --md-quote-accent: #9a77fd;
+  --md-mention-color: #9a77fd;
+  --md-mention-bg: rgba(154, 119, 253, 0.14);
+  --md-mention-bg-hover: rgba(154, 119, 253, 0.22);
+  --md-table-header-bg: rgba(245, 243, 251, 0.9);
+  --md-table-row-base-bg: rgba(255, 255, 255, 0.78);
+  --md-table-row-alt-bg: rgba(154, 119, 253, 0.08);
+  --md-table-border-color: rgba(54, 48, 75, 0.18);
+  --md-transition-colors: 0.2s ease;
+
+  --md-copy-btn-top: 10px;
+  --md-copy-btn-right: 14px;
+  --md-copy-btn-radius: 6px;
+  --md-copy-btn-padding-y: 4px;
+  --md-copy-btn-padding-x: 8px;
+  --md-copy-btn-font-size: 14px;
+  --md-copy-btn-shadow: 0 1px 4px rgba(54, 48, 75, 0.14);
+}

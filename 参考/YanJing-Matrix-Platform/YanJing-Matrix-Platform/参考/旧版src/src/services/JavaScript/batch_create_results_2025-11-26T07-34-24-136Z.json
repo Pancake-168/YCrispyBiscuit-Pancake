@@ -1,0 +1,32 @@
+[
+  {
+    "status": "success",
+    "input": {
+      "displayName": "应用名称6"
+    },
+    "result": {
+      "applicationName": "应用名称6",
+      "applicationUrl": "http://192.168.10.40:13000/apps/PSodyTArXUyWESSgNh/admin",
+      "applicationId": "PSodyTArXUyWESSgNh",
+      "applicationBot": {
+        "name": "应用名称6应用助手",
+        "id": "psodytarxuywessgnhbot"
+      }
+    }
+  },
+  {
+    "status": "success",
+    "input": {
+      "displayName": "应用名称7"
+    },
+    "result": {
+      "applicationName": "应用名称7",
+      "applicationUrl": "http://192.168.10.40:13000/apps/gDJtqqInPPLgudLqHw/admin",
+      "applicationId": "gDJtqqInPPLgudLqHw",
+      "applicationBot": {
+        "name": "应用名称7应用助手",
+        "id": "gdjtqqinpplgudlqhwbot"
+      }
+    }
+  }
+]

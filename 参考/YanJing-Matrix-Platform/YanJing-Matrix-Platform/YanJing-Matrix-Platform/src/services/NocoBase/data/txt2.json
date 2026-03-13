@@ -1,0 +1,114 @@
+{
+  "appName": "A_SYSTEM_SSO",
+  "collectionName": "users",
+  "action": "users:list",
+  "meta": {
+    "preferredMode": "appHeader",
+    "rootApiBase": "/nocobase-proxy/api",
+    "appPathApiBase": "/nocobase-proxy/apps/A_SYSTEM_SSO/api"
+  },
+  "attempts": {
+    "appPath": {
+      "data": null,
+      "error": {
+        "message": "Request failed with status code 404",
+        "status": 404,
+        "url": "users:list"
+      }
+    },
+    "appHeader": {
+      "data": [
+        {
+          "createdAt": "2026-01-05T02:41:34.428Z",
+          "updatedAt": "2026-01-05T02:41:34.428Z",
+          "id": 1,
+          "nickname": "Zkzs Admin",
+          "username": "zkzs",
+          "email": "zkzs@zheshu.tech",
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": null
+        },
+        {
+          "createdAt": "2026-01-05T06:43:08.031Z",
+          "updatedAt": "2026-01-05T06:43:08.086Z",
+          "id": 2,
+          "nickname": null,
+          "username": "niegy1",
+          "email": null,
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": 1
+        },
+        {
+          "createdAt": "2026-01-05T07:17:21.214Z",
+          "updatedAt": "2026-01-05T10:28:22.716Z",
+          "id": 3,
+          "nickname": null,
+          "username": "niegy2",
+          "email": null,
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": 1
+        }
+      ],
+      "error": null
+    },
+    "appParam": {
+      "data": [
+        {
+          "createdAt": "2026-01-05T02:41:34.428Z",
+          "updatedAt": "2026-01-05T02:41:34.428Z",
+          "id": 1,
+          "nickname": "Zkzs Admin",
+          "username": "zkzs",
+          "email": "zkzs@zheshu.tech",
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": null
+        },
+        {
+          "createdAt": "2026-01-05T06:43:08.031Z",
+          "updatedAt": "2026-01-05T06:43:08.086Z",
+          "id": 2,
+          "nickname": null,
+          "username": "niegy1",
+          "email": null,
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": 1
+        },
+        {
+          "createdAt": "2026-01-05T07:17:21.214Z",
+          "updatedAt": "2026-01-05T10:28:22.716Z",
+          "id": 3,
+          "nickname": null,
+          "username": "niegy2",
+          "email": null,
+          "phone": null,
+          "passwordChangeTz": null,
+          "appLang": null,
+          "systemSettings": {},
+          "createdById": null,
+          "updatedById": 1
+        }
+      ],
+      "error": null
+    }
+  }
+}

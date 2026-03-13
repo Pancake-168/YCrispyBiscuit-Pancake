@@ -1,0 +1,620 @@
+=== Matrix JS SDK Exports ===
+AuthType // 认证类型
+AutoDiscovery // 自动发现
+AutoDiscoveryAction // 自动发现动作
+AutoDiscoveryError // 自动发现错误
+Beacon // 信标
+BeaconEvent // 信标事件
+CallEvent // 通话事件
+CallFeedEvent // 通话馈送事件
+Category // 类别
+ClientEvent // 客户端事件
+ClientPrefix // 客户端前缀
+ClientStoppedError // 客户端停止错误
+ConditionKind // 条件种类
+ConditionOperator // 条件操作符
+ConnectionError // 连接错误
+ContentHelpers // 内容助手
+DELEGATED_OIDC_COMPATIBILITY // 委托 OIDC 兼容性
+DEVICE_CODE_SCOPE // 设备代码范围
+DMMemberCountCondition // DM 成员计数条件
+DebugLogger // 调试日志器
+Device // 设备
+DeviceVerification // 设备验证
+Direction // 方向
+DuplicateStrategy // 重复策略
+EVENT_VISIBILITY_CHANGE_TYPE // 事件可见性更改类型
+EventEmitterEvents // 事件发射器事件
+EventStatus // 事件状态
+EventTimeline // 事件时间线
+EventTimelineSet // 事件时间线集
+EventType // 事件类型
+FILTER_RELATED_BY_REL_TYPES // 通过关系类型过滤相关
+FILTER_RELATED_BY_SENDERS // 通过发送者过滤相关
+FeatureSupport // 功能支持
+Filter // 过滤器
+GET_LOGIN_TOKEN_CAPABILITY // 获取登录令牌能力
+GroupCall // 群组通话
+GroupCallEvent // 群组通话事件
+GroupCallIntent // 群组通话意图
+GroupCallState // 群组通话状态
+GroupCallStatsReportEvent // 群组通话统计报告事件
+GroupCallType // 群组通话类型
+GuestAccess // 访客访问
+HTTPError // HTTP 错误
+HistoryVisibility // 历史可见性
+HttpApiEvent // HTTP API 事件
+IdentityPrefix // 身份前缀
+IdentityProviderBrand // 身份提供商品牌
+IndexedDBCryptoStore // IndexedDB 加密存储
+IndexedDBStore // IndexedDB 存储
+InteractiveAuth // 交互式认证
+InvalidCryptoStoreError // 无效加密存储错误
+InvalidCryptoStoreState // 无效加密存储状态
+JoinRule // 加入规则
+KNOWN_SAFE_ROOM_VERSION // 已知安全房间版本
+KeySignatureUploadError // 密钥签名上传错误
+KnownMembership // 已知成员身份
+LOCAL_NOTIFICATION_SETTINGS_PREFIX // 本地通知设置前缀
+LocalStorageCryptoStore // 本地存储加密存储
+LocalStorageErrors // 本地存储错误
+LocationAssetType // 位置资产类型
+MAIN_ROOM_TIMELINE // 主房间时间线
+MAXIMUM_MATRIX_VERSION // 最大 Matrix 版本
+MAX_STICKY_DURATION_MS // 最大粘性持续时间毫秒
+MINIMUM_MATRIX_VERSION // 最小 Matrix 版本
+MSC3912_RELATION_BASED_REDACTIONS_PROP // MSC3912 基于关系的编辑属性
+MXID_PATTERN // MXID 模式
+M_ASSET // M 资产
+M_BEACON // M 信标
+M_BEACON_INFO // M 信标信息
+M_HTML // M HTML
+M_LOCATION // M 位置
+M_MESSAGE // M 消息
+M_POLL_END // M 投票结束
+M_POLL_KIND_DISCLOSED // M 投票种类公开
+M_POLL_KIND_UNDISCLOSED // M 投票种类未公开
+M_POLL_RESPONSE // M 投票响应
+M_POLL_START // M 投票开始
+M_TEXT // M 文本
+M_TIMESTAMP // M 时间戳
+M_TOPIC // M 主题
+MatrixClient // Matrix 客户端
+MatrixError // Matrix 错误
+MatrixEvent // Matrix 事件
+MatrixEventEvent // Matrix 事件事件
+MatrixHttpApi // Matrix HTTP API
+MatrixScheduler // Matrix 调度器
+MediaHandlerEvent // 媒体处理器事件
+MediaPrefix // 媒体前缀
+MemoryCryptoStore // 内存加密存储
+MemoryStore // 内存存储
+Method // 方法
+MsgType // 消息类型
+NoAuthFlowFoundError // 未找到认证流程错误
+NotificationCountType // 通知计数类型
+OidcError // OIDC 错误
+OidcTokenRefresher // OIDC 令牌刷新器
+PUSHER_DEVICE_ID // 推送器设备 ID
+PUSHER_ENABLED // 推送器启用
+PendingEventOrdering // 待处理事件排序
+Poll // 投票
+PollEvent // 投票事件
+Preset // 预设
+ProfileKeyMSC4175Timezone // 配置文件键 MSC4175 时区
+ProfileKeyTimezone // 配置文件键时区
+PushRuleActionName // 推送规则动作名称
+PushRuleKind // 推送规则种类
+REFERENCE_RELATION // 引用关系
+ReceiptType // 收据类型
+RelatedRelations // 相关关系
+RelationType // 关系类型
+Relations // 关系
+RelationsEvent // 关系事件
+RestrictedAllowType // 受限允许类型
+Room // 房间
+RoomCreateTypeField // 房间创建类型字段
+RoomEvent // 房间事件
+RoomMember // 房间成员
+RoomMemberEvent // 房间成员事件
+RoomNameType // 房间名称类型
+RoomState // 房间状态
+RoomStateEvent // 房间状态事件
+RoomSummary // 房间摘要
+RoomType // 房间类型
+RoomVersionStability // 房间版本稳定性
+RoomWidgetClient // 房间小部件客户端
+RoomWidgetClientEvent // 房间小部件客户端事件
+RuleId // 规则 ID
+SERVICE_TYPES // 服务类型
+SSOAction // SSO 动作
+STABLE_MSC4133_EXTENDED_PROFILES // 稳定 MSC4133 扩展配置文件
+SUPPORTED_MATRIX_VERSIONS // 支持的 Matrix 版本
+SearchOrderBy // 搜索排序依据
+SearchResult // 搜索结果
+SecretStorage // 秘密存储
+ServerCapabilities // 服务器能力
+SetPresence // 设置存在
+SlidingSyncEvent // 滑动同步事件
+StatsReport // 统计报告
+SyncAccumulator // 同步累加器
+SyncState // 同步状态
+THREAD_RELATION_TYPE // 线程关系类型
+Thread // 线程
+ThreadEvent // 线程事件
+ThreadFilterType // 线程过滤类型
+ThreepidMedium // 三重 PID 媒介
+TimelineIndex // 时间线索引
+TimelineWindow // 时间线窗口
+ToDeviceMessageId // 到设备消息 ID
+TokenRefreshError // 令牌刷新错误
+TokenRefreshLogoutError // 令牌刷新登出错误
+TweakName // 调整名称
+TypedEventEmitter // 类型化事件发射器
+UNSIGNED_MEMBERSHIP_FIELD // 未签名成员身份字段
+UNSIGNED_THREAD_ID_FIELD // 未签名线程 ID 字段
+UNSTABLE_ELEMENT_FUNCTIONAL_USERS // 不稳定 Element 功能用户
+UNSTABLE_MSC2666_MUTUAL_ROOMS // 不稳定 MSC2666 互房间
+UNSTABLE_MSC2666_QUERY_MUTUAL_ROOMS // 不稳定 MSC2666 查询互房间
+UNSTABLE_MSC2666_SHARED_ROOMS // 不稳定 MSC2666 共享房间
+UNSTABLE_MSC2716_MARKER // 不稳定 MSC2716 标记
+UNSTABLE_MSC3088_ENABLED // 不稳定 MSC3088 启用
+UNSTABLE_MSC3088_PURPOSE // 不稳定 MSC3088 目的
+UNSTABLE_MSC3089_BRANCH // 不稳定 MSC3089 分支
+UNSTABLE_MSC3089_LEAF // 不稳定 MSC3089 叶子
+UNSTABLE_MSC3089_TREE_SUBTYPE // 不稳定 MSC3089 树子类型
+UNSTABLE_MSC3852_LAST_SEEN_UA // 不稳定 MSC3852 最后见 UA
+UNSTABLE_MSC4133_EXTENDED_PROFILES // 不稳定 MSC4133 扩展配置文件
+UNSTABLE_MSC4140_DELAYED_EVENTS // 不稳定 MSC4140 延迟事件
+UNSTABLE_MSC4354_STICKY_EVENTS // 不稳定 MSC4354 粘性事件
+UnsupportedDelayedEventsEndpointError // 不支持延迟事件端点错误
+UnsupportedStickyEventsEndpointError // 不支持粘性事件端点错误
+UpdateDelayedEventAction // 更新延迟事件动作
+User // 用户
+UserEvent // 用户事件
+Visibility // 可见性
+anySignal // 任何信号
+calculateRetryBackoff // 计算重试退避
+completeAuthorizationCodeGrant // 完成授权代码授予
+createClient // 创建客户端
+createNewMatrixCall // 创建新 Matrix 通话
+createRoomWidgetClient // 创建房间小部件客户端
+decodeBase64 // 解码 Base64
+decodeIdToken // 解码 ID 令牌
+default // 默认
+determineFeatureSupport // 确定功能支持
+discoverAndValidateOIDCIssuerWellKnown // 发现并验证 OIDC 发行者知名
+encodeBase64 // 编码 Base64
+encodeUnpaddedBase64 // 编码无填充 Base64
+encodeUnpaddedBase64Url // 编码无填充 Base64 URL
+fixNotificationCountOnDecryption // 修复解密通知计数
+generateAuthorizationParams // 生成授权参数
+generateAuthorizationUrl // 生成授权 URL
+generateOidcAuthorizationUrl // 生成 OIDC 授权 URL
+generateScope // 生成范围
+getBeaconInfoIdentifier // 获取信标信息标识符
+getHttpUriForMxc // 获取 MXC 的 HTTP URI
+inMainTimelineForReceipt // 在主时间线中用于收据
+isDmMemberCountCondition // 是 DM 成员计数条件
+isEventTypeSame // 事件类型相同
+isPollEvent // 是投票事件
+isSendDelayedEventRequestOpts // 是发送延迟事件请求选项
+isTimestampInDuration // 时间戳在持续时间内
+localStorageErrorsEventsEmitter // 本地存储错误事件发射器
+parseErrorResponse // 解析错误响应
+registerOidcClient // 注册 OIDC 客户端
+retryNetworkOperation // 重试网络操作
+safeGetRetryAfterMs // 安全获取重试后毫秒
+setCryptoStoreFactory // 设置加密存储工厂
+threadFilterTypeToFilter // 线程过滤类型到过滤器
+threadIdForReceipt // 收据的线程 ID
+timeoutSignal // 超时信号
+validateAuthMetadata // 验证认证元数据
+validateAuthMetadataAndKeys // 验证认证元数据和密钥
+validateBearerTokenResponse // 验证承载令牌响应
+validateIdToken // 验证 ID 令牌
+validateStoredUserState // 验证存储用户状态
+
+=== MatrixClient Methods ===
+_unstable_cancelScheduledDelayedEvent // 不稳定取消计划延迟事件
+_unstable_getDelayedEvents // 不稳定获取延迟事件
+_unstable_getSharedRooms // 不稳定获取共享房间
+_unstable_restartScheduledDelayedEvent // 不稳定重启计划延迟事件
+_unstable_sendDelayedEvent // 不稳定发送延迟事件
+_unstable_sendDelayedStateEvent // 不稳定发送延迟状态事件
+_unstable_sendScheduledDelayedEvent // 不稳定发送计划延迟事件
+_unstable_sendStickyDelayedEvent // 不稳定发送粘性延迟事件
+_unstable_sendStickyEvent // 不稳定发送粘性事件
+_unstable_updateDelayedEvent // 不稳定更新延迟事件
+addPushRule // 添加推送规则
+addThreadRelationIfNeeded // 如果需要添加线程关系
+addThreePidOnly // 仅添加三重 PID
+agreeToTerms // 同意条款
+backPaginateRoomEventsSearch // 向后分页房间事件搜索
+ban // 封禁
+bindThreePid // 绑定三重 PID
+buildSyncApiOptions // 构建同步 API 选项
+bulkLookupThreePids // 批量查找三重 PID
+cancelPendingEvent // 取消待处理事件
+cancelUpload // 取消上传
+checkTurnServers // 检查 TURN 服务器
+claimOneTimeKeys // 声明一次性密钥
+clearStores // 清除存储
+constructor // 构造函数
+createAlias // 创建别名
+createCall // 创建通话
+createFilter // 创建过滤器
+createGroupCall // 创建群组通话
+createMessagesRequest // 创建消息请求
+createRoom // 创建房间
+createThreadListMessagesRequest // 创建线程列表消息请求
+deactivateAccount // 停用账户
+deactivateSynapseUser // 停用 Synapse 用户
+decryptEventIfNeeded // 如果需要解密事件
+deleteAccountData // 删除账户数据
+deleteAlias // 删除别名
+deleteDevice // 删除设备
+deleteExtendedProfileProperty // 删除扩展配置文件属性
+deleteKeysFromBackup // 从备份删除密钥
+deleteMultipleDevices // 删除多个设备
+deletePushRule // 删除推送规则
+deleteRoomTag // 删除房间标签
+deleteThreePid // 删除三重 PID
+doesServerForceEncryptionForPreset // 服务器是否为预设强制加密
+doesServerSupportExtendedProfiles // 服务器是否支持扩展配置文件
+doesServerSupportThread // 服务器是否支持线程
+doesServerSupportUnstableFeature // 服务器是否支持不稳定功能
+downloadKeysForUsers // 为用户下载密钥
+encryptAndSendEvent // 加密并发送事件
+encryptAndSendToDevice // 加密并发送到设备
+encryptEventIfNeeded // 如果需要加密事件
+encryptStateEventIfNeeded // 如果需要加密状态事件
+fetchCapabilities // 获取能力
+fetchClientWellKnown // 获取客户端知名
+fetchRelations // 获取关系
+fetchRoomEvent // 获取房间事件
+findPredecessorRooms // 查找前任房间
+findSuccessorRooms // 查找继任房间
+forget // 忘记
+generateClientSecret // 生成客户端秘密
+getAccessToken // 获取访问令牌
+getAccountData // 获取账户数据
+getAccountDataFromServer // 从服务器获取账户数据
+getAuthMetadata // 获取认证元数据
+getCachedCapabilities // 获取缓存能力
+getCanResetTimelineCallback // 获取可以重置时间线回调
+getCapabilities // 获取能力
+getCasLoginUrl // 获取 CAS 登录 URL
+getClientWellKnown // 获取客户端知名
+getCrypto // 获取加密
+getCurrentUploads // 获取当前上传
+getDevice // 获取设备
+getDeviceId // 获取设备 ID
+getDevices // 获取设备
+getDomain // 获取域
+getEncryptedIfNeededEventType // 获取如果需要加密的事件类型
+getEventMapper // 获取事件映射器
+getEventTimeline // 获取事件时间线
+getExtendedProfile // 获取扩展配置文件
+getExtendedProfileProperty // 获取扩展配置文件属性
+getExtendedProfileRequestPrefix // 获取扩展配置文件请求前缀
+getFallbackAuthUrl // 获取回退认证 URL
+getFilter // 获取过滤器
+getGroupCallForRoom // 获取房间的群组通话
+getHomeserverUrl // 获取主服务器 URL
+getIdentityAccount // 获取身份账户
+getIdentityHashDetails // 获取身份哈希详情
+getIdentityServerUrl // 获取身份服务器 URL
+getIgnoredUsers // 获取忽略用户
+getJoinedRoomMembers // 获取加入房间成员
+getJoinedRooms // 获取加入房间
+getKeyChanges // 获取密钥更改
+getLatestTimeline // 获取最新时间线
+getLivekitServiceURL // 获取 Livekit 服务 URL
+getLocalAliases // 获取本地别名
+getMediaConfig // 获取媒体配置
+getMediaHandler // 获取媒体处理器
+getNotifTimelineSet // 获取通知时间线集
+getOpenIdToken // 获取 OpenID 令牌
+getOrCreateFilter // 获取或创建过滤器
+getPresence // 获取存在状态
+getProfileInfo // 获取用户信息
+getPushActionsForEvent // 获取事件的推送动作
+getPushDetailsForEvent // 获取事件的推送详情
+getPushRules // 获取推送规则
+getPushers // 获取推送器
+getRefreshToken // 获取刷新令牌
+getRoom // 获取房间
+getRoomDirectoryVisibility // 获取房间目录可见性
+getRoomHierarchy // 获取房间层次结构
+getRoomIdForAlias // 获取别名的房间 ID
+getRoomPushRule // 获取房间推送规则
+getRoomSummary // 获取房间摘要
+getRoomTags // 获取房间标签
+getRoomUpgradeHistory // 获取房间升级历史
+getRooms // 获取房间
+getSafeUserId // 获取安全用户 ID
+getScheduler // 获取调度器
+getSessionId // 获取会话 ID
+getSsoLoginUrl // 获取 SSO 登录 URL
+getStateEvent // 获取状态事件
+getSyncState // 获取同步状态
+getSyncStateData // 获取同步状态数据
+getTerms // 获取条款
+getThirdpartyLocation // 获取第三方位置
+getThirdpartyProtocols // 获取第三方协议
+getThirdpartyUser // 获取第三方用户
+getThreadTimeline // 获取线程时间线
+getThreePids // 获取三个 PID
+getTurnServers // 获取 TURN 服务器
+getTurnServersExpiry // 获取 TURN 服务器到期时间
+getUrlPreview // 获取 URL 预览
+getUseE2eForGroupCall // 获取是否为群组通话使用端到端加密
+getUser // 获取用户
+getUserId // 获取用户 ID
+getUserIdLocalpart // 获取用户 ID 本地部分
+getUsers // 获取用户
+getVersions // 获取版本
+getVisibleRooms // 获取可见房间
+hasLazyLoadMembersEnabled // 是否启用懒加载成员
+identityHashedLookup // 身份哈希查找
+initRustCrypto // 初始化 Rust 加密
+invite // 邀请
+inviteByEmail // 通过电子邮件邀请
+inviteByThreePid // 通过三个 PID 邀请
+isFallbackICEServerAllowed // 是否允许备用 ICE 服务器
+isGuest // 是否为访客
+isInitialSyncComplete // 是否初始同步完成
+isKeyBackupKeyStored // 是否存储了密钥备份密钥
+isLoggedIn // 是否已登录
+isRoomEncrypted // 是否房间加密
+isSynapseAdministrator // 是否为 Synapse 管理员
+isUserIgnored // 是否用户被忽略
+isUsernameAvailable // 是否用户名可用
+isVersionSupported // 是否版本支持
+joinRoom // 加入房间
+kick // 踢出
+knockRoom // 敲门房间
+leave // 离开
+leaveRoomChain // 离开房间链
+login // 登录
+loginFlows // 登录流程
+loginRequest // 登录请求
+loginWithPassword // 使用密码登录
+loginWithToken // 使用令牌登录
+logout // 登出
+lookupThreePid // 查找三个 PID
+makeKeyBackupPath // 创建密钥备份路径
+makeTxnId // 创建事务 ID
+members // 成员
+membershipChange // 成员身份变更
+mxcUrlToHttp // MXC URL 转 HTTP
+paginateEventTimeline // 分页事件时间线
+patchExtendedProfile // 修补扩展配置文件
+peekInRoom // 窥视房间
+pollingTurnServers // 轮询 TURN 服务器
+processAggregatedTimelineEvents // 处理聚合时间线事件
+processBeaconEvents // 处理信标事件
+processRoomEventsSearch // 处理房间事件搜索
+processThreadEvents // 处理线程事件
+processThreadRoots // 处理线程根
+publicRooms // 公共房间
+queueToDevice // 队列到设备
+redactEvent // 编辑事件
+refreshToken // 刷新令牌
+register // 注册
+registerGuest // 注册访客
+registerRequest // 注册请求
+registerWithIdentityServer // 使用身份服务器注册
+relations // 关系
+removePusher // 移除推送器
+reportEvent // 报告事件
+reportRoom // 报告房间
+requestAdd3pidEmailToken // 请求添加 3PID 电子邮件令牌
+requestAdd3pidMsisdnToken // 请求添加 3PID MSISDN 令牌
+requestEmailToken // 请求电子邮件令牌
+requestLoginToken // 请求登录令牌
+requestMsisdnToken // 请求 MSISDN 令牌
+requestPasswordEmailToken // 请求密码电子邮件令牌
+requestPasswordMsisdnToken // 请求密码 MSISDN 令牌
+requestRegisterEmailToken // 请求注册电子邮件令牌
+requestRegisterMsisdnToken // 请求注册 MSISDN 令牌
+requestTokenFromEndpoint // 从端点请求令牌
+resendEvent // 重新发送事件
+resetNotifTimelineSet // 重置通知时间线集
+retryImmediately // 立即重试
+roomInitialSync // 房间初始同步
+roomState // 房间状态
+scrollback // 回滚
+search // 搜索
+searchMessageText // 搜索消息文本
+searchRoomEvents // 搜索房间事件
+searchUserDirectory // 搜索用户目录
+secretStorage // 秘密存储
+sendCompleteEvent // 发送完成事件
+sendEmoteMessage // 发送表情消息
+sendEvent // 发送事件
+sendEventHttpRequest // 发送事件 HTTP 请求
+sendHtmlEmote // 发送 HTML 表情
+sendHtmlMessage // 发送 HTML 消息
+sendHtmlNotice // 发送 HTML 通知
+sendImageMessage // 发送图片消息
+sendMessage // 发送消息
+sendNotice // 发送通知
+sendReadReceipt // 发送已读回执
+sendReceipt // 发送回执
+sendRtcDecline // 发送 RTC 拒绝
+sendStateEvent // 发送状态事件
+sendStickerMessage // 发送贴纸消息
+sendTextMessage // 发送文本消息
+sendToDevice // 发送到设备
+sendTyping // 发送正在输入
+setAccessToken // 设置访问令牌
+setAccountData // 设置账户数据
+setAccountDataRaw // 设置原始账户数据
+setAvatarUrl // 设置头像 URL
+setCanResetTimelineCallback // 设置可以重置时间线回调
+setDeviceDetails // 设置设备详情
+setDisplayName // 设置显示名称
+setExtendedProfile // 设置扩展配置文件
+setExtendedProfileProperty // 设置扩展配置文件属性
+setFallbackICEServerAllowed // 设置允许备用 ICE 服务器
+setForceTURN // 设置强制 TURN
+setGuest // 设置访客
+setGuestAccess // 设置访客访问
+setIdentityServerUrl // 设置身份服务器 URL
+setIgnoredUsers // 设置忽略用户
+setLivekitServiceURL // 设置 Livekit 服务 URL
+setLocalNotificationSettings // 设置本地通知设置
+setNotifTimelineSet // 设置通知时间线集
+setPassword // 设置密码
+setPowerLevel // 设置权限级别
+setPresence // 设置存在状态
+setProfileInfo // 设置用户信息
+setPushRuleActions // 设置推送规则动作
+setPushRuleEnabled // 设置推送规则启用
+setPushRules // 设置推送规则
+setPusher // 设置推送器
+setRoomAccountData // 设置房间账户数据
+setRoomDirectoryVisibility // 设置房间目录可见性
+setRoomMutePushRule // 设置房间静音推送规则
+setRoomName // 设置房间名称
+setRoomReadMarkers // 设置房间已读标记
+setRoomReadMarkersHttpRequest // 设置房间已读标记 HTTP 请求
+setRoomTag // 设置房间标签
+setRoomTopic // 设置房间主题
+setSupportsCallTransfer // 设置支持通话转移
+setSyncPresence // 设置同步存在状态
+shouldEncryptEventForRoom // 是否应该为房间加密事件
+slidingSync // 滑动同步
+startClient // 启动客户端
+stopClient // 停止客户端
+stopPeeking // 停止窥视
+store // 存储
+storeClientOptions // 存储客户端选项
+submitMsisdnToken // 提交 MSISDN 令牌
+submitMsisdnTokenOtherUrl // 提交 MSISDN 令牌其他 URL
+supportsIntentionalMentions // 支持有意提及
+supportsThreads // 支持线程
+supportsVoip // 支持 VoIP
+syncLeftRooms // 同步离开房间
+termsUrlForService // 服务条款 URL
+timestampToEvent // 时间戳到事件
+turnServer // TURN 服务器
+unban // 取消封禁
+unbindThreePid // 解绑三个 PID
+unstableCreateFileTree // 不稳定创建文件树
+unstableGetFileTreeSpace // 不稳定获取文件树空间
+unstable_createLiveBeacon // 不稳定创建实时信标
+unstable_setLiveBeacon // 不稳定设置实时信标
+updatePendingEventStatus // 更新待处理事件状态
+updateScheduledDelayedEvent // 更新计划延迟事件
+updateScheduledDelayedEventWithActionInBody // 更新计划延迟事件与主体中的动作
+upgradeRoom // 升级房间
+uploadContent // 上传内容
+uploadDeviceSigningKeys // 上传设备签名密钥
+uploadKeySignatures // 上传密钥签名
+uploadKeysRequest // 上传密钥请求
+waitForClientWellKnown // 等待客户端已知
+waitUntilRoomReadyForGroupCalls // 等待房间准备好进行群组通话
+whoami // 我是谁
+whoisSynapseUser // Synapse 用户是谁
+
+=== MatrixEvent Methods ===
+applyVisibilityEvent // 应用可见性事件
+asVisibilityChange // 作为可见性变更
+attemptDecryption // 尝试解密
+constructor // 构造函数
+decryptionFailureReason // 解密失败原因
+decryptionLoop // 解密循环
+flagCancelled // 标记取消
+getAge // 获取年龄
+getAssociatedId // 获取关联 ID
+getAssociatedStatus // 获取关联状态
+getClaimedEd25519Key // 获取声明的 Ed25519 密钥
+getClearContent // 获取清除内容
+getContent // 获取内容
+getDate // 获取日期
+getDecryptionPromise // 获取解密承诺
+getDetails // 获取详情
+getDirectionalContent // 获取定向内容
+getEffectiveEventId // 获取有效事件 ID
+getForwardingCurve25519KeyChain // 获取转发 Curve25519 密钥链
+getId // 获取 ID
+getKeyRequestRecipients // 获取密钥请求接收者
+getKeysClaimed // 获取声明的密钥
+getLocalAge // 获取本地年龄
+getMembershipAtEvent // 获取事件时的成员身份
+getOriginalContent // 获取原始内容
+getPrevContent // 获取上一个内容
+getPushActions // 获取推送动作
+getPushDetails // 获取推送详情
+getRedactionEvent // 获取编辑事件
+getRelation // 获取关系
+getRoomId // 获取房间 ID
+getSender // 获取发送者
+getSenderKey // 获取发送者密钥
+getServerAggregatedRelation // 获取服务器聚合关系
+getStateKey // 获取状态密钥
+getThread // 获取线程
+getTs // 获取时间戳
+getTxnId // 获取事务 ID
+getType // 获取类型
+getUnsigned // 获取未签名
+getWireContent // 获取线缆内容
+getWireStateKey // 获取线缆状态密钥
+getWireType // 获取线缆类型
+handleRemoteEcho // 处理远程回音
+hasAssociation // 是否有关联
+invalidateExtensibleEvent // 使可扩展事件无效
+isBeingDecrypted // 是否正在解密
+isCancelled // 是否取消
+isDecryptionFailure // 是否解密失败
+isEncrypted // 是否加密
+isEquivalentTo // 是否等价于
+isKeySourceUntrusted // 是否密钥源不受信任
+isRedacted // 是否编辑
+isRedaction // 是否编辑
+isRelation // 是否关系
+isSending // 是否发送
+isState // 是否状态
+isThreadRoot // 是否线程根
+isVisibilityEvent // 是否可见性事件
+localRedactionEvent // 本地编辑事件
+makeEncrypted // 制作加密
+makeRedacted // 制作编辑
+makeReplaced // 制作替换
+markLocallyRedacted // 标记本地编辑
+messageVisibility // 消息可见性
+moveAllRelatedToMainTimeline // 将所有相关移动到主时间线
+moveToMainTimeline // 移动到主时间线
+relationEventId // 关系事件 ID
+replaceLocalEventId // 替换本地事件 ID
+replacingEvent // 替换事件
+replacingEventDate // 替换事件日期
+replacingEventId // 替换事件 ID
+replyEventId // 回复事件 ID
+setClearData // 设置清除数据
+setClearDataForDecryptionFailure // 为解密失败设置清除数据
+setMetadata // 设置元数据
+setPushDetails // 设置推送详情
+setStatus // 设置状态
+setThread // 设置线程
+setThreadId // 设置线程ID
+setTxnId // 设置事务ID
+setUnsigned // 设置未签名
+shouldAttemptDecryption // 是否应该尝试解密
+threadRootId // 线程根ID
+toJSON // 转换为JSON
+toSnapshot // 转换为快照
+unmarkLocallyRedacted // 取消本地编辑标记
+unstableExtensibleEvent // 不稳定可扩展事件
+unstableStickyInfo // 不稳定粘性信息
+updateAssociatedId // 更新关联ID
+
+=== MatrixHttpApi Methods ===
+cancelUpload // 取消上传
+constructor // 构造函数
+getContentUri // 获取内容URI
+getCurrentUploads // 获取当前上传
+uploadContent // 上传内容

@@ -1,0 +1,484 @@
+
+// API URL 配置文件 - 统一管理所有完整的接口 URL
+
+
+
+
+
+//matrix的服务器地址
+export const Login_MATRIX_SERVER_URL = 't8961.zheshu.tech';
+export const Login_MATRIX_SERVER_URL_TAIL = ':t8961.zheshu.tech';
+export const Login_MATRIX_SERVER_URL_ALL = 'https://t8961.zheshu.tech/';
+
+/*
+// matrix的业务后缀
+export const MATRIX_SERVER_URL = 'chat.zy-jn.org.cn';
+export const MATRIX_SERVER_URL_TAIL = ':chat.zy-jn.org.cn';
+export const MATRIX_SERVER_URL_ALL = 'https://chat.zy-jn.org.cn/';
+*/
+
+
+export const MATRIX_SERVER_URL = Login_MATRIX_SERVER_URL;
+export const MATRIX_SERVER_URL_TAIL = Login_MATRIX_SERVER_URL_TAIL;
+export const MATRIX_SERVER_URL_ALL = Login_MATRIX_SERVER_URL_ALL;
+
+
+
+
+// 允许的主机列表（用于 Vite 开发服务器）
+export const allowedHosts = [
+  'apiv2.zheshu.tech',
+  'testai.zheshu.tech',
+  't8960.zheshu.tech',
+  't8961.zheshu.tech',
+  't8962.zheshu.tech',
+  'ai.zheshu.tech',
+  'zheshu.tech',
+  'chat.zy-jn.org.cn',
+  'ai.syycas.org.cn'
+];
+
+// NocoBase 目标地址 (局域网)
+export const NOCOBASE_URL = 'https://t8960.zheshu.tech/';
+
+// Matrix 代理目标（用于开发环境代理媒体、API请求等）
+export const matrixProxyTarget = 'https://t8961.zheshu.tech';
+
+
+//后端业务基础地址
+export const BASE_URL1 = 'https://t8962.zheshu.tech';  //旧版
+export const BASE_URL2 ='https://testai.zheshu.tech'  //测试
+export const BASE_URL3 ='https://apiv2.zheshu.tech'  //正式
+
+
+export const BASE_URL = BASE_URL1;
+
+
+
+
+export const API_URLS = {
+
+
+  //通过
+  //获取智能体市场空间 get
+  GetApplicationFromTag: (tag: string) => `${BASE_URL}/api/v2/${tag}/application`,
+  //传参固定为 market
+  /*
+  返回：
+  [
+  {
+    "createdAt": "2025-08-15T07:43:06.827Z",
+    "updatedAt": "2025-08-15T07:43:06.827Z",
+    "id": 1,
+    "createdById": 1,
+    "updatedById": 1,
+    "application_id": "dXYbunLgXrwIjFOvBF",
+    "config": null,
+    "application_name": "智能体市场空间",
+    "application_tag": "market",
+    "author": null,
+    "from_market": null,
+    "copy_to": null
+  }
+]
+
+              主要是拿到这个application_id
+   */
+
+
+  //通过
+  // 组织架构 - 获取部门列表
+  DEPARTMENTS: (appid: string) => `${BASE_URL}/api/v2/${appid}/department`,
+
+
+
+  // 组织架构 - 分页版 获取部门列表
+  DEPARTMENTS_PAGED: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/${appid}/department?page=${page}&pageSize=${pageSize}`,
+
+
+  //新版获取部门详细信息
+  DEPARTMENT_DETAIL: (appid: string, departmentId: string) => `${BASE_URL}/api/v2/${appid}/department/${departmentId}`,
+
+
+
+  //通过
+  // Agent - 获取用户 Agent 列表的完整 URL
+  getUserAgentsUrl: (appid: string, nocobaseID: string) => `${BASE_URL}/api/v2/${appid}/bot/${nocobaseID}`,
+
+  //token问题
+  //智能体市场创建应用post
+  createApplication: (appid: string) => `${BASE_URL}/api/v2/${appid}/map/application/create`,
+
+  //通过
+  //获取智能体市场的公有应用列表get
+  getPublicApplications: (appid: string, page: number = 1) => `${BASE_URL}/api/v2/${appid}/map?page=${page}`,
+  getPublicApplications1: (appid: string, page: number = 1) => `${BASE_URL}/api/v2/${appid}/market/app?page=${page}`,
+
+
+  //搜索指定的公有应用并返回搜索结果
+  searchMarketApplications: (appid: string, name: string, page: number = 1) => `${BASE_URL}/api/v2/${appid}/makert/app/search?name=${name}&page=${page}`,
+
+  //通过
+  //获取指定用户的应用列表get
+  getUserApplications: (appid: string, user: string, page: number = 1) => `${BASE_URL}/api/v2/${appid}/map/market?user=${user}&page=${page}`,
+
+
+  //通过
+  //获取指定应用下的智能体Agent列表get
+  getApplicationAgents: (appid: string, marketid: string) => `${BASE_URL}/api/v2/${appid}/map/agents?marketid=${marketid}`,
+
+  //通过
+  //获取智能体Agent信息get
+  getAgentInfo: (agentId: string) => `${BASE_URL}/api/v1/oc/market/agent/${agentId}`,
+  /* 这个好像原本就没调用 */
+
+  //通过
+  //公开指定的应用post
+  publicApplication: (appid: string, marketid: string) => `${BASE_URL}/api/v2/${appid}/map/${marketid}/state`,
+
+  //公开指定的智能体post
+  publicAgent: (agentId: string) => `${BASE_URL}/api/v1/oc/market/agent/${agentId}/public`,
+  /* 好像暂无 */
+
+
+
+  //部署智能体post
+  deployAgent: (appid: string, marketid: string) => `${BASE_URL}/api/v2/${appid}/map/${marketid}/public`,
+
+  //通过
+  //创建智能体post
+  createAgent: (appid: string) => `${BASE_URL}/api/v2/${appid}/map/agent/create`,
+
+  //通过
+  //摧毁(删除)智能体post
+  destroyAgent: (appid: string, agentid: string) => `${BASE_URL}/api/v2/${appid}/map/agent/${agentid}/destroy`,
+
+  //通过
+  //点击“开发”时调用一次即可post
+  editorAgent: (appid: string) => `${BASE_URL}/api/v2/${appid}/editorAgent`,
+
+  //通过
+  //获取markdown get
+  getMarkdown: (appid: string, account: string) => `${BASE_URL}/api/v2/${appid}/agent/${account}`,
+
+  //复制智能体市场上的应用
+  MarketCopyApplication: (appid: string) => `${BASE_URL}/api/v2/${appid}/map/application/copy`,
+
+
+  //部署应用
+  MarketApplicationDeploy: (appid: string) => `${BASE_URL}/api/v2/${appid}/market/application/deploy`,
+
+
+
+
+  //注册时调用后端的api在nocobase里面创建该用户 post
+  createNocobaseUser: `${BASE_URL}/api/v2/sso/m/login`,
+
+  //将登录信息传递给后端 post
+  updateAccountData: `${BASE_URL}/api/v2/sso/m/updateAccountData`,
+  /*
+  
+  {
+    "username": "string",
+    "password": "string",
+    "access_token": "string",
+    "home_server": "string",
+    "device_id": "string"
+  }
+  
+  这是参数，获取ycb、密码、access_token、home_server、device_id
+  
+  */
+
+
+
+  //邀请用户进入空间时调用post
+  InviteUserToApplication: (appid: string) => `${BASE_URL}/api/v2/${appid}/application/invite`,
+
+  //创建部门
+  CreateDepartment: (appid: string) => `${BASE_URL}/api/v2/${appid}/department/create`,
+
+  //加入部门
+  JoinDepartment: (appid: string) => `${BASE_URL}/api/v2/${appid}/department/join`,
+
+  //根据用户名获取用户所在的应用get
+  GetApplicationByUser: (username: string) => `${BASE_URL}/api/v2/application/user/${username}`,
+
+
+
+
+  //个人通用助手创建任务,后端会自己创建房间,bot_account是全称@ycb10036userbot:chat.zy-jn.org.cn，记得转义特殊符号，post类型
+  CreateTask: (bot_account: string) => `${BASE_URL}/api/v2/shayu/${bot_account}/create_task`,
+
+  //通过用户名获取sessions，其中user_account是全称@ycb10036:chat.zy-jn.org.cn，记得转义特殊符号，bot_account是简称，appid没有特别指定就填root，get类型
+  NocobaseSessions: (appid: string, bot_account: string, user_account: string) => `${BASE_URL}/api/v2/${appid}/Sessions/${bot_account}/${user_account}`,
+
+  //返回ws连接地址，bot_account是简称
+  // 注意：WebSocket URL 不需要 /test 路径
+  GetWsConnection: (bot_account: string) => `wss://t8962.zheshu.tech/api/v2/ws/shayu/${bot_account}`,
+
+  //任务重做Redo Task，post请求
+  RedoTask: (session_id: string) => `${BASE_URL}/api/v2/shayu/${session_id}/redo_task`,
+
+
+  //对话前调用确保bot启动，post请求
+  Instance: () => `${BASE_URL}/api/v2/cc/instance`,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * V3版sso-微信登录
+   */
+  //已使用
+  WechatLoginUrl: () => `${BASE_URL3}/api/auth/wx/login:dev`,
+
+  /**
+   * V3版sso-新用户注册
+   * 
+   * 参数如下
+   {
+  "username": "newuser",
+  "password": "newpassword",
+  "sub": 123,
+  "code": "authorization_code"
+  }
+   * 
+   * 
+   */
+  //已使用
+  Wechatsignup: () => `${BASE_URL}/api/auth/wx/signUp`,
+
+
+  /**
+  * V3版sso-微信登录换matrix accesstoken
+  */
+  //已使用
+  GenerateMatrixToken: () => `${BASE_URL}/api/auth/msyanc`,
+
+  /**
+   * V3版sso-微信登录换nocobase token
+   */
+  //已使用
+  GenerateNocobaseToken: (authScope: string) => `${BASE_URL}/api/auth/${authScope}/bdstc`,
+
+
+  /**
+   * V3版sso-账号密码登录接口 (旧)
+   */
+  //已使用
+  Login: () => `${BASE_URL}/api/auth/login`,
+
+  /**
+     * V3版sso-账号密码注册
+     */
+  //已使用
+  Register: () => `${BASE_URL}/api/auth/register`,
+
+  /**
+     * V3版sso-返回个人信息
+     */
+  //已使用
+  UserInfo: () => `${BASE_URL}/api/auth/userinfo`,
+  /**
+     * V3版sso-一个更改个人信息的接口
+     */
+  //已使用
+  userdetail: () => `${BASE_URL}/api/auth/userdetail`,
+
+
+
+
+
+
+
+
+
+  /*  
+   Market
+  */
+  //V2创建组织
+  //已使用
+  CreateOrganizationApplicationMarket: () => `${BASE_URL}/api/v2/market/organization`,
+
+  //v2创建应用市场应用
+  CreateApplicationMarket: () => `${BASE_URL}/api/v2/market/application`,
+
+
+
+
+
+
+
+  /*
+  Organization.Department
+  */
+  //v2部门管理
+  //获取全部部门列表 - 分页查询
+  //已使用
+  GetDepartmentsV2: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/organization/${appid}/department?page=${page}&pageSize=${pageSize}`,
+
+  //获取指定部门下的子部门和职位 - 分页查询
+  //已使用
+  GetDepartmentChildrenV2: (appid: string, departmentId: number, page: number, pageSize: number) => `${BASE_URL}/api/v2/organization/${appid}/department?department_id=${departmentId}&page=${page}&pageSize=${pageSize}`,
+
+  //创建部门 post请求
+  //已使用
+  CreateDepartmentV2: (appid: string) => `${BASE_URL}/api/v2/organization/${appid}/department`,
+
+  //更新部门信息 put请求
+  //已使用
+  UpdateDepartmentV2: (appid: string, id: number) => `${BASE_URL}/api/v2/organization/${appid}/department?id=${id}`,
+
+  //删除部门 delete请求（后端暂不支持）
+  //已使用
+  DeleteDepartmentV2: (appid: string, id: number) => `${BASE_URL}/api/v2/organization/${appid}/department?id=${id}`,
+
+
+
+
+  /*  
+    Organization.Post
+  */
+  //v2组织职位管理
+
+  //获取全部职位列表 - 分页查询
+  GetPostsV2: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/organization/${appid}/post?page=${page}&pageSize=${pageSize}`,
+
+  //获取指定 post 下的人员 - 分页查询
+  //已使用
+  GetOrganizationPostV2: (appid: string, postId: number, page: number, pageSize: number) => `${BASE_URL}/api/v2/organization/${appid}/post/${postId}?page=${page}&pageSize=${pageSize}`,
+
+  //创建 post请求
+  //已使用
+  CreateOrganizationPostV2: (appid: string) => `${BASE_URL}/api/v2/organization/${appid}/post`,
+
+  //更新 put请求
+  //已使用
+  UpdateOrganizationPostV2: (appid: string, postId: number) => `${BASE_URL}/api/v2/organization/${appid}/post/${postId}`,
+
+  //删除 delete请求（后端暂不支持）
+  //已使用
+  DeleteOrganizationPostV2: (appid: string, postId: number) => `${BASE_URL}/api/v2/organization/${appid}/post/${postId}`,
+
+
+
+
+
+  /*
+  Overview
+  */
+  //Overview get请求
+  //已使用
+  GetOverView: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/organization/${appid}/overview?page=${page}&pageSize=${pageSize}`,
+
+  //Overview Detail get请求
+  //已使用
+  GetOverViewDetail: (appid: string, atype: string, id: number) => `${BASE_URL}/api/v2/organization/${appid}/overview/${atype}/${id}`,
+
+
+
+
+
+
+  /*
+    Application  
+  */
+  //注册bot post请求
+  ApplicationRegisterBot: (appid: string) => `${BASE_URL}/api/v2/application/${appid}/bot`,
+
+    //获取bot信息 get请求
+  //已使用
+  GetApplicationBot: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/application/${appid}/bot?page=${page}&pageSize=${pageSize}`,
+
+
+  //获取userbot
+  //已使用
+  GetUserBot: () => `${BASE_URL}/api/v2/application/userbot`,
+
+
+  //Bot token post请求
+  //已使用
+  ApplicationBotToken: (appid: string, bot_id: string) => `${BASE_URL}/api/v2/application/${appid}/bot/${bot_id}/token`,
+
+  //user用户 get请求
+  //已使用
+  GetApplicationUser: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/application/${appid}/user?page=${page}&pageSize=${pageSize}`,
+
+  //用户加入应用 post请求
+  //已使用
+  Acceptinvitation:(appid: string,username:string) => `${BASE_URL}/api/v2/application/${appid}/membership/acceptInvitation/${username}`,
+
+  //后端同步函数 post请求
+  //有事没事调一下
+  //已使用
+  ApplicationSync: (appid: string) => `${BASE_URL}/api/v2/application/${appid}/sync`,
+
+
+
+/*
+    Application.Dataset
+  */
+  //GetDataset获取数据
+  GetDataset: (appid: string, page: number, pageSize: number) => `${BASE_URL}/api/v2/application/${appid}/dataset?page=${page}&pageSize=${pageSize}`,
+
+  //创建Dataset post请求
+  CreateDataset: (appid: string) => `${BASE_URL}/api/v2/application/${appid}/dataset`,
+
+  //创建asset post请求 asset是dataset内的一个数组
+  CreateAsset: (appid: string) => `${BASE_URL}/api/v2/application/${appid}/asset`,
+
+
+
+
+
+  /*
+  IM
+  */
+ //获取用户信息，能拿到matrix的ID
+  GetIMUserInfo: ( username: string) => `${BASE_URL}/api/v2/im/user/${username}`,
+  
+  // 创建房间，只针对非bot房间的二人间聊天，后端会把需要的bot加进去，因此避免前端重复创建不需要的房间
+  CreateIMRoom: () => `${BASE_URL}/api/v2/im/room`,
+
+
+
+
+  /**
+   * shayu
+   */
+  //secretary唤醒
+  Secretary:(appid: string) => `${BASE_URL}/api/v2/cc/${appid}/secretary/instance`,
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
