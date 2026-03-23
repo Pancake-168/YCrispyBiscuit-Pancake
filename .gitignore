@@ -23,6 +23,7 @@ lerna-debug.log*
 **/dist/
 **/dist-ssr/
 **/dist-electron/
+**/dist-tauri/
 **/release/
 *.local
 
