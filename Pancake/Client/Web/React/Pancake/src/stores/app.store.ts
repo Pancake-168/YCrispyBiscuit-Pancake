@@ -1,11 +1,26 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+/**
+ * APP设置
+ * 包括但不限于：
+ * - 主题
+ * - 语言
+ * - 桌面窗口尺寸
+ * - 桌面字体以及字体大小
+ */
+
+
 export type AppTheme = 'soft-pink' | 'soft-blue'
 export type AppLanguage = 'zh-CN' | 'en-US'
 
+// 窗口大小，单位为像素
+export type AppWindowsSize = [number, number]
+export type AppFont= 'system'
+export type AppFontSize = [number]
+
+
 type PersistedAppState = {
-  sidebarCollapsed?: boolean
   theme?: string
   language?: AppLanguage
 }
@@ -27,10 +42,10 @@ function normalizeTheme(theme?: string): AppTheme {
 }
 
 type AppStore = {
-  sidebarCollapsed: boolean
+ 
   theme: AppTheme
   language: AppLanguage
-  toggleSidebar: () => void
+ 
   setTheme: (theme: AppTheme) => void
   setLanguage: (language: AppLanguage) => void
 }
@@ -38,12 +53,8 @@ type AppStore = {
 export const useAppStore = create<AppStore>()(
   persist(
     (set) => ({
-      sidebarCollapsed: false,
       theme: 'soft-pink',
       language: 'zh-CN',
-      toggleSidebar: () => {
-        set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }))
-      },
       setTheme: (theme) => {
         set({ theme })
       },
@@ -59,13 +70,13 @@ export const useAppStore = create<AppStore>()(
         const state = persistedState as PersistedAppState
 
         return {
-          sidebarCollapsed: state.sidebarCollapsed ?? false,
+        
           theme: normalizeTheme(state.theme),
           language: state.language ?? 'zh-CN',
         }
       },
       partialize: (state) => ({
-        sidebarCollapsed: state.sidebarCollapsed,
+       
         theme: state.theme,
         language: state.language,
       }),

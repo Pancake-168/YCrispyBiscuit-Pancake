@@ -4,20 +4,18 @@ import { useAppStore } from '@/stores/app.store'
 
 function AppLayout() {
   const { t } = useTranslation()
-  const sidebarCollapsed = useAppStore((state) => state.sidebarCollapsed)
-  const toggleSidebar = useAppStore((state) => state.toggleSidebar)
   const theme = useAppStore((state) => state.theme)
   const language = useAppStore((state) => state.language)
 
   return (
     <div className="app-shell">
-      <aside className={`app-sidebar${sidebarCollapsed ? ' is-collapsed' : ''}`}>
+      <aside className="app-sidebar">
         <div className="app-brand">
           <span className="app-brand__badge">P</span>
-          {!sidebarCollapsed ? <span>{t('layout.brand')}</span> : null}
+        
         </div>
 
-        {!sidebarCollapsed ? (
+        { (
           <div className="app-sidebar__meta">
             <div className="app-meta-card">
               <span className="app-meta-card__label">{t('layout.themeLabel')}</span>
@@ -32,7 +30,7 @@ function AppLayout() {
               </strong>
             </div>
           </div>
-        ) : null}
+        ) }
 
         <nav className="app-nav" aria-label="Primary">
           <NavLink to="/" end className="app-nav__link">
@@ -43,9 +41,7 @@ function AppLayout() {
           </NavLink>
         </nav>
 
-        <button type="button" className="app-button app-button--ghost" onClick={toggleSidebar}>
-          {sidebarCollapsed ? t('layout.toggleSidebarExpand') : t('layout.toggleSidebarCollapse')}
-        </button>
+       
       </aside>
 
       <div className="app-main">

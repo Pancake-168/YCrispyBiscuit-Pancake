@@ -3,8 +3,6 @@ import { useAppStore } from '@/stores/app.store'
 
 function SettingsView() {
   const { t } = useTranslation()
-  const sidebarCollapsed = useAppStore((state) => state.sidebarCollapsed)
-  const toggleSidebar = useAppStore((state) => state.toggleSidebar)
   const theme = useAppStore((state) => state.theme)
   const setTheme = useAppStore((state) => state.setTheme)
   const language = useAppStore((state) => state.language)
@@ -21,12 +19,7 @@ function SettingsView() {
         <p className="app-eyebrow">{t('settings.eyebrow')}</p>
         <h2>{t('settings.title')}</h2>
         <p className="app-copy">{t('settings.description')}</p>
-        <p className="state-text">
-          {sidebarCollapsed ? t('settings.sidebarCollapsed') : t('settings.sidebarExpanded')}
-        </p>
-        <button type="button" className="app-button" onClick={toggleSidebar}>
-          {sidebarCollapsed ? t('layout.toggleSidebarExpand') : t('layout.toggleSidebarCollapse')}
-        </button>
+       
       </article>
 
       <article className="panel-card">
