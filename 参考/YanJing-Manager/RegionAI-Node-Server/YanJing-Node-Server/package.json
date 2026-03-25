@@ -1,0 +1,35 @@
+{
+  "name": "regionai-node-server",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@hono/swagger-ui": "^0.5.3",
+    "@hono/zod-openapi": "^1.2.2",
+    "@hono/zod-validator": "^0.7.6",
+    "click-captcha": "^1.0.1",
+    "dotenv": "^17.3.1",
+    "hono": "^4.12.3",
+    "lru-cache": "^11.2.6",
+    "uuid": "^13.0.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^20.11.17",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^10.0.2",
+    "prettier": "^3.8.1",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.56.1"
+  }
+}
