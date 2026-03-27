@@ -234,7 +234,7 @@
 
 .theme-preview::before,
 .theme-preview::after {
-  content: '';
+  content: "";
   display: block;
 }
 

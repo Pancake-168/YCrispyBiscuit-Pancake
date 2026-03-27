@@ -1,6 +1,9 @@
 :root {
-  --font-sans: 'Segoe UI Variable Display', 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'Cascadia Code', 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-sans:
+    "Segoe UI Variable Display", "IBM Plex Sans", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "Cascadia Code", "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
   --shadow-sm: 0 8px 18px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 18px 42px rgba(0, 0, 0, 0.08);
   --radius-sm: 12px;
@@ -9,7 +12,7 @@
   --sidebar-width: 252px;
 }
 
-:root[data-theme='soft-pink'] {
+:root[data-theme="soft-pink"] {
   color-scheme: light;
   --color-bg-canvas: #fffafb;
   --color-bg-surface: #ffffff;
@@ -29,7 +32,7 @@
   --shadow-md: 0 20px 52px rgba(195, 150, 172, 0.1);
 }
 
-:root[data-theme='soft-blue'] {
+:root[data-theme="soft-blue"] {
   color-scheme: light;
   --color-bg-canvas: #f8fbff;
   --color-bg-surface: #ffffff;

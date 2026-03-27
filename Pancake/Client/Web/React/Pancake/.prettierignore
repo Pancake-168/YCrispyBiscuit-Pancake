@@ -1,0 +1,12 @@
+# 忽略构建输出
+dist
+build
+node_modules
+
+# 忽略打包文件
+*.min.js
+*.min.css
+
+# 忽略配置文件
+package-lock.json
+yarn.lock
