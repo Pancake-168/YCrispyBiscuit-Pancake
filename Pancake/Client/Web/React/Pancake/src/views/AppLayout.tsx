@@ -40,10 +40,10 @@ function AppLayout() {
         }
 
         <nav className="app-nav" aria-label="Primary">
-          <NavLink to="/" end className="app-nav__link">
+          <NavLink to="/style" end className="app-nav__link">
             {t("nav.home")}
           </NavLink>
-          <NavLink to="/settings" className="app-nav__link">
+          <NavLink to="/style/settings" className="app-nav__link">
             {t("nav.settings")}
           </NavLink>
         </nav>
@@ -56,7 +56,7 @@ function AppLayout() {
             <h1 className="app-title">{t("layout.title")}</h1>
           </div>
           <div className="app-header__controls">
-            <NavLink to="/settings" className="app-button app-button--ghost">
+            <NavLink to="/style/settings" className="app-button app-button--ghost">
               {t("nav.settings")}
             </NavLink>
           </div>

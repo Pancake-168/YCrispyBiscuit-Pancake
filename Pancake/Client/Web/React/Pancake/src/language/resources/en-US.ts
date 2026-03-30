@@ -54,6 +54,7 @@ const enUS = {
       currentTheme: "Current theme: {{theme}}",
       currentLanguage: "Current language: {{language}}",
     },
+    mainPage: {title:"Main Page"}
   },
 };
 

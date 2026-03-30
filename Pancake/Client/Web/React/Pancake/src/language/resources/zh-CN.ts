@@ -51,6 +51,7 @@ const zhCN = {
       currentTheme: "当前主题：{{theme}}",
       currentLanguage: "当前语言：{{language}}",
     },
+    mainPage: {title:"主页面"}
   },
 };
 
