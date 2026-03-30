@@ -1,0 +1,18 @@
+{
+  "name": "pancake",
+  "version": "0.0.1",
+  "description": "Scripts to manage FastAPI venv and run server via npm scripts (Windows)",
+  "scripts": {
+    "setup": "python -m venv .venv && .venv\\Scripts\\python.exe -m pip install --disable-pip-version-check -r requirements.txt",
+    "dev": "set ENV_FILE=.env.development && .venv\\Scripts\\python.exe -m app.main",
+    "prod": "set ENV_FILE=.env.production && .venv\\Scripts\\python.exe -m app.main",
+    "build": ".venv\\Scripts\\python.exe -m pip --disable-pip-version-check wheel -w dist -r requirements.txt",
+    "lint": ".venv\\Scripts\\python.exe -m ruff check app",
+    "format:check": ".venv\\Scripts\\python.exe -m ruff format --check app",
+    "format": ".venv\\Scripts\\python.exe -m ruff format app",
+    "clean": "rmdir /s /q .venv || echo no venv to remove && rmdir /s /q dist || echo no dist to remove"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -38,6 +38,7 @@ pip-cache/
 pip-wheel-metadata/
 pip-log.txt
 pip-delete-this-directory.txt
+**/__pycache__/
 
 # Kotlin / Spring Boot (Gradle)
 .gradle/

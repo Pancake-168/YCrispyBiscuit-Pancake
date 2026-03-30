@@ -1,0 +1,9 @@
+[
+    {"name": "Docs", "url": "/docs"},
+    {"name": "openapi_url", "url": "/openapi.json"},
+    {"name": "Redoc", "url": "/redoc"},
+    {
+        "name": "Weather",
+        "url": "https://weather.cma.cn/api/weather/view?stationid="
+    }
+]

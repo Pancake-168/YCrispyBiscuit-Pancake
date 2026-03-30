@@ -1,29 +1,53 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+from functools import lru_cache
+from typing import List
 import os
 
-class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str = "sqlite:///./music_player.db"
-    
-    # Server
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
-    
-    # Music library
-    MUSIC_LIBRARY_PATH: str = "./music_library"
-    ALBUM_ART_CACHE: str = "./cache/album_arts"
-    
-    # Security (optional for future)
-    SECRET_KEY: Optional[str] = None
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
-    # File upload limits (50MB)
-    MAX_UPLOAD_SIZE: int = 50 * 1024 * 1024
-    
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+from pathlib import Path
 
-settings = Settings()
+
+_env_file = os.getenv("ENV_FILE")
+if _env_file:
+    load_dotenv(_env_file)
+
+
+# 定义项目基础路径和JSON文件路径
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # 指向 Server/
+JSON_DIR = BASE_DIR / "json"
+
+
+class Settings(BaseSettings):
+    app_name: str = "Pancake"
+    app_env: str
+    debug: bool
+    host: str
+    port: int
+    database_url: str
+
+    # JWT 配置
+    jwt_secret_key: str
+
+    # CORS & Host 安全
+    cors_origins: List[str] = ["http://localhost:5173", "http://localhost:5175"]
+    allowed_hosts: List[str] = ["localhost", "127.0.0.1"]
+
+    # 日志与文档
+    log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR
+    enable_docs: bool = True
+    openapi_url: str = "/openapi.json"
+    docs_url: str = "/docs"
+    redoc_url: str = "/redoc"
+
+    # 不在代码内绑定具体 env 文件，由启动脚本通过 ENV_FILE+python-dotenv 控制
+    model_config = SettingsConfigDict(
+        env_prefix="",
+        env_file=None,
+        extra="ignore",
+    )
+
+
+@lru_cache()
+def get_settings() -> Settings:
+    # 通过 uvicorn --env-file 预先注入环境变量后，直接读取
+    return Settings()
