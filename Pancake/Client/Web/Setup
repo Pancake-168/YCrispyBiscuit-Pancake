@@ -10,6 +10,7 @@
 7. 引入存储、路由
 
 N. 文件夹架构：
+-- assets
 -- components
 -- composables
 -- constants
