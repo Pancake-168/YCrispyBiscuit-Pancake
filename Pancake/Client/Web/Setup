@@ -8,6 +8,8 @@
 5. 两个.env文件的编写
 6. 桌面端是否具备? tauri? electron?
 7. 引入存储、路由
+8. console的打包隐藏依赖
+9. 
 
 N. 文件夹架构：
 -- assets

@@ -3,10 +3,6 @@
 
 // 后端业务基础wss地址
 export const VITE_API_WSS_BASE = import.meta.env.VITE_API_WSS_BASE;
-
-
-
-
 const isElectronRuntime = typeof window !== 'undefined' && typeof window.electronAPI !== 'undefined'
 const apiMode = (import.meta.env.VITE_API_MODE as unknown as string | undefined) || ''
 const useRelativeApi = import.meta.env.DEV || apiMode === 'proxy' || (!isElectronRuntime && apiMode !== 'direct')
