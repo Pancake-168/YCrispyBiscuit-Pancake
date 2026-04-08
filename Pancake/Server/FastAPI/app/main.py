@@ -22,11 +22,15 @@ app = FastAPI(
 )
 
 # 中间件：RequestID, CORS, TrustedHost
+cors_origins = settings.cors_origins or []
+if settings.cors_allow_credentials and "*" in cors_origins:
+    raise RuntimeError("启用凭证模式时，CORS origins 不能包含通配符 '*'")
+
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins or ["*"],
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials=settings.cors_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )

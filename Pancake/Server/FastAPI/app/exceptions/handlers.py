@@ -5,9 +5,25 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, OperationalError
 import asyncio
 
+from app.exceptions.errors import AppError
+
 
 def register_exception_handlers(app: FastAPI) -> None:
     logger = logging.getLogger("app")
+
+    async def app_error_handler(request: Request, exc: AppError):
+        rid = getattr(request.state, "request_id", "-")
+        logger.warning(
+            "AppError [%s] %s %s -> %s",
+            rid,
+            request.method,
+            request.url.path,
+            exc.detail,
+        )
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail, "request_id": rid},
+        )
 
     async def http_exception_handler(request: Request, exc: HTTPException):
         rid = getattr(request.state, "request_id", "-")
@@ -150,6 +166,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         )
 
     app.add_exception_handler(HTTPException, http_exception_handler)
+    app.add_exception_handler(AppError, app_error_handler)
     app.add_exception_handler(ValueError, value_error_handler)
     app.add_exception_handler(IntegrityError, integrity_error_handler)
     app.add_exception_handler(KeyError, key_error_handler)

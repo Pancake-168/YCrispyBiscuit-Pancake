@@ -30,3 +30,8 @@ class UserResponse(UserBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
+
+
+class AuthResponse(BaseModel):
+    user: UserResponse
+    token: str

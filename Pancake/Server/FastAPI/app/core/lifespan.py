@@ -30,13 +30,16 @@ def create_lifespan():
         except Exception as exc:
             logger.exception("数据库连接失败，继续运行无数据库模式: %s", exc)
 
-        # 创建表
-        try:
-            async with engine.begin() as conn:
-                await conn.run_sync(Base.metadata.create_all)
-            logger.info("数据库表已创建或存在")
-        except Exception as exc:
-            logger.exception("数据库表创建失败: %s", exc)
+        # 仅在显式开启时自动建表，避免生产环境在启动阶段修改数据库结构
+        if settings.database_auto_create:
+            try:
+                async with engine.begin() as conn:
+                    await conn.run_sync(Base.metadata.create_all)
+                logger.info("数据库表已创建或存在")
+            except Exception as exc:
+                logger.exception("数据库表创建失败: %s", exc)
+        else:
+            logger.info("已禁用自动建表，请通过迁移脚本维护数据库结构")
 
         try:
             yield

@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load env vars
-const mode = process.env.NODE_ENV 
+const mode = process.env.NODE_ENV || 'development'
 const env = loadEnv(mode, process.cwd(), '')
 const PORT = parseInt(env.VITE_PORT) // 严格从环境变量读取，禁止在脚本中定义默认端口
 

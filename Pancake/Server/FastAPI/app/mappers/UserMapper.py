@@ -1,7 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import Optional
 from app.entities.UserEntity import UserEntity
+from app.exceptions.errors import ConflictError, DatabaseError
 
 
 class UserMapper:
@@ -15,8 +17,8 @@ class UserMapper:
                 select(UserEntity).where(UserEntity.username == username)
             )
             return result.scalar_one_or_none()
-        except Exception as e:
-            raise ValueError(f"通过用户名查找用户实体失败: {str(e)}")
+        except SQLAlchemyError as exc:
+            raise DatabaseError("通过用户名查找用户实体失败") from exc
 
     async def findByEmail(self, email: str) -> Optional[UserEntity]:
         """根据邮箱查找用户实体"""
@@ -25,8 +27,8 @@ class UserMapper:
                 select(UserEntity).where(UserEntity.email == email)
             )
             return result.scalar_one_or_none()
-        except Exception as e:
-            raise ValueError(f"通过邮箱查找用户实体失败: {str(e)}")
+        except SQLAlchemyError as exc:
+            raise DatabaseError("通过邮箱查找用户实体失败") from exc
 
     async def findById(self, user_id: int) -> Optional[UserEntity]:
         """根据用户 id 查找用户实体"""
@@ -35,8 +37,8 @@ class UserMapper:
                 select(UserEntity).where(UserEntity.id == int(user_id))
             )
             return result.scalar_one_or_none()
-        except Exception as e:
-            raise ValueError(f"通过 id 查找用户实体失败: {str(e)}")
+        except SQLAlchemyError as exc:
+            raise DatabaseError("通过 id 查找用户实体失败") from exc
 
     async def createUser(
         self,
@@ -57,6 +59,9 @@ class UserMapper:
             await self.db.commit()
             await self.db.refresh(entity)
             return entity
-        except Exception as e:
+        except IntegrityError as exc:
             await self.db.rollback()
-            raise ValueError(f"创建用户实体失败: {str(e)}")
+            raise ConflictError("用户数据冲突，无法创建用户") from exc
+        except SQLAlchemyError as exc:
+            await self.db.rollback()
+            raise DatabaseError("创建用户实体失败") from exc

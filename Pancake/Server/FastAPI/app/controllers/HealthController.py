@@ -8,7 +8,5 @@ service = HealthService()
 
 @router.get("/health", response_model=HealthResponse)
 async def health():
-    try:
-        return await service.getHealth()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    data = await service.getHealth()
+    return HealthResponse(**data)

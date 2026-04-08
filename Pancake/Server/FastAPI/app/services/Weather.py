@@ -3,6 +3,8 @@ from app.core.config import JSON_DIR
 import httpx
 from urllib.parse import urlparse, parse_qs, urlunparse
 
+from app.exceptions.errors import BadRequestError, ConfigurationError, ExternalServiceError
+
 
 class WeatherService:
     def __init__(self):
@@ -17,13 +19,14 @@ class WeatherService:
         for item in data:
             if item.get("name") == "Weather":
                 return item.get("url")
-        raise ValueError("天气预报API链接未找到！")
+        raise ConfigurationError("天气预报API链接未找到")
 
     async def fetch_weather_data(self, locatID: str) -> dict:
         """获取天气数据"""
+        """杭州编号58457"""
 
         if not locatID:
-            raise ValueError("locatID 不能为空")
+            raise BadRequestError("locatID 不能为空")
 
         weather_api_url = self.get_weather_api()
 
@@ -73,4 +76,4 @@ class WeatherService:
             resp.raise_for_status()
             return resp.json()
         except httpx.HTTPError as e:
-            raise ConnectionError(f"无法获取天气数据：{e}")
+            raise ExternalServiceError(f"无法获取天气数据：{e}") from e

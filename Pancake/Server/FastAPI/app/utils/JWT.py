@@ -2,11 +2,12 @@ import jwt
 import time
 import uuid
 from typing import Dict
-from fastapi import HTTPException, Depends
+from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import get_settings
 from app.core.database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.exceptions.errors import AuthenticationError
 from app.services.UserService import UserService
 
 
@@ -56,9 +57,9 @@ class JWTService:
             )
             return payload
         except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Token expired")
+            raise AuthenticationError("Token expired")
         except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise AuthenticationError("Invalid token")
 
     # 便捷辅助：返回完整用户响应对象（异步）
     async def get_current_user(
@@ -76,43 +77,43 @@ class JWTService:
 
         # 验证时间iat
         if not iat or not isinstance(iat, int):
-            raise HTTPException(status_code=401, detail="非法的签发时间")
+            raise AuthenticationError("非法的签发时间")
         now = int(time.time())
         if iat > now:
-            raise HTTPException(status_code=401, detail="非法的签发时间")
+            raise AuthenticationError("非法的签发时间")
 
         # 提取时间exp
         exp = payload.get("exp")
 
         # 验证时间exp
         if not exp or not isinstance(exp, int):
-            raise HTTPException(status_code=401, detail="非法的过期时间")
+            raise AuthenticationError("非法的过期时间")
         if exp < now:
-            raise HTTPException(status_code=401, detail="Token 已过期")
+            raise AuthenticationError("Token 已过期")
 
         # 提取roleName
         role_name = payload.get("roleName")
         # 验证roleName
         if role_name != "PancakeSystemUser":
-            raise HTTPException(status_code=401, detail="非法的角色")
+            raise AuthenticationError("非法的角色")
 
         # 提取用户ID
         user_id = payload.get("userId")
 
         # 验证用户ID
         if not user_id:
-            raise HTTPException(status_code=401, detail="非法的用户ID")
+            raise AuthenticationError("非法的用户ID")
         try:
             uid = int(user_id)
         except Exception:
-            raise HTTPException(status_code=401, detail="非法的用户ID")
+            raise AuthenticationError("非法的用户ID")
         # 使用 Service 验证并获取用户
         try:
             user = await self.service.getUserById(uid)
-        except Exception:
-            raise HTTPException(status_code=401, detail="用户查询失败")
+        except Exception as exc:
+            raise AuthenticationError("用户查询失败") from exc
         if not user:
-            raise HTTPException(status_code=401, detail="用户未找到")
+            raise AuthenticationError("用户未找到")
         return user
 
     # token验证是否有效，返回用户ID（异步）
