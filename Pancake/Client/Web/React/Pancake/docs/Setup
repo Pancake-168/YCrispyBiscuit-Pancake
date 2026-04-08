@@ -1,0 +1,138 @@
+记录一下项目创建过程：
+1. 使用 Vite 创建项目
+   npm create vite@latest
+
+
+2. 确认 lint 风格检查是否有效，没有就安装并补脚本
+   先检查项目里是否已有：
+   - eslint
+   - @eslint/js
+   - typescript-eslint
+   - eslint-plugin-react-hooks
+   - eslint-plugin-react-refresh
+   如果没有，就安装：
+   npm install -D eslint @eslint/js typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh globals
+   然后确认 package.json 有脚本：
+   - "lint": "eslint ."
+   并确认存在 eslint.config.js。
+   当前 React 项目已是 flat config 写法。
+
+3. 确认 format 格式检查是否有效，没有就安装
+   安装命令：
+   npm install -D prettier eslint-config-prettier eslint-plugin-prettier
+   如果只想做格式检查，package.json 至少保留：
+   - "format": "prettier --check . --ignore-path .prettierignore"
+   如果需要格式化，可再补：
+   - "format:write": "prettier --write . --ignore-path .prettierignore"
+   同时补一个 .prettierignore，至少忽略：
+   - node_modules
+   - dist
+   - dist-electron
+   - release
+
+4. 兼容 '@/xxx/xxx' 的引入方式
+   需要同时改 tsconfig 和 vite.config。
+   tsconfig.app.json 中加入：
+   - "paths": { "@/*": ["./src/*"] }
+   vite.config.ts 中加入 alias：
+   - '@': resolve(__dirname, 'src')
+   说明：
+   - 现在不再写 "baseUrl": "."，因为它已被 TypeScript 标记为弃用
+   - paths 的值要写成带 ./ 的相对路径，否则 TypeScript 仍会报错
+   - 当前这套 React 配置只保留 paths + Vite alias 即可
+   只改 tsconfig 不够，Vite 也要认识这个别名。
+
+5. 编写 .env.development 和 .env.production
+   最少建议写这些：
+   - VITE_APP_NAME
+   - VITE_PORT
+   - APP_ENV
+   - VITE_API_BASE
+   - VITE_API_WSS_BASE
+   - allowedHosts
+   说明：
+   - development 用于本地开发和 electron-dev
+   - production 用于打包后的桌面端和正式前端构建
+   - VITE_PORT 给 Electron 开发模式锁端口使用
+   - allowedHosts 建议写成 JSON 数组字符串，便于在 vite.config.ts 里统一解析
+
+6. 判断是否需要桌面端，如果需要就接入 Electron
+
+   npm install dotenv electron-store
+   npm install -D cross-env electron electron-builder wait-on
+   新建目录：
+   - electron/main.ts
+   - electron/preload.ts
+   - electron/tsconfig.json
+   - scripts/electron-dev.js
+   package.json 里补：
+   - "main": "dist-electron/main.js"
+   - "dev:electron"
+   - "dev:electron:prod"
+   - "build:electron"
+   并补 build 配置：
+   - appId
+   - productName
+   - icon
+   - files
+   - win
+   - nsis
+   - extraMetadata.type = commonjs
+   说明：
+   - 主进程 TypeScript 当前编译输出是 dist-electron/main.js
+   - 所以 main 不能写成 dist-electron/index.js
+
+7. 引入存储、路由，以及基础运行时能力
+   React 当前建议：
+   - 路由：react-router-dom
+   - 全局状态：zustand
+   - i18n：i18next、react-i18next、i18next-browser-languagedetector
+   如果是 Electron 桌面端，再补：
+   - electron-store 负责本地配置持久化
+   然后尽快补这些目录：
+   - router
+   - stores
+   - language
+   - services
+   - types
+   路由和 store 越早放进去，后续页面就越不容易反复重构。
+
+8. 如果需要在构建时移除 console，补充对应插件或构建策略
+   Vue 参考项目使用的是 vite-plugin-remove-console。
+   React 项目如果也要一致，可以安装：
+   npm install vite-plugin-remove-console
+   然后在 vite.config.ts 里按 command === 'build' 条件启用。
+   注意：
+   - 开发模式不要移除 console
+   - 只在 build 时移除，方便本地调试
+
+9. 做一轮启动与构建自检，确认不是“配置写了但没生效”
+   最少要检查这几条：
+   - npm run lint
+   - npm run format
+   - npm run dev
+   - npm run dev:electron
+   - npm run build
+   如果有 Electron 打包需求，再检查：
+   - npm run build:electron
+   启动 Electron 时重点检查：
+   - Vite 是否锁定在 .env.development 的 VITE_PORT
+   - electron/main.ts 是否成功编译到 dist-electron/main.js
+   - preload.ts 是否被编译
+   - BrowserWindow 是否能正确 loadURL 或 loadFile
+
+N. 文件夹架构：
+-- assets
+-- components
+-- composables
+-- constants
+-- language?（i18n）
+-- router
+-- services 
+-- stores
+-- styles
+-- types
+-- utils 
+-- views
+-- apiurls.ts
+

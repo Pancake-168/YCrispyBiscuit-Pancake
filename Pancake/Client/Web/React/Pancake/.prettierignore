@@ -2,6 +2,8 @@
 dist
 build
 node_modules
+dist-electron
+release
 
 # 忽略打包文件
 *.min.js
@@ -10,3 +12,4 @@ node_modules
 # 忽略配置文件
 package-lock.json
 yarn.lock
+

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 
-
 function MainPage() {
   const { t } = useTranslation();
   return (
@@ -9,7 +8,6 @@ function MainPage() {
         <h1>{t("mainPage.title")}</h1>
       </div>
     </>
-
   );
 }
 

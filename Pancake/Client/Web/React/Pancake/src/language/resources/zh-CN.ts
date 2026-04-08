@@ -1,6 +1,6 @@
 const zhCN = {
   translation: {
-    mainPage: {title:"主页面"}
+    mainPage: { title: "主页面" },
   },
 };
 

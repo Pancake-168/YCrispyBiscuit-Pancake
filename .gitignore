@@ -24,6 +24,8 @@ lerna-debug.log*
 **/dist-ssr/
 **/dist-electron/
 **/dist-tauri/
+**/setup_mode_data/
+**/unpackage/
 **/release/
 *.local
 
@@ -38,8 +40,6 @@ pip-cache/
 pip-wheel-metadata/
 pip-log.txt
 pip-delete-this-directory.txt
-**/__pycache__/
-.ruff_cache/
 
 # Kotlin / Spring Boot (Gradle)
 .gradle/

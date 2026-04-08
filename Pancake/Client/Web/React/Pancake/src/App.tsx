@@ -6,12 +6,9 @@ import { useAppStore } from "@/stores/app.store";
 function App() {
   const theme = useAppStore((state) => state.theme);
 
-
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
-
-
 
   return <RouterProvider router={router} />;
 }

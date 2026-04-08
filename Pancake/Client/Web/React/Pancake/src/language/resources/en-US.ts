@@ -1,6 +1,6 @@
 const enUS = {
   translation: {
-    mainPage: {title:"Main Page"}
+    mainPage: { title: "Main Page" },
   },
 };
 

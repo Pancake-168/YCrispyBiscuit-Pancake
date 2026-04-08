@@ -10,12 +10,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 export type AppTheme = "soft-pink" | "soft-blue";
 
-
-
-
 type PersistedAppState = {
   theme?: string;
-
 };
 
 function normalizeTheme(theme?: string): AppTheme {
@@ -30,9 +26,7 @@ function normalizeTheme(theme?: string): AppTheme {
 type AppStore = {
   theme: AppTheme;
 
-
   setTheme: (theme: AppTheme) => void;
-
 };
 
 export const useAppStore = create<AppStore>()(
@@ -42,7 +36,6 @@ export const useAppStore = create<AppStore>()(
       setTheme: (theme) => {
         set({ theme });
       },
-
     }),
     {
       name: "pancake-app-store",
@@ -53,12 +46,10 @@ export const useAppStore = create<AppStore>()(
 
         return {
           theme: normalizeTheme(state.theme),
-
         };
       },
       partialize: (state) => ({
         theme: state.theme,
-
       }),
     },
   ),
