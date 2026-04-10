@@ -49,11 +49,11 @@ class UserService:
             nickname=nickname,
         )
 
-    async def authenticateUser(
-        self, username: str, password: str
-    ) -> UserEntity:
+    async def authenticateUser(self, username: str, password: str) -> UserEntity:
         """用户认证，返回用户对象"""
         user = await self.mapper.findByUsername(username)
-        if not user or not bcrypt.checkpw(password.encode(), user.password_hash.encode()):
+        if not user or not bcrypt.checkpw(
+            password.encode(), user.password_hash.encode()
+        ):
             raise AuthenticationError("用户名或密码错误")
         return user

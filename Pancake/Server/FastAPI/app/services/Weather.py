@@ -3,7 +3,11 @@ from app.core.config import JSON_DIR
 import httpx
 from urllib.parse import urlparse, parse_qs, urlunparse
 
-from app.exceptions.errors import BadRequestError, ConfigurationError, ExternalServiceError
+from app.exceptions.errors import (
+    BadRequestError,
+    ConfigurationError,
+    ExternalServiceError,
+)
 
 
 class WeatherService:

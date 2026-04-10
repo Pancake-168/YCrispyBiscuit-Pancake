@@ -41,7 +41,11 @@ if settings.allowed_hosts:
 app.include_router(router)
 
 
-@app.get("/")
+@app.get(
+    "/",
+    summary="根路径",
+    tags=["Root"],
+)
 async def root():
     return {"msg": "FastAPI skeleton running", "debug": settings.debug}
 
