@@ -3,7 +3,6 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 SQLAlchemy
-alembic
 aiomysql
 cryptography
 python-dotenv

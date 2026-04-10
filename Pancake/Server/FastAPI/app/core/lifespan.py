@@ -39,7 +39,7 @@ def create_lifespan():
             except Exception as exc:
                 logger.exception("数据库表创建失败: %s", exc)
         else:
-            logger.info("已禁用自动建表，请通过迁移脚本维护数据库结构")
+            logger.info("已禁用自动建表，请手动维护数据库结构")
 
         try:
             yield
