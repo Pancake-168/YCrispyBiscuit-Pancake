@@ -1,6 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { LogPayload } from "../logger";
 
 contextBridge.exposeInMainWorld("electronAPI", {
+  writeLog: (payload: LogPayload) => ipcRenderer.invoke("write-log", payload),
   // Settings/Store
   getSetting: (key: string) => ipcRenderer.invoke("settings-get", key),
   setSetting: (key: string, value: unknown) =>

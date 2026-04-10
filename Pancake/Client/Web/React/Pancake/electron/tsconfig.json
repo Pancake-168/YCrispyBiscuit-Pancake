@@ -3,11 +3,11 @@
     "target": "ESNext",
     "module": "commonjs",
     "outDir": "../dist-electron",
-    "rootDir": ".",
+    "rootDir": "..",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["."]
+  "include": [".", "../logger.ts"]
 }

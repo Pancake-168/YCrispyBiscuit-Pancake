@@ -1,4 +1,7 @@
+import type { LogPayload } from "../../logger";
+
 export interface IElectronAPI {
+  writeLog: (payload: LogPayload) => Promise<boolean>;
   getSetting: (key: string) => Promise<unknown>;
   setSetting: (key: string, value: unknown) => Promise<boolean>;
   removeSetting: (key: string) => Promise<boolean>;

@@ -14,6 +14,55 @@ import dotenv from "dotenv";
 import Store from "electron-store";
 import fs from "fs";
 import { createHash } from "crypto";
+import {
+  createLogger,
+  registerLogTransport,
+  serializeLogPayload,
+  type LogPayload,
+} from "../logger";
+
+const APP_LOG_FILE = "app.log";
+const ERROR_LOG_FILE = "error.log";
+const DEBUG_LOG_FILE = "debug.log";
+const LOG_DIR_NAME = "logs";
+
+const ensureLogDirectory = () => {
+  const logDir = path.join(app.getPath("userData"), LOG_DIR_NAME);
+  fs.mkdirSync(logDir, { recursive: true });
+  return logDir;
+};
+
+const appendLogLine = (fileName: string, line: string) => {
+  const logFilePath = path.join(ensureLogDirectory(), fileName);
+  fs.appendFileSync(logFilePath, `${line}\n`, "utf8");
+};
+
+registerLogTransport((payload: LogPayload) => {
+  const line = serializeLogPayload(payload);
+  appendLogLine(APP_LOG_FILE, line);
+
+  if (payload.level === "debug") {
+    appendLogLine(DEBUG_LOG_FILE, line);
+  }
+
+  if (payload.level === "error") {
+    appendLogLine(ERROR_LOG_FILE, line);
+  }
+});
+
+const logInfo = (functionName: string, message: string, details: unknown[] = []) => {
+  createLogger("main.ts", functionName).info(message, ...details);
+};
+
+const logWarn = (functionName: string, message: string, details: unknown[] = []) => {
+  createLogger("main.ts", functionName).warn(message, ...details);
+};
+
+const logError = (functionName: string, message: string, details: unknown[] = []) => {
+  createLogger("main.ts", functionName).error(message, ...details);
+};
+
+logInfo("bootstrap", "主进程日志系统初始化完成", [app.getPath("userData")]);
 
 const APP_PROTOCOL = "app";
 
@@ -106,12 +155,9 @@ function initializeDataPath() {
     }
 
     app.setPath("userData", userDataPath);
-    console.log(
-      "[System:main.ts:initializeDataPath] UserData redirected to:",
-      userDataPath,
-    );
+    logInfo("initializeDataPath", "UserData redirected to", [userDataPath]);
   } catch (err) {
-    console.warn("[System:main.ts:initializeDataPath] 初始化路径失败:", err);
+    logWarn("initializeDataPath", "初始化路径失败", [err]);
   }
 }
 
@@ -229,10 +275,7 @@ const removeLegacyStoreKeyFile = () => {
   try {
     fs.unlinkSync(legacyKeyFilePath);
   } catch (error) {
-    console.warn(
-      "[System:main.ts:removeLegacyStoreKeyFile] 删除旧密钥文件失败:",
-      error,
-    );
+    logWarn("removeLegacyStoreKeyFile", "删除旧密钥文件失败", [error]);
   }
 };
 
@@ -240,10 +283,10 @@ const tryReadPlaintextStoreSnapshot = (userDataPath: string) => {
   try {
     return readPlaintextStoreSnapshot(userDataPath);
   } catch (error) {
-    console.warn(
-      "[System:main.ts:tryReadPlaintextStoreSnapshot] 明文配置读取失败:",
+    logWarn("tryReadPlaintextStoreSnapshot", "明文配置读取失败", [
       error,
-    );
+      userDataPath,
+    ]);
     return null;
   }
 };
@@ -255,22 +298,17 @@ const resetCorruptedStoreFiles = () => {
   if (fs.existsSync(configFilePath)) {
     try {
       fs.renameSync(configFilePath, corruptedBackupPath);
-      console.warn(
-        "[System:main.ts:resetCorruptedStoreFiles] 已备份无法恢复的配置文件:",
+      logWarn("resetCorruptedStoreFiles", "已备份无法恢复的配置文件", [
         corruptedBackupPath,
-      );
+      ]);
     } catch (error) {
-      console.warn(
-        "[System:main.ts:resetCorruptedStoreFiles] 备份损坏配置失败，尝试直接删除:",
+      logWarn("resetCorruptedStoreFiles", "备份损坏配置失败，尝试直接删除", [
         error,
-      );
+      ]);
       try {
         fs.unlinkSync(configFilePath);
       } catch (deleteError) {
-        console.warn(
-          "[System:main.ts:resetCorruptedStoreFiles] 删除损坏配置失败:",
-          deleteError,
-        );
+        logWarn("resetCorruptedStoreFiles", "删除损坏配置失败", [deleteError]);
       }
     }
   }
@@ -375,9 +413,11 @@ const clearAllUnreadCounts = () => {
 
 const createTray = () => {
   if (tray) return;
+  logInfo("createTray", "开始创建系统托盘");
   tray = new Tray(getWindowIconPath());
   tray.on("click", () => showMainWindow());
   updateUnreadPresentation();
+  logInfo("createTray", "系统托盘创建完成");
 };
 
 const shouldCloseToTray = () => {
@@ -408,10 +448,7 @@ const getStore = (): StoreInstance => {
       store = recreateEncryptedStore(userDataPath);
       void store.store;
     } catch (error) {
-      console.warn(
-        "[System:main.ts:getStore] 读取加密配置失败，尝试迁移或重建:",
-        error,
-      );
+      logWarn("getStore", "读取加密配置失败，尝试迁移或重建", [error]);
 
       if (fs.existsSync(configFilePath)) {
         storeEncryptionKey = null;
@@ -420,10 +457,7 @@ const getStore = (): StoreInstance => {
         if (plaintextSnapshot) {
           const backupPath = getStoreBackupFilePath();
           fs.renameSync(configFilePath, backupPath);
-          console.log(
-            "[System:main.ts:getStore] 已备份明文配置并迁移为加密配置:",
-            backupPath,
-          );
+          logInfo("getStore", "已备份明文配置并迁移为加密配置", [backupPath]);
           store = writeEncryptedStoreSnapshot(
             userDataPath,
             loadStoreEncryptionKey(),
@@ -444,6 +478,25 @@ const getStore = (): StoreInstance => {
 };
 
 ipcMain.handle("get-is-dev", () => !app.isPackaged);
+
+ipcMain.handle("write-log", async (_event, payload) => {
+  try {
+    const logger = createLogger(payload.fileName, payload.functionName);
+    if (payload.level === "error") {
+      logger.error(payload.message, ...(payload.details || []));
+    } else if (payload.level === "warn") {
+      logger.warn(payload.message, ...(payload.details || []));
+    } else if (payload.level === "debug") {
+      logger.debug(payload.message, ...(payload.details || []));
+    } else {
+      logger.info(payload.message, ...(payload.details || []));
+    }
+    return true;
+  } catch (error) {
+    logError("write-log", "write-log failed", [error]);
+    return false;
+  }
+});
 
 ipcMain.handle(
   "show-system-notification",
@@ -490,7 +543,7 @@ ipcMain.handle("settings-get", async (_event, key: string) => {
   try {
     return currentStore.get(key);
   } catch (error) {
-    console.warn("[System:main.ts:settings-get] settings-get failed:", error);
+    logWarn("settings-get", "settings-get failed", [error]);
     return null;
   }
 });
@@ -501,7 +554,7 @@ ipcMain.handle("settings-set", async (_event, key: string, value: unknown) => {
     currentStore.set(key as string, value);
     return true;
   } catch (error) {
-    console.warn("[System:main.ts:settings-set] settings-set failed:", error);
+    logWarn("settings-set", "settings-set failed", [error]);
     return false;
   }
 });
@@ -512,10 +565,7 @@ ipcMain.handle("settings-delete", async (_event, key: string) => {
     currentStore.delete(key);
     return true;
   } catch (error) {
-    console.warn(
-      "[System:main.ts:settings-delete] settings-delete failed:",
-      error,
-    );
+    logWarn("settings-delete", "settings-delete failed", [error]);
     return false;
   }
 });
@@ -525,7 +575,7 @@ ipcMain.handle("settings-keys", async () => {
   try {
     return Object.keys(currentStore.store);
   } catch (error) {
-    console.warn("[System:main.ts:settings-keys] settings-keys failed:", error);
+    logWarn("settings-keys", "settings-keys failed", [error]);
     return [];
   }
 });
@@ -533,16 +583,13 @@ ipcMain.handle("settings-keys", async () => {
 ipcMain.handle("open-external", async (_event, url: string) => {
   try {
     if (typeof url !== "string" || !/^https?:\/\//i.test(url)) {
-      console.warn(
-        "[System:main.ts:open-external] open-external rejected url:",
-        url,
-      );
+      logWarn("open-external", "open-external rejected url", [url]);
       return false;
     }
     await shell.openExternal(url);
     return true;
   } catch (error) {
-    console.warn("[System:main.ts:open-external] open-external failed:", error);
+    logWarn("open-external", "open-external failed", [error]);
     return false;
   }
 });
@@ -686,6 +733,7 @@ ipcMain.handle("wechat-sso-start", async (_event, url: string) => {
 });
 
 const createWindow = () => {
+  logInfo("createWindow", "开始创建主窗口");
   const win = new BrowserWindow({
     title: APP_NAME,
     icon: getWindowIconPath(),
@@ -716,9 +764,11 @@ const createWindow = () => {
 
   // Decide whether to load dev server or static file
   if (!app.isPackaged) {
+    logInfo("createWindow", "加载开发环境页面", [devServerUrl]);
     win.loadURL(devServerUrl);
   } else {
     // 打包后使用自定义 app:// 协议承载前端，保证 History 路由刷新不 404
+    logInfo("createWindow", "加载桌面应用页面", [`${APP_PROTOCOL}://-/`]);
     win.loadURL(`${APP_PROTOCOL}://-/`);
   }
 
@@ -764,19 +814,6 @@ const createWindow = () => {
     win.flashFrame(false);
   });
 
-  win.once("ready-to-show", () => {
-  });
-
-  win.webContents.on("did-start-loading", () => {
-  });
-
-  win.webContents.on("dom-ready", () => {
-  });
-
-  win.webContents.on("did-finish-load", () => {
-    if (windowClosed || !isWindowAlive(win)) return;
-  });
-
   // 统一处理 window.open 打开的子窗口，复用主窗口图标
   win.webContents.setWindowOpenHandler(({ url }) => {
     const child = new BrowserWindow({
@@ -802,6 +839,7 @@ const createWindow = () => {
 
 app.whenReady().then(async () => {
   try {
+    logInfo("app.whenReady", "Electron ready 事件已触发");
     // 确保 store 实例在路径重定向生效后才被创建
     // 使用 getStore() 确保它指向正确的 userData (无论是在 Temp 还是用户选定的目录)
     getStore();
@@ -813,13 +851,14 @@ app.whenReady().then(async () => {
     createTray();
     createWindow();
     updateUnreadPresentation();
+    logInfo("app.whenReady", "主进程启动完成");
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
       else showMainWindow();
     });
   } catch (error) {
-    console.error("[System:main.ts:whenReady] 应用启动失败:", error);
+    logError("app.whenReady", "应用启动失败", [error]);
     dialog.showErrorBox(
       "应用启动失败",
       error instanceof Error ? error.message : String(error),
@@ -834,4 +873,14 @@ app.on("before-quit", () => {
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+process.on("uncaughtException", (error) => {
+  logError("process.uncaughtException", "主进程未捕获异常", [error]);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logError("process.unhandledRejection", "主进程未处理 Promise 拒绝", [
+    reason,
+  ]);
 });
