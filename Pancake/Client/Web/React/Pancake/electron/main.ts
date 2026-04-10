@@ -88,26 +88,6 @@ dotenv.config({ path: envPath });
 // 如果环境变量加载失败，从 package.json 获取一个硬编码的保底值
 const APP_NAME = process.env.VITE_APP_NAME || "RegionAI";
 
-const startupTimeOrigin = Date.now();
-const getStartupLogFilePath = () =>
-  path.join(app.getPath("userData"), "startup.log");
-const appendStartupLogLine = (line: string) => {
-  try {
-    const logFilePath = getStartupLogFilePath();
-    fs.mkdirSync(path.dirname(logFilePath), { recursive: true });
-    fs.appendFileSync(logFilePath, `${line}\n`, "utf-8");
-  } catch (error) {
-    console.warn("[System:main.ts:startup] 写入启动日志文件失败:", error);
-  }
-};
-const logStartupTiming = (step: string, extra?: string) => {
-  const elapsedMs = Date.now() - startupTimeOrigin;
-  const suffix = extra ? ` ${extra}` : "";
-  const line = `[System:main.ts:startup] +${elapsedMs}ms ${step}${suffix}`;
-  console.log(line);
-  appendStartupLogLine(line);
-};
-
 // 设置应用名称，这会影响系统菜单、对话框标题以及默认磁盘路径名
 app.setName(APP_NAME);
 
@@ -137,14 +117,6 @@ function initializeDataPath() {
 
 // 必须在开头尽早调用
 initializeDataPath();
-logStartupTiming(
-  "initializeDataPath completed",
-  `(userData=${app.getPath("userData")})`,
-);
-logStartupTiming(
-  "startup context",
-  `(packaged=${app.isPackaged} execPath=${process.execPath} baseDir=${getAppBaseDir()})`,
-);
 
 // 只有在打包后的环境下，才强制用户进行初始化检查
 // 这样在开发模式下可以跳过安装页面直接开发内页
@@ -403,11 +375,9 @@ const clearAllUnreadCounts = () => {
 
 const createTray = () => {
   if (tray) return;
-  logStartupTiming("createTray start");
   tray = new Tray(getWindowIconPath());
   tray.on("click", () => showMainWindow());
   updateUnreadPresentation();
-  logStartupTiming("createTray completed");
 };
 
 const shouldCloseToTray = () => {
@@ -430,7 +400,6 @@ const isWindowAlive = (
  */
 const getStore = (): StoreInstance => {
   if (!store) {
-    logStartupTiming("getStore start");
     ensureStoreDirectory();
     const userDataPath = app.getPath("userData");
     const configFilePath = getStoreConfigFilePath();
@@ -470,7 +439,6 @@ const getStore = (): StoreInstance => {
         void store.store;
       }
     }
-    logStartupTiming("getStore completed", `(userData=${userDataPath})`);
   }
   return store;
 };
@@ -718,8 +686,6 @@ ipcMain.handle("wechat-sso-start", async (_event, url: string) => {
 });
 
 const createWindow = () => {
-  logStartupTiming("createWindow start");
-
   const win = new BrowserWindow({
     title: APP_NAME,
     icon: getWindowIconPath(),
@@ -750,21 +716,11 @@ const createWindow = () => {
 
   // Decide whether to load dev server or static file
   if (!app.isPackaged) {
-    logStartupTiming(
-      "createWindow loadURL(dev) start",
-      `(url=${devServerUrl})`,
-    );
     win.loadURL(devServerUrl);
   } else {
     // 打包后使用自定义 app:// 协议承载前端，保证 History 路由刷新不 404
-    logStartupTiming(
-      "createWindow loadURL(app) start",
-      `(url=${APP_PROTOCOL}://-/)`,
-    );
     win.loadURL(`${APP_PROTOCOL}://-/`);
   }
-
-  logStartupTiming("createWindow BrowserWindow created");
 
   // DevTools logic
   if (process.env.ELECTRON_DEV_TOOLS === "true") {
@@ -809,20 +765,16 @@ const createWindow = () => {
   });
 
   win.once("ready-to-show", () => {
-    logStartupTiming("mainWindow ready-to-show");
   });
 
   win.webContents.on("did-start-loading", () => {
-    logStartupTiming("mainWindow did-start-loading");
   });
 
   win.webContents.on("dom-ready", () => {
-    logStartupTiming("mainWindow dom-ready");
   });
 
   win.webContents.on("did-finish-load", () => {
     if (windowClosed || !isWindowAlive(win)) return;
-    logStartupTiming("mainWindow did-finish-load");
   });
 
   // 统一处理 window.open 打开的子窗口，复用主窗口图标
@@ -850,21 +802,17 @@ const createWindow = () => {
 
 app.whenReady().then(async () => {
   try {
-    logStartupTiming("app.whenReady resolved");
     // 确保 store 实例在路径重定向生效后才被创建
     // 使用 getStore() 确保它指向正确的 userData (无论是在 Temp 还是用户选定的目录)
     getStore();
 
     if (app.isPackaged) {
-      logStartupTiming("registerAppProtocol start");
       registerAppProtocol();
-      logStartupTiming("registerAppProtocol completed");
     }
 
     createTray();
     createWindow();
     updateUnreadPresentation();
-    logStartupTiming("main process startup chain completed");
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) createWindow();
