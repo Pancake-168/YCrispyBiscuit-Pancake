@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { createLogger } from "../../../logger";
+import { createLogger } from "@/utils/logger";
 
 const mainPageLogger = createLogger("views/MainPage/index.tsx", "MainPage");
 

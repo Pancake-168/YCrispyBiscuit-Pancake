@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { createLogger } from "../../logger";
+import { createLogger } from "@/utils/logger";
 
 /**
  * APP设置

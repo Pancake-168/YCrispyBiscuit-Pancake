@@ -1,13 +1,22 @@
 {
   "compilerOptions": {
+    // 编译目标：最新的 ES 标准（Electron 内置的 Chromium 版本足够新）
     "target": "ESNext",
+    // 模块系统：CommonJS（Electron 主进程默认使用 require/module.exports）
     "module": "commonjs",
+    // 编译输出目录：main.ts → ../dist-electron/main.js
     "outDir": "../dist-electron",
+    // 源码根目录：设为父目录，使编译输出的目录结构与源码结构保持一致
     "rootDir": "..",
+    // 严格模式：开启所有严格检查（noImplicitAny、strictNullChecks 等）
     "strict": true,
+    // 允许 import 使用 default 导入 CommonJS 模块（如 electron-store）
     "esModuleInterop": true,
+    // 跳过 node_modules 的类型检查，加快编译速度
     "skipLibCheck": true,
+    // 强制导入文件名大小写一致（Windows 上文件名不区分大小写容易出问题）
     "forceConsistentCasingInFileNames": true
   },
-  "include": [".", "../logger.ts"]
+  // 编译范围：当前目录所有文件 + logger 模块（被 main.ts 和 preload.ts 引用）
+  "include": [".", "../src/utils/logger.ts"]
 }

@@ -3,7 +3,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import enUS from "@/language/resources/en-US";
 import zhCN from "@/language/resources/zh-CN";
-import { createLogger } from "../../logger";
+import { createLogger } from "@/utils/logger";
 
 const languageLogger = createLogger("language/index.ts", "i18n");
 

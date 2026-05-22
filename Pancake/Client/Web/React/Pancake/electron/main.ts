@@ -1,55 +1,101 @@
+/**
+ * ============================================================================
+ * Electron 主进程入口
+ * ============================================================================
+ *
+ * 架构概述：
+ * - 本文件是 Electron 应用的主进程（Main Process），负责窗口管理、系统托盘、
+ *   原生 API 调用、IPC 通信中枢。
+ * - 渲染进程（Vue 前端）通过 preload.ts 暴露的 electronAPI 与主进程通信。
+ * - 所有需要提权或访问 Node.js/系统 API 的操作都在这里完成，渲染进程无法直接
+ *   访问 Node.js 环境（contextIsolation + nodeIntegration:false）。
+ *
+ * 关键设计决策：
+ * 1. 自定义 app:// 协议 — 打包后前端 History 路由刷新不会 404
+ * 2. 关闭按钮最小化到托盘 — 适合常驻型聊天应用，真正退出通过托盘菜单
+ * 3. 无边框窗口（frame:false）— 前端自行绘制标题栏
+ * 4. electron-store 管理持久化配置 — 替代 localStorage（后者在 Electron 中不可靠）
+ */
+
 import {
-  app,
-  BrowserWindow,
-  ipcMain,
-  dialog,
-  shell,
-  protocol,
-  Notification,
-  Menu,
-  Tray,
+  app,             // 应用生命周期：ready、quit、before-quit 等
+  BrowserWindow,   // 创建和管理原生窗口
+  ipcMain,         // 主进程端 IPC（Inter-Process Communication）接收器
+  dialog,          // 原生对话框（错误弹窗等）
+  shell,           // 用系统默认方式打开 URL/文件
+  protocol,        // 注册自定义协议（app://）
+  net,             // Chromium 网络层，配合 protocol.handle 返回网络响应
+  Menu,            // 原生菜单（托盘右键菜单）
+  Tray,            // 系统托盘图标
 } from "electron";
 import path from "path";
-import dotenv from "dotenv";
-import Store from "electron-store";
+import { pathToFileURL } from "url";   // 将本地文件路径转为 file:// URL
+import dotenv from "dotenv";           // 加载 .env 环境变量文件
+import Store from "electron-store";    // 持久化键值存储（底层是 JSON 文件）
 import fs from "fs";
-import { createHash } from "crypto";
 import {
-  createLogger,
-  registerLogTransport,
-  serializeLogPayload,
-  type LogPayload,
-} from "../logger";
+  createLogger,        // 创建带上下文的日志记录器
+  registerLogTransport,// 注册日志输出目标（文件、控制台等）
+  serializeLogPayload, // 将日志对象序列化为单行字符串
+  type LogPayload,     // 日志数据结构的 TypeScript 类型
+} from "../src/utils/logger";
 
-const APP_LOG_FILE = "app.log";
-const ERROR_LOG_FILE = "error.log";
-const DEBUG_LOG_FILE = "debug.log";
+// ============================================================================
+// 日志系统 — 文件输出
+// ============================================================================
+
+/** 日志文件存放的子目录名，位于 userData 目录下 */
 const LOG_DIR_NAME = "logs";
 
-const ensureLogDirectory = () => {
-  const logDir = path.join(app.getPath("userData"), LOG_DIR_NAME);
-  fs.mkdirSync(logDir, { recursive: true });
+/**
+ * 日志目录路径缓存。
+ * 首次访问时创建目录并缓存路径，后续复用，避免每次写日志都调 mkdirSync。
+ */
+let logDir: string | null = null;
+
+/**
+ * 获取日志目录路径（懒初始化）。
+ * 首次调用时创建目录（recursive 保证父目录不存在也能成功），之后直接返回缓存。
+ */
+const getLogDir = () => {
+  if (!logDir) {
+    logDir = path.join(app.getPath("userData"), LOG_DIR_NAME);
+    fs.mkdirSync(logDir, { recursive: true });
+  }
   return logDir;
 };
 
-const appendLogLine = (fileName: string, line: string) => {
-  const logFilePath = path.join(ensureLogDirectory(), fileName);
-  fs.appendFileSync(logFilePath, `${line}\n`, "utf8");
+/**
+ * 生成当天的日志文件名，格式为 YYYY-MM-DD.log。
+ * 每次调用根据当前系统时间计算，跨天自动切换到新文件。
+ */
+const getDailyLogFileName = () => {
+  const date = new Date();
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}.log`;
 };
 
+/**
+ * 注册文件日志传输器。
+ * 所有通过 createLogger 产生的日志最终都会走到这里，以追加方式写入当天日志文件。
+ * serializeLogPayload 已经内置了 ISO 时间戳，所以每行日志都带精确时间。
+ */
 registerLogTransport((payload: LogPayload) => {
   const line = serializeLogPayload(payload);
-  appendLogLine(APP_LOG_FILE, line);
-
-  if (payload.level === "debug") {
-    appendLogLine(DEBUG_LOG_FILE, line);
-  }
-
-  if (payload.level === "error") {
-    appendLogLine(ERROR_LOG_FILE, line);
-  }
+  const logFilePath = path.join(getLogDir(), getDailyLogFileName());
+  fs.appendFileSync(logFilePath, `${line}\n`, "utf8");
 });
 
+// ============================================================================
+// 便捷日志函数 — 为 main.ts 提供简化的日志接口
+// ============================================================================
+
+/**
+ * 三个便捷函数封装了 createLogger("main.ts", functionName)，避免每次手动传文件名。
+ * details 参数支持任意类型的额外信息，会被 stringifyLogDetail 序列化。
+ */
 const logInfo = (functionName: string, message: string, details: unknown[] = []) => {
   createLogger("main.ts", functionName).info(message, ...details);
 };
@@ -62,12 +108,26 @@ const logError = (functionName: string, message: string, details: unknown[] = []
   createLogger("main.ts", functionName).error(message, ...details);
 };
 
+/** 启动时记录日志路径，方便排查问题 */
 logInfo("bootstrap", "主进程日志系统初始化完成", [app.getPath("userData")]);
 
+// ============================================================================
+// 自定义协议注册（app://）
+// ============================================================================
+
+/** 自定义协议名称，前端页面通过 app://-/ 访问 */
 const APP_PROTOCOL = "app";
 
-// 让自定义协议具备“标准 URL”的能力（支持 History API 路由）
-// 必须在 app ready 之前调用
+/**
+ * 注册自定义协议为"特权协议"。
+ *
+ * 必须在 app.ready 之前调用，否则会报错。
+ * 各项特权含义：
+ * - standard: true   → 让 app:// 行为像标准 URL（支持 History API pushState/replaceState）
+ * - secure: true     → 视为安全上下文（允许 Service Worker、Crypto API 等）
+ * - supportFetchAPI: true → 允许 fetch() 请求
+ * - corsEnabled: true → 允许跨域（对本地文件协议其实无所谓，但保持开启）
+ */
 protocol.registerSchemesAsPrivileged([
   {
     scheme: APP_PROTOCOL,
@@ -80,45 +140,65 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
-if (app.isPackaged) {
-  const hasSingleInstanceLock = app.requestSingleInstanceLock();
-  if (!hasSingleInstanceLock) {
-    app.exit(0);
-  }
-}
-
+/**
+ * 注册 app:// 协议的请求处理器。
+ *
+ * 处理逻辑：
+ * 1. 解析请求 URL，提取路径
+ * 2. 如果路径包含文件扩展名 → 映射到 dist/ 下对应静态资源（JS/CSS/图片等）
+ * 3. 如果路径没有扩展名 → 不管什么路由，统一返回 index.html
+ *    （这是 Vue Router History 模式的关键：/chat、/login 这些前端路由
+ *     在服务端不存在，必须返回入口 HTML，让前端路由接管）
+ * 4. 安全检查：解析后的路径必须在 distRoot 范围内，防止 ../ 路径遍历攻击
+ *
+ * 使用 protocol.handle（Electron 25+ 推荐），替代已废弃的 registerFileProtocol。
+ * net.fetch + pathToFileURL 将本地文件以 file:// URL 形式返回给 Chromium。
+ */
 const registerAppProtocol = () => {
-  // dist-electron 与 dist 是同级目录（无论开发还是打包）
+  // dist-electron 与 dist 是同级目录（开发时是源码，打包后也保持同一结构）
   const distRoot = path.join(__dirname, "..", "dist");
 
-  protocol.registerFileProtocol(APP_PROTOCOL, (request, callback) => {
+  protocol.handle(APP_PROTOCOL, (request) => {
     try {
       const url = new URL(request.url);
+      // decodeURIComponent 处理中文路径和特殊字符
       const rawPath = decodeURIComponent(url.pathname || "/");
       const normalizedPath = rawPath.replace(/^\/+/, "");
 
-      // 1) 静态资源（有扩展名）直接映射到 dist 下对应文件
-      // 2) 其余（如 /chat、/login）统一回退到 index.html（History 模式必须）
+      // 有扩展名 = 静态资源请求；无扩展名 = 前端路由，回退到 index.html
       const isAssetRequest = path.extname(normalizedPath) !== "";
       const relFile = isAssetRequest ? normalizedPath : "index.html";
 
+      // 拼接并规范化路径
       const resolved = path.normalize(path.join(distRoot, relFile));
+
+      // 路径遍历防护：确保解析后的路径仍在 distRoot 下
       if (!resolved.startsWith(path.normalize(distRoot))) {
-        callback({ path: path.join(distRoot, "index.html") });
-        return;
+        return net.fetch(pathToFileURL(path.join(distRoot, "index.html")).toString());
       }
-      callback({ path: resolved });
+
+      return net.fetch(pathToFileURL(resolved).toString());
     } catch {
-      callback({ path: path.join(distRoot, "index.html") });
+      // 任何异常（包括 URL 解析失败）都安全降级到 index.html
+      return net.fetch(pathToFileURL(path.join(distRoot, "index.html")).toString());
     }
   });
 };
 
-// 1. 尽力加载环境变量 (优先识别打包后的路径)
+// ============================================================================
+// 环境变量加载
+// ============================================================================
+
+/**
+ * 查找 .env 文件的路径。
+ * 开发环境：项目根目录下的 .env.development
+ * 生产环境：按优先级尝试多个可能位置（适配不同打包方式）
+ *   - resources/app/  → electron-builder 打包后的资源目录
+ *   - __dirname/..    → 相对于 main.js 的上层
+ *   - app.getAppPath() → asar 包内的根路径
+ */
 const getEnvPath = () => {
   if (app.isPackaged) {
-    // 打包后，文件位于 resources/app/.env.production 或被打在 asar 里
-    // 尝试多个可能的位置
     const paths = [
       path.join(process.resourcesPath, "app", ".env.production"),
       path.join(__dirname, "..", ".env.production"),
@@ -134,193 +214,76 @@ const getEnvPath = () => {
 const envPath = getEnvPath();
 dotenv.config({ path: envPath });
 
-// 如果环境变量加载失败，从 package.json 获取一个硬编码的保底值
+// ============================================================================
+// 应用名称 & 全局状态
+// ============================================================================
+
+/** 应用显示名称，从环境变量读取，保底值为 RegionAI */
 const APP_NAME = process.env.VITE_APP_NAME || "RegionAI";
 
-// 设置应用名称，这会影响系统菜单、对话框标题以及默认磁盘路径名
+/**
+ * 设置应用名称。
+ * 影响：系统级对话框标题、默认 userData 路径名（如 %APPDATA%/RegionAI/）。
+ * 注意：必须在 app.ready 之前调用才对所有路径生效。
+ */
 app.setName(APP_NAME);
 
-const getAppBaseDir = () => {
-  if (!app.isPackaged) return process.cwd();
-  return path.dirname(process.execPath);
-};
-
-function initializeDataPath() {
-  try {
-    if (!app.isPackaged) return;
-
-    const userDataPath = path.join(getAppBaseDir(), "app_data");
-    if (!fs.existsSync(userDataPath)) {
-      fs.mkdirSync(userDataPath, { recursive: true });
-    }
-
-    app.setPath("userData", userDataPath);
-    logInfo("initializeDataPath", "UserData redirected to", [userDataPath]);
-  } catch (err) {
-    logWarn("initializeDataPath", "初始化路径失败", [err]);
-  }
-}
-
-// 必须在开头尽早调用
-initializeDataPath();
-
-// 只有在打包后的环境下，才强制用户进行初始化检查
-// 这样在开发模式下可以跳过安装页面直接开发内页
-
-// NOTE: We will create the electron-store instance after possibly calling app.setPath('userData')
-interface StoreInstance {
+/**
+ * electron-store 的运行时接口。
+ *
+ * electron-store v11 的 TypeScript 类型（继承 Conf 的 #private 字段）
+ * 在项目当前编译配置下解析异常，因此手动声明所需方法的类型。
+ * 运行时方法（get/set/delete/store）均存在，不受影响。
+ */
+interface IStore {
   get(key: string): unknown;
   set(key: string, value: unknown): void;
   delete(key: string): void;
-  store: Record<string, unknown>;
+  readonly store: Record<string, unknown>;
 }
 
-let store: StoreInstance | null = null;
-let storeEncryptionKey: string | null = null;
+/**
+ * electron-store 实例（持久化键值存储）。
+ * 懒初始化 — 首次 getStore() 调用时才创建。
+ * 底层在 userData 目录下生成 config.json 文件。
+ */
+let store: IStore | null = null;
 
+/** 主窗口引用，单例。关闭/隐藏时置 null。 */
 let mainWindow: BrowserWindow | null = null;
-let tray: Tray | null = null;
-let isQuitting = false;
-const unreadCountByRoom = new Map<string, number>();
 
+/** 系统托盘图标引用 */
+let tray: Tray | null = null;
+
+/**
+ * 退出标记。
+ * 当用户通过托盘菜单点击"退出"时设为 true，此时关闭窗口不会隐藏到托盘，
+ * 而是真正关闭（shouldCloseToTray 返回 false），走正常退出流程。
+ */
+let isQuitting = false;
+
+// ============================================================================
+// 窗口 & 托盘 — 工具函数
+// ============================================================================
+
+/** 窗口默认尺寸（也作为最小尺寸，防止窗口缩得过小导致布局错乱） */
 const NORMAL_WINDOW_SIZE = { width: 1200, height: 800 };
 
+/**
+ * 获取应用图标路径。
+ * 开发环境：public/icon.png
+ * 生产环境：dist/icon.png（打包后与 dist-electron 同级）
+ */
 const getWindowIconPath = () =>
   path.join(
     __dirname,
     app.isPackaged ? "../dist/icon.png" : "../public/icon.png",
   );
 
-const getUnreadTotal = () => {
-  let total = 0;
-  for (const count of unreadCountByRoom.values()) {
-    total += count;
-  }
-  return total;
-};
-
-const getStoreConfigFilePath = () =>
-  path.join(app.getPath("userData"), "config.json");
-const getStoreBackupFilePath = () =>
-  path.join(
-    app.getPath("userData"),
-    `config.plaintext.backup.${Date.now()}.json`,
-  );
-const getStoreCorruptedBackupFilePath = () =>
-  path.join(
-    app.getPath("userData"),
-    `config.unrecoverable.backup.${Date.now()}.json`,
-  );
-const getLegacyStoreKeyFilePath = () =>
-  path.join(app.getPath("userData"), "config.key");
-
-const ensureStoreDirectory = () => {
-  const userDataPath = app.getPath("userData");
-  if (!fs.existsSync(userDataPath)) {
-    fs.mkdirSync(userDataPath, { recursive: true });
-  }
-};
-
-const createEncryptedStoreInstance = (
-  userDataPath: string,
-  encryptionKey: string,
-) => {
-  return new Store({
-    cwd: userDataPath,
-    encryptionKey,
-  }) as unknown as StoreInstance;
-};
-
-const readPlaintextStoreSnapshot = (userDataPath: string) => {
-  const plainStore = new Store({
-    cwd: userDataPath,
-  }) as unknown as StoreInstance;
-  return { ...plainStore.store };
-};
-
-const writeEncryptedStoreSnapshot = (
-  userDataPath: string,
-  encryptionKey: string,
-  snapshot: Record<string, unknown>,
-) => {
-  const encryptedStore = createEncryptedStoreInstance(
-    userDataPath,
-    encryptionKey,
-  );
-  for (const [key, value] of Object.entries(snapshot)) {
-    encryptedStore.set(key, value);
-  }
-  void encryptedStore.store;
-  return encryptedStore;
-};
-
-const loadStoreEncryptionKey = () => {
-  if (storeEncryptionKey) return storeEncryptionKey;
-
-  const keySeed = [
-    APP_NAME,
-    process.platform,
-    process.env.COMPUTERNAME || "",
-    process.env.USERNAME || "",
-  ].join("|");
-
-  storeEncryptionKey = createHash("sha256").update(keySeed).digest("hex");
-  return storeEncryptionKey;
-};
-
-const removeLegacyStoreKeyFile = () => {
-  const legacyKeyFilePath = getLegacyStoreKeyFilePath();
-  if (!fs.existsSync(legacyKeyFilePath)) return;
-
-  try {
-    fs.unlinkSync(legacyKeyFilePath);
-  } catch (error) {
-    logWarn("removeLegacyStoreKeyFile", "删除旧密钥文件失败", [error]);
-  }
-};
-
-const tryReadPlaintextStoreSnapshot = (userDataPath: string) => {
-  try {
-    return readPlaintextStoreSnapshot(userDataPath);
-  } catch (error) {
-    logWarn("tryReadPlaintextStoreSnapshot", "明文配置读取失败", [
-      error,
-      userDataPath,
-    ]);
-    return null;
-  }
-};
-
-const resetCorruptedStoreFiles = () => {
-  const configFilePath = getStoreConfigFilePath();
-  const corruptedBackupPath = getStoreCorruptedBackupFilePath();
-
-  if (fs.existsSync(configFilePath)) {
-    try {
-      fs.renameSync(configFilePath, corruptedBackupPath);
-      logWarn("resetCorruptedStoreFiles", "已备份无法恢复的配置文件", [
-        corruptedBackupPath,
-      ]);
-    } catch (error) {
-      logWarn("resetCorruptedStoreFiles", "备份损坏配置失败，尝试直接删除", [
-        error,
-      ]);
-      try {
-        fs.unlinkSync(configFilePath);
-      } catch (deleteError) {
-        logWarn("resetCorruptedStoreFiles", "删除损坏配置失败", [deleteError]);
-      }
-    }
-  }
-
-  removeLegacyStoreKeyFile();
-};
-
-const recreateEncryptedStore = (userDataPath: string) => {
-  removeLegacyStoreKeyFile();
-  return createEncryptedStoreInstance(userDataPath, loadStoreEncryptionKey());
-};
-
+/**
+ * 显示并聚焦主窗口。
+ * 处理三种状态：最小化 → 还原，隐藏 → 显示，已显示 → 聚焦。
+ */
 const showMainWindow = () => {
   if (!mainWindow || mainWindow.isDestroyed()) return;
 
@@ -335,24 +298,21 @@ const showMainWindow = () => {
   mainWindow.focus();
 };
 
-app.on("second-instance", () => {
-  if (!mainWindow || mainWindow.isDestroyed()) {
-    createWindow();
-    return;
-  }
+// ============================================================================
+// 系统托盘
+// ============================================================================
 
-  showMainWindow();
-});
+/**
+ * 创建系统托盘图标和右键菜单。
+ * 菜单包含：打开主窗口、退出应用。
+ * 点击托盘图标 = 打开主窗口。
+ * 仅在首次调用时创建（幂等检查）。
+ */
+const createTray = () => {
+  if (tray) return;
+  logInfo("createTray", "开始创建系统托盘");
 
-const updateTrayMenu = () => {
-  if (!tray) return;
-
-  const unreadTotal = getUnreadTotal();
   const contextMenu = Menu.buildFromTemplate([
-    {
-      label: unreadTotal > 0 ? `未读消息 ${unreadTotal} 条` : "暂无未读消息",
-      enabled: false,
-    },
     {
       label: "打开主窗口",
       click: () => showMainWindow(),
@@ -360,71 +320,47 @@ const updateTrayMenu = () => {
     {
       label: "退出",
       click: () => {
+        // 设置退出标记，确保后续窗口关闭事件不会拦截为"隐藏到托盘"
         isQuitting = true;
         app.quit();
       },
     },
   ]);
 
-  tray.setContextMenu(contextMenu);
-};
-
-const updateUnreadPresentation = () => {
-  const unreadTotal = getUnreadTotal();
-  const title = unreadTotal > 0 ? `(${unreadTotal}) ${APP_NAME}` : APP_NAME;
-
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.setTitle(title);
-
-    const shouldFlash = unreadTotal > 0 && !mainWindow.isFocused();
-    mainWindow.flashFrame(shouldFlash);
-  }
-
-  if (typeof app.setBadgeCount === "function") {
-    app.setBadgeCount(unreadTotal);
-  }
-
-  if (tray) {
-    tray.setToolTip(
-      unreadTotal > 0 ? `${APP_NAME} (${unreadTotal} 条未读)` : APP_NAME,
-    );
-    updateTrayMenu();
-  }
-};
-
-const incrementUnreadCount = (roomId: string) => {
-  if (!roomId) return;
-  unreadCountByRoom.set(roomId, (unreadCountByRoom.get(roomId) ?? 0) + 1);
-  updateUnreadPresentation();
-};
-
-const clearUnreadCount = (roomId: string) => {
-  if (!roomId) return;
-  if (!unreadCountByRoom.has(roomId)) return;
-  unreadCountByRoom.delete(roomId);
-  updateUnreadPresentation();
-};
-
-const clearAllUnreadCounts = () => {
-  if (unreadCountByRoom.size === 0) return;
-  unreadCountByRoom.clear();
-  updateUnreadPresentation();
-};
-
-const createTray = () => {
-  if (tray) return;
-  logInfo("createTray", "开始创建系统托盘");
   tray = new Tray(getWindowIconPath());
+  tray.setContextMenu(contextMenu);
+  tray.setToolTip(APP_NAME);
+  // 点击托盘图标 = 打开主窗口（Windows 常见行为）
   tray.on("click", () => showMainWindow());
-  updateUnreadPresentation();
   logInfo("createTray", "系统托盘创建完成");
 };
 
+// ============================================================================
+// 窗口关闭行为 — 最小化到托盘
+// ============================================================================
+
+/**
+ * 判断当前是否应该"关闭到托盘"而非真正关闭。
+ * 返回 true → 隐藏窗口（保留在托盘）
+ * 返回 false → 真正关闭窗口
+ *
+ * 退出流程：用户点击托盘菜单"退出" → isQuitting = true
+ *           → shouldCloseToTray() 返回 false → 窗口正常关闭 → app.quit()
+ */
 const shouldCloseToTray = () => {
   if (isQuitting) return false;
   return true;
 };
 
+// ============================================================================
+// 窗口存活检查 — Type Guard
+// ============================================================================
+
+/**
+ * 类型守卫：检查 BrowserWindow 是否仍然存活。
+ * 同时检查三层状态：null、窗口已销毁、webContents 已销毁。
+ * 避免了在事件回调中操作已销毁窗口导致的崩溃。
+ */
 const isWindowAlive = (
   win: BrowserWindow | null | undefined,
 ): win is BrowserWindow => {
@@ -434,51 +370,39 @@ const isWindowAlive = (
   return true;
 };
 
+// ============================================================================
+// 持久化存储（electron-store）
+// ============================================================================
+
 /**
- * 统一获取 Store 实例的方法
- * 确保 Store 总是同步到当前 app.getPath('userData')
+ * 获取 electron-store 实例（懒初始化）。
+ * 首次调用时在 app.getPath("userData") 下创建 config.json。
+ * 所有持久化设置都通过这个 store 读写。
  */
-const getStore = (): StoreInstance => {
+const getStore = (): IStore => {
   if (!store) {
-    ensureStoreDirectory();
-    const userDataPath = app.getPath("userData");
-    const configFilePath = getStoreConfigFilePath();
-    // 强制 cwd 为 userData 根目录，避免 electron-store 再套一层应用名文件夹
-    try {
-      store = recreateEncryptedStore(userDataPath);
-      void store.store;
-    } catch (error) {
-      logWarn("getStore", "读取加密配置失败，尝试迁移或重建", [error]);
-
-      if (fs.existsSync(configFilePath)) {
-        storeEncryptionKey = null;
-        const plaintextSnapshot = tryReadPlaintextStoreSnapshot(userDataPath);
-
-        if (plaintextSnapshot) {
-          const backupPath = getStoreBackupFilePath();
-          fs.renameSync(configFilePath, backupPath);
-          logInfo("getStore", "已备份明文配置并迁移为加密配置", [backupPath]);
-          store = writeEncryptedStoreSnapshot(
-            userDataPath,
-            loadStoreEncryptionKey(),
-            plaintextSnapshot,
-          );
-        } else {
-          resetCorruptedStoreFiles();
-          store = recreateEncryptedStore(userDataPath);
-          void store.store;
-        }
-      } else {
-        store = recreateEncryptedStore(userDataPath);
-        void store.store;
-      }
-    }
+    store = new Store() as unknown as IStore;
   }
   return store;
 };
 
+// ============================================================================
+// IPC 处理器 — 渲染进程与主进程的通信桥梁
+// ============================================================================
+
+/**
+ * get-is-dev：判断当前是否为开发环境。
+ * 渲染进程可能根据此结果决定是否显示调试面板、开发工具等。
+ */
 ipcMain.handle("get-is-dev", () => !app.isPackaged);
 
+/**
+ * write-log：接收渲染进程的日志并写入主进程日志文件。
+ *
+ * 背景：渲染进程的 console 输出在打包后不可见（无 DevTools），
+ * 通过此 IPC 将前端日志统一汇聚到主进程日志文件，方便排查用户端问题。
+ * payload 包含 fileName、functionName、level、message、details 字段。
+ */
 ipcMain.handle("write-log", async (_event, payload) => {
   try {
     const logger = createLogger(payload.fileName, payload.functionName);
@@ -498,60 +422,29 @@ ipcMain.handle("write-log", async (_event, payload) => {
   }
 });
 
-ipcMain.handle(
-  "show-system-notification",
-  async (_event, payload: { title: string; body: string; roomId: string }) => {
-    if (!Notification.isSupported()) return false;
-
-    incrementUnreadCount(payload.roomId);
-
-    const notification = new Notification({
-      title: payload.title,
-      body: payload.body,
-      icon: getWindowIconPath(),
-      silent: true,
-    });
-
-    notification.on("click", () => {
-      showMainWindow();
-      if (!mainWindow || mainWindow.isDestroyed()) return;
-      mainWindow.webContents.send(
-        "system-notification-navigate",
-        payload.roomId,
-      );
-    });
-
-    notification.show();
-    return true;
-  },
-);
-
-ipcMain.handle("clear-room-unread", async (_event, roomId: string) => {
-  clearUnreadCount(roomId);
-  return true;
-});
-
-ipcMain.handle("clear-all-unread", async () => {
-  clearAllUnreadCounts();
-  return true;
-});
-
-// Register handlers early so renderer can call them before app.whenReady if needed
+/**
+ * settings-get：读取持久化设置。
+ * @param key 设置键名
+ * @returns 对应的值（unknown），失败返回 null
+ */
 ipcMain.handle("settings-get", async (_event, key: string) => {
-  const currentStore = getStore();
-
   try {
-    return currentStore.get(key);
+    return getStore().get(key);
   } catch (error) {
     logWarn("settings-get", "settings-get failed", [error]);
     return null;
   }
 });
 
+/**
+ * settings-set：写入持久化设置。
+ * @param key   设置键名
+ * @param value 任意可 JSON 序列化的值
+ * @returns 成功 true，失败 false
+ */
 ipcMain.handle("settings-set", async (_event, key: string, value: unknown) => {
-  const currentStore = getStore();
   try {
-    currentStore.set(key as string, value);
+    getStore().set(key as string, value);
     return true;
   } catch (error) {
     logWarn("settings-set", "settings-set failed", [error]);
@@ -559,10 +452,14 @@ ipcMain.handle("settings-set", async (_event, key: string, value: unknown) => {
   }
 });
 
+/**
+ * settings-delete：删除指定持久化设置。
+ * @param key 设置键名
+ * @returns 成功 true，失败 false
+ */
 ipcMain.handle("settings-delete", async (_event, key: string) => {
-  const currentStore = getStore();
   try {
-    currentStore.delete(key);
+    getStore().delete(key);
     return true;
   } catch (error) {
     logWarn("settings-delete", "settings-delete failed", [error]);
@@ -570,18 +467,28 @@ ipcMain.handle("settings-delete", async (_event, key: string) => {
   }
 });
 
+/**
+ * settings-keys：获取所有持久化设置的键名列表。
+ * @returns 键名字符串数组，失败返回空数组
+ */
 ipcMain.handle("settings-keys", async () => {
-  const currentStore = getStore();
   try {
-    return Object.keys(currentStore.store);
+    return Object.keys(getStore().store);
   } catch (error) {
     logWarn("settings-keys", "settings-keys failed", [error]);
     return [];
   }
 });
 
+/**
+ * open-external：用系统默认浏览器打开外部链接。
+ * 安全措施：仅允许 http/https 协议的 URL，拒绝 file:// 等危险协议。
+ * @param url 目标网址
+ * @returns 成功 true，失败或被拒绝返回 false
+ */
 ipcMain.handle("open-external", async (_event, url: string) => {
   try {
+    // 安全校验：只允许 http/https，防止 file:// 或 javascript: 等危险协议
     if (typeof url !== "string" || !/^https?:\/\//i.test(url)) {
       logWarn("open-external", "open-external rejected url", [url]);
       return false;
@@ -594,144 +501,48 @@ ipcMain.handle("open-external", async (_event, url: string) => {
   }
 });
 
-ipcMain.handle("wechat-sso-start", async (_event, url: string) => {
-  if (!mainWindow) return { success: false, message: "mainWindow not ready" };
-  if (typeof url !== "string" || !/^https?:\/\//i.test(url)) {
-    return { success: false, message: "invalid url" };
-  }
+// ============================================================================
+// 窗口控件 IPC — 无边框窗口的拖拽区域按钮
+// ============================================================================
 
-  const parseCallbackParams = (targetUrl: string) => {
-    try {
-      const parsed = new URL(targetUrl);
-      const fromSearch = new URLSearchParams(parsed.search);
-      const hash = parsed.hash || "";
-      const qIndex = hash.indexOf("?");
-      const fromHashQuery =
-        qIndex >= 0
-          ? new URLSearchParams(hash.slice(qIndex + 1))
-          : new URLSearchParams("");
-      const pick = (k: string) => fromSearch.get(k) ?? fromHashQuery.get(k);
-      return {
-        state: pick("state") || "",
-        loginToken: pick("loginToken") || "",
-        code: pick("code") || "",
-        sub: pick("sub") || "",
-        errMsg: pick("err_msg") || "",
-      };
-    } catch {
-      return {
-        state: "",
-        loginToken: "",
-        code: "",
-        sub: "",
-        errMsg: "",
-      };
-    }
-  };
-
-  const looksLikeFinalCallback = (targetUrl: string) => {
-    const { state, loginToken, errMsg, sub } = parseCallbackParams(targetUrl);
-
-    // 最终态信号：
-    // 1) 已拿到 loginToken（可直接登录）
-    // 2) bind_required（需要绑定）
-    // 3) err_msg（后端显式错误）
-    // 4) state=ok 且有 sub（部分后端会用此表示可继续流程）
-    if (loginToken) return true;
-    if (errMsg) return true;
-    if (state === "bind_required") return true;
-    if (state === "ok" && sub) return true;
-
-    // 注意：仅有 code 且 state 为空通常是中间跳转，不能提前关闭窗口
-    return false;
-  };
-
-  return await new Promise<{
-    success: boolean;
-    callbackUrl?: string;
-    message?: string;
-  }>((resolve) => {
-    const authWin = new BrowserWindow({
-      parent: mainWindow ?? undefined,
-      modal: true,
-      show: true,
-      width: 520,
-      height: 720,
-      resizable: true,
-      icon: getWindowIconPath(),
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true,
-        backgroundThrottling: false,
-      },
-    });
-
-    let settled = false;
-    const cleanupAndResolve = (payload: {
-      success: boolean;
-      callbackUrl?: string;
-      message?: string;
-    }) => {
-      if (settled) return;
-      settled = true;
-      try {
-        if (!authWin.isDestroyed()) authWin.close();
-      } catch {
-        // ignore
-      }
-      resolve(payload);
-    };
-
-    const tryCapture = (targetUrl: string, event?: Electron.Event) => {
-      if (!looksLikeFinalCallback(targetUrl)) return;
-      const maybePreventable = event as
-        | (Electron.Event & { preventDefault?: () => void })
-        | undefined;
-      if (
-        maybePreventable &&
-        typeof maybePreventable.preventDefault === "function"
-      ) {
-        try {
-          maybePreventable.preventDefault();
-        } catch {
-          // ignore
-        }
-      }
-      cleanupAndResolve({ success: true, callbackUrl: targetUrl });
-    };
-
-    const timeout = setTimeout(
-      () => {
-        cleanupAndResolve({ success: false, message: "timeout" });
-      },
-      5 * 60 * 1000,
-    );
-
-    authWin.on("closed", () => {
-      clearTimeout(timeout);
-      if (!settled) resolve({ success: false, message: "window_closed" });
-    });
-
-    authWin.webContents.on("will-redirect", (event, targetUrl) =>
-      tryCapture(targetUrl, event),
-    );
-    authWin.webContents.on("will-navigate", (event, targetUrl) =>
-      tryCapture(targetUrl, event),
-    );
-    authWin.webContents.on("did-redirect-navigation", (_event, targetUrl) =>
-      tryCapture(targetUrl),
-    );
-    authWin.webContents.on("did-navigate", (_event, targetUrl) =>
-      tryCapture(targetUrl),
-    );
-
-    authWin.loadURL(url).catch((err) => {
-      clearTimeout(timeout);
-      cleanupAndResolve({ success: false, message: String(err) });
-    });
-  });
+/**
+ * 窗口控制按钮（最小化/最大化/关闭）的 IPC 监听器。
+ *
+ * 由于应用使用无边框窗口（frame: false），标题栏的窗口控制按钮由前端
+ * 自行绘制。前端通过 ipcRenderer.send() 发送单向消息，主进程执行对应操作。
+ *
+ * 注意：使用 ipcMain.on（不是 ipcMain.handle），因为前端用 send() 而非 invoke()。
+ * send() 是单向的，不需要返回值。
+ *
+ * 这些监听器只在模块顶层注册一次，不在 createWindow() 内部注册，
+ * 以防止窗口销毁重建时监听器叠加（每次 createWindow 都会新增 on 监听器）。
+ */
+ipcMain.on("window-minimize", () => mainWindow?.minimize());
+ipcMain.on("window-maximize", () => {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (mainWindow.isMaximized()) mainWindow.unmaximize();
+  else mainWindow.maximize();
 });
+ipcMain.on("window-close", () => mainWindow?.close());
 
+// ============================================================================
+// 创建主窗口
+// ============================================================================
+
+/**
+ * 创建并配置主窗口。
+ *
+ * 配置要点：
+ * - frame: false       → 无边框，前端通过自定义组件绘制标题栏
+ * - contextIsolation   → 渲染进程无法直接访问 Node.js API，安全隔离
+ * - nodeIntegration    → 禁用，防止渲染进程直接 require Node 模块
+ * - backgroundThrottling → 禁用后台节流（聊天应用需要及时收到消息）
+ * - preload            → 指向 preload.ts 编译产物，暴露安全的 electronAPI
+ *
+ * 加载策略：
+ * - 开发环境 → 连接 Vite 开发服务器（HMR 热更新）
+ * - 生产环境 → 加载 app:// 自定义协议（History 路由支持）
+ */
 const createWindow = () => {
   logInfo("createWindow", "开始创建主窗口");
   const win = new BrowserWindow({
@@ -741,80 +552,96 @@ const createWindow = () => {
     height: NORMAL_WINDOW_SIZE.height,
     minWidth: NORMAL_WINDOW_SIZE.width,
     minHeight: NORMAL_WINDOW_SIZE.height,
-    frame: false, // 移除系统边框和标题栏
+    frame: false, // 无边框窗口，标题栏由前端绘制
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: false,
-      contextIsolation: true,
-      backgroundThrottling: false,
+      preload: path.join(__dirname, "preload.js"), // 预加载脚本（编译后为 .js）
+      nodeIntegration: false,     // 禁止渲染进程使用 Node.js API（安全）
+      contextIsolation: true,     // 启用上下文隔离（安全）
+      backgroundThrottling: false,// 后台不节流，确保消息推送及时到达
     },
   });
 
-  // 移除顶部菜单栏
+  // 移除原生菜单栏（无边框窗口不需要，且 macOS 不考虑）
   win.setMenu(null);
 
+  // 挂载到全局变量
   mainWindow = win;
-  let windowClosed = false;
 
-  // Check for dev server URL from environment
-  // Electron 严格从环境变量读取端口
+  // 解析开发服务器地址（Vite 默认 localhost:5173，端口可通过 VITE_PORT 自定义）
   const port = process.env.VITE_PORT;
   const devServerUrl =
     process.env.VITE_DEV_SERVER_URL || `http://localhost:${port}`;
 
-  // Decide whether to load dev server or static file
+  // 根据打包状态选择加载策略
   if (!app.isPackaged) {
+    // 开发环境：直连 Vite 开发服务器，享受 HMR 热更新
     logInfo("createWindow", "加载开发环境页面", [devServerUrl]);
     win.loadURL(devServerUrl);
   } else {
-    // 打包后使用自定义 app:// 协议承载前端，保证 History 路由刷新不 404
+    // 生产环境：加载 app:// 协议，内部映射到 dist/index.html
+    // History 路由（如 /chat、/settings）刷新时不会 404
     logInfo("createWindow", "加载桌面应用页面", [`${APP_PROTOCOL}://-/`]);
     win.loadURL(`${APP_PROTOCOL}://-/`);
   }
 
-  // DevTools logic
+  // 可选的开发工具自动打开（通过环境变量 ELECTRON_DEV_TOOLS=true 控制）
   if (process.env.ELECTRON_DEV_TOOLS === "true") {
     win.webContents.openDevTools();
   }
 
-  // Window Controls IPC
-  ipcMain.on("window-minimize", () => win.minimize());
-  ipcMain.on("window-maximize", () => {
-    if (win.isMaximized()) win.unmaximize();
-    else win.maximize();
-  });
-  ipcMain.on("window-close", () => win.close());
+  // ---- 窗口生命周期事件 ----
 
+  /**
+   * 关闭事件拦截 → 最小化到托盘。
+   * 用户点击窗口 X 按钮时，默认隐藏窗口而不是退出应用。
+   * 只有在 isQuitting = true（用户从托盘菜单选择"退出"）时才真正关闭。
+   */
   win.on("close", (event) => {
     if (!shouldCloseToTray()) return;
-    event.preventDefault();
-    win.hide();
-    win.flashFrame(false);
+    event.preventDefault(); // 阻止默认关闭行为
+    win.hide();             // 隐藏窗口（保留在托盘）
+    win.flashFrame(false);  // 停止任务栏闪烁（如果有）
   });
 
-  // 发送窗口状态给渲染进程，用于 UI 图标切换（最大化/还原）
+  /**
+   * 最大化/还原事件 → 通知渲染进程切换标题栏按钮图标。
+   * 前端 onMaximizedStatus 回调接收 true（最大化）/false（还原）。
+   */
   win.on("maximize", () => {
-    if (!isWindowAlive(win) || windowClosed) return;
+    if (!isWindowAlive(win)) return;
     win.webContents.send("window-maximized-status", true);
   });
   win.on("unmaximize", () => {
-    if (!isWindowAlive(win) || windowClosed) return;
+    if (!isWindowAlive(win)) return;
     win.webContents.send("window-maximized-status", false);
   });
 
+  /**
+   * 窗口真正关闭时清理全局引用。
+   * 注意区分 closed（已销毁）和 close（即将关闭，在此被拦截）。
+   */
   win.on("closed", () => {
-    windowClosed = true;
     if (mainWindow === win) {
       mainWindow = null;
     }
   });
 
+  /**
+   * 窗口获得焦点时清除任务栏闪烁。
+   * 用户通过托盘图标恢复窗口时，任务栏不应该继续闪烁。
+   */
   win.on("focus", () => {
-    if (!isWindowAlive(win) || windowClosed) return;
+    if (!isWindowAlive(win)) return;
     win.flashFrame(false);
   });
 
-  // 统一处理 window.open 打开的子窗口，复用主窗口图标
+  // ---- 子窗口处理 ----
+
+  /**
+   * 统一处理前端 window.open() 调用。
+   * 为所有子窗口应用相同的安全配置（preload、contextIsolation 等），
+   * 然后阻止默认行为（前端不需要拿到子窗口引用，由主进程管理）。
+   */
   win.webContents.setWindowOpenHandler(({ url }) => {
     const child = new BrowserWindow({
       parent: win,
@@ -833,30 +660,42 @@ const createWindow = () => {
     child.setMenu(null);
     child.loadURL(url);
 
+    // 阻止默认的窗口创建行为（我们已手动创建子窗口）
     return { action: "deny" };
   });
 };
 
+// ============================================================================
+// 应用启动流程 — app.whenReady
+// ============================================================================
+
+/**
+ * Electron 应用启动入口。
+ * app.whenReady() 在所有初始化完成后触发，此时可以安全地创建窗口。
+ *
+ * 启动顺序：
+ * 1. 初始化持久化存储（electron-store）
+ * 2. （生产环境）注册 app:// 自定义协议
+ * 3. 创建系统托盘
+ * 4. 创建主窗口
+ *
+ * 任何步骤失败都会弹出错误对话框并退出应用。
+ */
 app.whenReady().then(async () => {
   try {
     logInfo("app.whenReady", "Electron ready 事件已触发");
-    // 确保 store 实例在路径重定向生效后才被创建
-    // 使用 getStore() 确保它指向正确的 userData (无论是在 Temp 还是用户选定的目录)
+
+    // 初始化持久化存储（首次访问时在 userData 下创建 config.json）
     getStore();
 
+    // 生产环境注册自定义协议，开发环境使用 localhost 不需要
     if (app.isPackaged) {
       registerAppProtocol();
     }
 
     createTray();
     createWindow();
-    updateUnreadPresentation();
     logInfo("app.whenReady", "主进程启动完成");
-
-    app.on("activate", () => {
-      if (BrowserWindow.getAllWindows().length === 0) createWindow();
-      else showMainWindow();
-    });
   } catch (error) {
     logError("app.whenReady", "应用启动失败", [error]);
     dialog.showErrorBox(
@@ -867,18 +706,43 @@ app.whenReady().then(async () => {
   }
 });
 
+// ============================================================================
+// 应用生命周期事件
+// ============================================================================
+
+/**
+ * before-quit：应用即将退出。
+ * 设置 isQuitting 标记，确保后续窗口 close 事件不会拦截为"隐藏到托盘"。
+ */
 app.on("before-quit", () => {
   isQuitting = true;
 });
 
+/**
+ * window-all-closed：所有窗口关闭时退出应用。
+ * 不区分平台（不考虑 macOS 的 dock 常驻行为），直接退出。
+ */
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+  app.quit();
 });
 
+// ============================================================================
+// 全局错误捕获 — 最后防线
+// ============================================================================
+
+/**
+ * 捕获主进程同步异常。
+ * 这些异常如果没有被上层的 try/catch 处理，至少会被记录到日志文件，
+ * 否则用户端崩溃后无法追溯原因。
+ */
 process.on("uncaughtException", (error) => {
   logError("process.uncaughtException", "主进程未捕获异常", [error]);
 });
 
+/**
+ * 捕获主进程中未处理的 Promise rejection。
+ * 与 uncaughtException 互补，覆盖异步错误场景。
+ */
 process.on("unhandledRejection", (reason) => {
   logError("process.unhandledRejection", "主进程未处理 Promise 拒绝", [
     reason,

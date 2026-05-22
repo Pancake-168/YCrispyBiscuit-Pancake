@@ -7,7 +7,7 @@ import {
   createLogger,
   registerElectronRendererTransport,
   registerGlobalRendererLogHandlers,
-} from "../logger";
+} from "@/utils/logger";
 
 const bootstrapLogger = createLogger("main.tsx", "bootstrap");
 

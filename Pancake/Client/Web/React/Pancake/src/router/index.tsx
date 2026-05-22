@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainPage from "@/views/MainPage";
-import { createLogger } from "../../logger";
+import { createLogger } from "@/utils/logger";
 
 const routerLogger = createLogger("router/index.tsx", "createRouter");
 

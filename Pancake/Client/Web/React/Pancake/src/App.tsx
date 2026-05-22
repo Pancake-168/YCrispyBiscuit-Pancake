@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { RouterProvider } from "react-router-dom";
 import { router } from "@/router";
 import { useAppStore } from "@/stores/app.store";
-import { createLogger } from "../logger";
+import { createLogger } from "@/utils/logger";
 
 const appLogger = createLogger("App.tsx", "App");
 
