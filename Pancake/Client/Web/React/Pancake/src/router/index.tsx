@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainPage from "@/views/MainPage";
+import BilibiliTest from "@/views/Pages/BilibiliTest";
 import { createLogger } from "@/utils/logger";
 
 const routerLogger = createLogger("router/index.tsx", "createRouter");
@@ -10,5 +11,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainPage />,
+  },
+  {
+    path: "/bilibili-test",
+    element: <BilibiliTest />,
   },
 ]);
