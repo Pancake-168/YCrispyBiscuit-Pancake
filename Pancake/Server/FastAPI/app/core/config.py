@@ -1,20 +1,33 @@
 from functools import lru_cache
 from typing import List
 import os
+import sys
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 from pathlib import Path
 
 
+def _get_base_dir() -> Path:
+    """项目根目录，兼容源码运行和 PyInstaller 打包"""
+    if getattr(sys, "frozen", False):
+        return Path(sys._MEIPASS)
+    return Path(__file__).resolve().parent.parent.parent  # 指向 Server/FastAPI
+
+
+BASE_DIR = _get_base_dir()
+JSON_DIR = BASE_DIR / "json"
+
+
 _env_file = os.getenv("ENV_FILE")
 if _env_file:
-    load_dotenv(_env_file)
-
-
-# 定义项目基础路径和JSON文件路径
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # 指向 Server/
-JSON_DIR = BASE_DIR / "json"
+    load_dotenv(BASE_DIR / _env_file)
+elif getattr(sys, "frozen", False):
+    # 打包后只认 production
+    load_dotenv(BASE_DIR / ".env.production")
+else:
+    # 源码默认 development（想切就互换两个 .env 文件内容）
+    load_dotenv(BASE_DIR / ".env.development")
 
 
 class Settings(BaseSettings):

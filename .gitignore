@@ -17,6 +17,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
 
 # Shared Node.js (Client & Server)
 **/node_modules/
@@ -30,6 +31,9 @@ lerna-debug.log*
 *.local
 
 # Python
+__pycache__/
+*.pyc
+*.pyo
 .venv/
 venv/
 env/
@@ -40,6 +44,7 @@ pip-cache/
 pip-wheel-metadata/
 pip-log.txt
 pip-delete-this-directory.txt
+.ruff_cache/
 
 # Kotlin / Spring Boot (Gradle)
 .gradle/
@@ -47,11 +52,15 @@ pip-delete-this-directory.txt
 **/bin/
 *.class
 
-# Rust
+# Rust / Tauri
 **/target/
+**/gen/schemas
 
 # Infrastructure / Config (Explicitly NOT ignored per user request)
 !.env
 !.env.*
 **/release/
 
+
+
+.claude/

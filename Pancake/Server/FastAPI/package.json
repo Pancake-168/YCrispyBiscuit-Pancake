@@ -7,6 +7,7 @@
     "dev": "set ENV_FILE=.env.development && .venv\\Scripts\\python.exe -m app.main",
     "prod": "set ENV_FILE=.env.production && .venv\\Scripts\\python.exe -m app.main",
     "build": ".venv\\Scripts\\python.exe -m pip --disable-pip-version-check wheel -w dist -r requirements.txt",
+    "build:exe": ".venv\\Scripts\\pyinstaller --onefile --name pancake-backend --paths . --add-data \"json;json\" --add-data \".env.production;.\" --hidden-import=aiomysql --hidden-import=pydantic_settings --hidden-import=email_validator run.py",
     "lint": ".venv\\Scripts\\python.exe -m ruff check app",
     "format:check": ".venv\\Scripts\\python.exe -m ruff format --check app",
     "format": ".venv\\Scripts\\python.exe -m ruff format app",
