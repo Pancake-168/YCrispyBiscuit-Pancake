@@ -34,6 +34,7 @@ Thumbs.db
 __pycache__/
 *.pyc
 *.pyo
+*.spec
 .venv/
 venv/
 env/
@@ -55,6 +56,7 @@ pip-delete-this-directory.txt
 # Rust / Tauri
 **/target/
 **/gen/schemas
+**/binaries/
 
 # Infrastructure / Config (Explicitly NOT ignored per user request)
 !.env

@@ -5,14 +5,14 @@
   "identifier": "com.pancake.app",
   "build": {
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:{{ env.VITE_PORT || '1420' }}",
+    "devUrl": "http://localhost:{{ env.VITE_PORT }}",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
     "windows": [
       {
-        "title": "{{ env.VITE_APP_NAME || 'Pancake' }}",
+        "title": "{{ env.VITE_APP_NAME }}",
         "width": 1200,
         "height": 600
       }

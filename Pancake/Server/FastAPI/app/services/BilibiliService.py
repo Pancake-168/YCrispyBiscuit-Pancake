@@ -1,5 +1,4 @@
 import hashlib
-import hmac
 import json
 import re
 import time
@@ -19,10 +18,70 @@ BILIBILI_USER_AGENT = (
 APP_KEY = "1d8b6e7d45233436"
 APP_SEC = "560c52ccd288fed045859ed18bffd973"
 MIXIN_KEY_ENC_TAB = [
-    46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35,
-    27, 43, 5, 49, 33, 9, 42, 19, 29, 28, 14, 39, 12, 38, 41, 13,
-    37, 48, 7, 16, 24, 55, 40, 61, 26, 17, 0, 1, 60, 51, 30, 4,
-    22, 25, 54, 21, 56, 59, 6, 63, 57, 62, 11, 36, 20, 52, 44, 34,
+    46,
+    47,
+    18,
+    2,
+    53,
+    8,
+    23,
+    32,
+    15,
+    50,
+    10,
+    31,
+    58,
+    3,
+    45,
+    35,
+    27,
+    43,
+    5,
+    49,
+    33,
+    9,
+    42,
+    19,
+    29,
+    28,
+    14,
+    39,
+    12,
+    38,
+    41,
+    13,
+    37,
+    48,
+    7,
+    16,
+    24,
+    55,
+    40,
+    61,
+    26,
+    17,
+    0,
+    1,
+    60,
+    51,
+    30,
+    4,
+    22,
+    25,
+    54,
+    21,
+    56,
+    59,
+    6,
+    63,
+    57,
+    62,
+    11,
+    36,
+    20,
+    52,
+    44,
+    34,
 ]
 
 
@@ -152,7 +211,9 @@ class BilibiliService:
             raise RuntimeError(f"Bilibili QR generate failed: {data}")
         qr_data = data["data"]
         key = qr_data["qrcode_key"]
-        qr_content = qr_data["url"]  # Bilibili returns QR code content URL, not an image
+        qr_content = qr_data[
+            "url"
+        ]  # Bilibili returns QR code content URL, not an image
         self._qrcode_store[key] = {"status": "pending", "session": None}
         return {
             "qrcode_key": key,
@@ -179,7 +240,10 @@ class BilibiliService:
             session = await self._build_session_from_qr(resp, data["data"])
             session_id = str(uuid.uuid4())[:8]
             self._sessions[session_id] = session
-            self._qrcode_store[qrcode_key] = {"status": "done", "session_id": session_id}
+            self._qrcode_store[qrcode_key] = {
+                "status": "done",
+                "session_id": session_id,
+            }
             return {
                 "status": "done",
                 "session_id": session_id,
@@ -189,7 +253,9 @@ class BilibiliService:
         else:
             return {"status": "expired", "message": data.get("message", "二维码已过期")}
 
-    async def _build_session_from_qr(self, response, login_data: dict) -> BilibiliSession:
+    async def _build_session_from_qr(
+        self, response, login_data: dict
+    ) -> BilibiliSession:
         session = BilibiliSession()
         session.absorb_response_cookies(response)
 
@@ -353,7 +419,7 @@ class BilibiliService:
         tokens: dict[str, Optional[str]] = {}
 
         # Extract __RENDER_DATA__ (Bilibili's SSR data)
-        m = re.search(r'window\.__RENDER_DATA__\s*=\s*({.*?})[\s;]', html)
+        m = re.search(r"window\.__RENDER_DATA__\s*=\s*({.*?})[\s;]", html)
         if m:
             try:
                 tokens["__RENDER_DATA__"] = json.loads(m.group(1))
@@ -361,7 +427,7 @@ class BilibiliService:
                 tokens["__RENDER_DATA__"] = m.group(1)[:500]
 
         # Extract __INITIAL_STATE__
-        m = re.search(r'window\.__INITIAL_STATE__\s*=\s*({.*?});', html)
+        m = re.search(r"window\.__INITIAL_STATE__\s*=\s*({.*?});", html)
         if m:
             try:
                 tokens["__INITIAL_STATE__"] = json.loads(m.group(1))
@@ -374,7 +440,16 @@ class BilibiliService:
             tokens["ac_time_value_from_html"] = m.group(1)
 
         # Collect all fingerprint-related cookies
-        fp_keys = ["buvid3", "buvid4", "buvid_fp", "b_nut", "_uuid", "b_lsid", "b_source", "sid"]
+        fp_keys = [
+            "buvid3",
+            "buvid4",
+            "buvid_fp",
+            "b_nut",
+            "_uuid",
+            "b_lsid",
+            "b_source",
+            "sid",
+        ]
         for key in fp_keys:
             val = session.cookies.get(key)
             if val:
