@@ -9,13 +9,35 @@ from pathlib import Path
 
 
 def _get_base_dir() -> Path:
-    """项目根目录，兼容源码运行和 PyInstaller 打包"""
+    """
+    只读资源目录 — 存放 .env、json/ 等打包时打进 exe 的数据。
+    源码: Server/FastAPI/
+    打包: sys._MEIPASS（PyInstaller 临时解压目录）
+    """
     if getattr(sys, "frozen", False):
         return Path(sys._MEIPASS)
-    return Path(__file__).resolve().parent.parent.parent  # 指向 Server/FastAPI
+    return Path(__file__).resolve().parent.parent.parent  # Server/FastAPI
 
 
-BASE_DIR = _get_base_dir()
+def _get_writable_dir() -> Path:
+    """
+    可写数据目录 — 存放数据库、日志等运行时产生的用户数据。
+    源码: Server/FastAPI/
+    打包: exe 同级 data/ 子目录（NSIS 不知道此目录，更新时不会被覆写）
+
+    路径推导（扁平布局，无 app/ 子目录）：
+      <install_dir>/Pancake.exe
+      <install_dir>/pancake-backend-....exe  ← sys.executable
+      .parent = <install_dir>/
+      / data  = <install_dir>/data/
+    """
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent / "data"
+    return Path(__file__).resolve().parent.parent.parent  # Server/FastAPI
+
+
+BASE_DIR = _get_base_dir()          # 读配置、json 等只读资源
+WRITABLE_DIR = _get_writable_dir()  # 写数据库、日志等用户数据
 JSON_DIR = BASE_DIR / "json"
 
 
@@ -43,7 +65,13 @@ class Settings(BaseSettings):
     jwt_secret_key: str
 
     # CORS & Host 安全
-    cors_origins: List[str] = ["http://localhost:1420", "http://localhost:5173", "http://localhost:5175"]
+    cors_origins: List[str] = [
+        "http://localhost:1420",
+        "http://localhost:5173",
+        "http://localhost:5175",
+        "http://tauri.localhost",       # Tauri 打包后 WebView 的 origin
+        "https://tauri.localhost",      # Tauri HTTPS 模式
+    ]
     cors_allow_credentials: bool = True
     allowed_hosts: List[str] = ["localhost", "127.0.0.1"]
 

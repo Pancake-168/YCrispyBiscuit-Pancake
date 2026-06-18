@@ -83,6 +83,12 @@ function connectSocket() {
   socket.on("notification", (data: { message: string; from_sid: string }) => {
     addMessage(`[广播] ${data.message}`);
   });
+
+  // 接收 pong 回复（应用层心跳响应）
+  socket.on("pong_from_server", (data: { server_time: number; client_time: number | null }) => {
+    const rtt = data.client_time ? Date.now() - data.client_time : null;
+    addMessage(`[心跳] 收到 pong${rtt !== null ? `, RTT: ${rtt}ms` : ""}`);
+  });
 }
 
 /**
@@ -118,12 +124,6 @@ function sendPing() {
   });
   addMessage(`[心跳] 已发送 ping`);
 }
-
-// 接收 pong 回复
-socket?.on("pong_from_server", (data: { server_time: number; client_time: number | null }) => {
-  const rtt = data.client_time ? Date.now() - data.client_time : null;
-  addMessage(`[心跳] 收到 pong${rtt !== null ? `, RTT: ${rtt}ms` : ""}`);
-});
 
 /**
  * 添加消息到页面（自动限制条数）

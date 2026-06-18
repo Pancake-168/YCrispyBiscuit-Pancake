@@ -10,4 +10,5 @@ if __name__ == "__main__":
         host=settings.host,
         port=settings.port,
         reload=False,
+        log_config=None,  # 禁用 uvicorn 日志配置（noconsole 下 stderr 为 None 会崩）
     )
