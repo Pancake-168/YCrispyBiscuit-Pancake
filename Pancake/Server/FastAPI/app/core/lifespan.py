@@ -19,6 +19,22 @@ def create_lifespan():
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         setup_logging(settings.log_level)
+
+        # 启动横幅
+        banner = r"""
+  ╔══════════════════════════════════════════════════════════
+  ║                                                      
+  ║     Pancake                               
+  ║     桌面工具箱                        
+  ║                                                           
+  ║     启动中...                          
+  ║ 
+  ║     Swagger      http://{host}:{port}/docs 
+  ║               
+  ║                                          
+  ╚══════════════════════════════════════════════════════════
+""".format(host=settings.host, port=settings.port)
+        print(banner, flush=True)
         logger.info("应用启动中...")
 
         # 尝试连接数据库：失败时仅记录日志，不阻断应用启动

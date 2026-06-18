@@ -3,7 +3,7 @@ uvicorn[standard]
 pydantic
 pydantic-settings
 SQLAlchemy
-aiomysql
+aiosqlite
 cryptography
 python-dotenv
 pyowm
@@ -11,5 +11,6 @@ bcrypt
 PyJWT
 email-validator
 httpx
+python-socketio
 ruff
 pyinstaller>=6.0

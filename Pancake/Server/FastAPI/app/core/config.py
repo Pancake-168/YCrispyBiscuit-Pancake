@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str
 
     # CORS & Host 安全
-    cors_origins: List[str] = ["http://localhost:5173", "http://localhost:5175"]
+    cors_origins: List[str] = ["http://localhost:1420", "http://localhost:5173", "http://localhost:5175"]
     cors_allow_credentials: bool = True
     allowed_hosts: List[str] = ["localhost", "127.0.0.1"]
 

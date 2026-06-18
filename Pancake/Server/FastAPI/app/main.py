@@ -1,3 +1,5 @@
+import socketio
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -7,6 +9,7 @@ from app.core.lifespan import create_lifespan
 from app.exceptions.handlers import register_exception_handlers
 from app.middlewares.request_id import RequestIDMiddleware
 from app.api.router import router
+from app.socketio import sio
 
 settings = get_settings()
 lifespan = create_lifespan()
@@ -41,6 +44,13 @@ if settings.allowed_hosts:
 app.include_router(router)
 
 
+# 将 FastAPI 应用包装进 Socket.IO 的 ASGI 适配器。
+# 这样同一个端口上可以同时处理普通 HTTP 请求（走 FastAPI）和
+# WebSocket / 长轮询请求（走 Socket.IO），不需要额外开端口。
+# 外部通过 `socket_app` 启动服务，内部仍然用 `app` 注册路由和中间件。
+socket_app = socketio.ASGIApp(sio, app)
+
+
 @app.get(
     "/",
     summary="根路径",
@@ -54,7 +64,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "app.main:app",
+        "app.main:socket_app",
         host=settings.host,
         port=settings.port,
         reload=settings.debug,
