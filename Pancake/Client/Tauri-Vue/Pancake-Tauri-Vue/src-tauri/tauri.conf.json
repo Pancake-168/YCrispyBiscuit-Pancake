@@ -17,6 +17,7 @@
   "bundle": {
     "active": true,
     "targets": "nsis",
+    "resources": ["WebView2Loader.dll"],
     "externalBin": [
       "binaries/pancake-backend"
     ],
