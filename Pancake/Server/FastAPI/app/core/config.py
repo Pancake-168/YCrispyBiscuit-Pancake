@@ -23,16 +23,15 @@ def _get_writable_dir() -> Path:
     """
     可写数据目录 — 存放数据库、日志等运行时产生的用户数据。
     源码: Server/FastAPI/
-    打包: exe 同级 data/ 子目录（NSIS 不知道此目录，更新时不会被覆写）
+    打包: 安装根目录下的 data/ 子目录（后端 exe 在 bin/ 下，需往上走一层）
 
-    路径推导（扁平布局，无 app/ 子目录）：
-      <install_dir>/Pancake.exe
-      <install_dir>/pancake-backend-....exe  ← sys.executable
-      .parent = <install_dir>/
-      / data  = <install_dir>/data/
+    安装布局：
+      <install_dir>/pancake-tauri-react.exe
+      <install_dir>/bin/pancake-backend.exe  ← sys.executable
+      <install_dir>/data/                    ← 目标
     """
     if getattr(sys, "frozen", False):
-        return Path(sys.executable).parent / "data"
+        return Path(sys.executable).parent.parent / "data"
     return Path(__file__).resolve().parent.parent.parent  # Server/FastAPI
 
 

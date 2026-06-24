@@ -7,7 +7,7 @@
     "dev": "set ENV_FILE=.env.development && .venv\\Scripts\\python.exe -m app.main",
     "prod": "set ENV_FILE=.env.production && .venv\\Scripts\\python.exe -m app.main",
     "build": ".venv\\Scripts\\python.exe -m pip --disable-pip-version-check wheel -w dist -r requirements.txt",
-    "build:exe": ".venv\\Scripts\\pyinstaller --noconsole --onefile --name pancake-backend-x86_64-pc-windows-msvc --paths . --add-data \"json;json\" --add-data \".env.production;.\" --hidden-import=aiosqlite --hidden-import=pydantic_settings --hidden-import=email_validator --hidden-import=socketio run.py && mkdir ..\\..\\Client\\Tauri-Vue\\Pancake-Tauri-Vue\\src-tauri\\binaries 2>nul & copy /Y dist\\pancake-backend-x86_64-pc-windows-msvc.exe ..\\..\\Client\\Tauri-Vue\\Pancake-Tauri-Vue\\src-tauri\\binaries\\ && copy /Y dist\\pancake-backend-x86_64-pc-windows-msvc.exe ..\\..\\Client\\Tauri-Vue\\Pancake-Tauri-Vue\\src-tauri\\binaries\\pancake-backend-x86_64-pc-windows-gnu.exe",
+    "build:exe": ".venv\\Scripts\\pyinstaller --noconsole --onefile --name pancake-backend-x86_64-pc-windows-msvc --paths . --add-data \"json;json\" --add-data \".env.production;.\" --hidden-import=aiosqlite --hidden-import=pydantic_settings --hidden-import=email_validator --hidden-import=socketio run.py && mkdir ..\\..\\Client\\Tauri-React\\Pancake-Tauri-React\\src-tauri\\binaries 2>nul & copy /Y dist\\pancake-backend-x86_64-pc-windows-msvc.exe ..\\..\\Client\\Tauri-React\\Pancake-Tauri-React\\src-tauri\\binaries\\",
     "lint": ".venv\\Scripts\\python.exe -m ruff check app",
     "format:check": ".venv\\Scripts\\python.exe -m ruff format --check app",
     "format": ".venv\\Scripts\\python.exe -m ruff format app",
