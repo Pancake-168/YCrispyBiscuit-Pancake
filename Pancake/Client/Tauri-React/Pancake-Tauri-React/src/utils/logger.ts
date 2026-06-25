@@ -23,11 +23,11 @@
  *   unhandledrejection，确保未捕获错误也能进入日志
  */
 
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from '@tauri-apps/api/core';
 
 // ---- 类型定义 ----
 
-export type LogLevel = "debug" | "info" | "warn" | "error";
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 /**
  * 日志载荷（Log Payload）
@@ -70,11 +70,8 @@ const runtimeFlags = globalThis as {
 // ---- 格式化函数 ----
 
 /** 格式化日志前缀：[Pancake:fileName:functionName]message */
-const formatLogPrefix = (
-  fileName: string,
-  functionName: string,
-  message: string,
-) => `[Pancake:${fileName}:${functionName}]${message}`;
+const formatLogPrefix = (fileName: string, functionName: string, message: string) =>
+  `[Pancake:${fileName}:${functionName}]${message}`;
 
 /** 将日志详情中的单个值转为字符串 */
 const stringifyLogDetail = (detail: unknown): string => {
@@ -82,7 +79,7 @@ const stringifyLogDetail = (detail: unknown): string => {
     return detail.stack || `${detail.name}: ${detail.message}`;
   }
 
-  if (typeof detail === "string") {
+  if (typeof detail === 'string') {
     return detail;
   }
 
@@ -104,24 +101,20 @@ const registerLogTransport = (transport: LogTransport) => {
 // ---- 控制台输出（默认传输器） ----
 
 const writeToConsole = (payload: LogPayload) => {
-  const prefix = formatLogPrefix(
-    payload.fileName,
-    payload.functionName,
-    payload.message,
-  );
+  const prefix = formatLogPrefix(payload.fileName, payload.functionName, payload.message);
   const details = payload.details || [];
 
-  if (payload.level === "error") {
+  if (payload.level === 'error') {
     console.error(prefix, ...details);
     return;
   }
 
-  if (payload.level === "warn") {
+  if (payload.level === 'warn') {
     console.warn(prefix, ...details);
     return;
   }
 
-  if (payload.level === "debug") {
+  if (payload.level === 'debug') {
     console.debug(prefix, ...details);
     return;
   }
@@ -146,10 +139,7 @@ const writeLog = (payload: LogPayload) => {
     try {
       void transport(normalizedPayload);
     } catch (error) {
-      console.error(
-        formatLogPrefix("logger.ts", "writeLog", "日志传输失败"),
-        error,
-      );
+      console.error(formatLogPrefix('logger.ts', 'writeLog', '日志传输失败'), error);
     }
   }
 };
@@ -176,14 +166,10 @@ export const createLogger = (fileName: string, functionName: string) => {
   };
 
   return {
-    debug: (message: string, ...details: unknown[]) =>
-      emit("debug", message, details),
-    info: (message: string, ...details: unknown[]) =>
-      emit("info", message, details),
-    warn: (message: string, ...details: unknown[]) =>
-      emit("warn", message, details),
-    error: (message: string, ...details: unknown[]) =>
-      emit("error", message, details),
+    debug: (message: string, ...details: unknown[]) => emit('debug', message, details),
+    info: (message: string, ...details: unknown[]) => emit('info', message, details),
+    warn: (message: string, ...details: unknown[]) => emit('warn', message, details),
+    error: (message: string, ...details: unknown[]) => emit('error', message, details),
   };
 };
 
@@ -192,8 +178,7 @@ export const createLogger = (fileName: string, functionName: string) => {
 // ============================================================================
 
 /** 检测是否运行在 Tauri 环境（v2 使用 __TAURI_INTERNALS__） */
-const isTauri = (): boolean =>
-  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 /**
  * 注册 Tauri 桌面端的日志桥接传输器。
@@ -218,13 +203,11 @@ export const registerTauriTransport = () => {
       file_name: payload.fileName,
       function_name: payload.functionName,
       message: payload.message,
-      details: payload.details
-        ? payload.details.map(stringifyLogDetail)
-        : null,
+      details: payload.details ? payload.details.map(stringifyLogDetail) : null,
     };
-    invoke("write_log", { entry }).catch((e) => {
+    invoke('write_log', { entry }).catch((e) => {
       // invoke 失败时仅输出控制台，不再次走 logger（避免无限循环）
-      console.error("[logger] invoke write_log 失败:", e);
+      console.error('[logger] invoke write_log 失败:', e);
     });
   });
 };
@@ -243,22 +226,19 @@ export const registerGlobalErrorHandlers = () => {
   }
 
   const runtime = globalThis as {
-    addEventListener?: (
-      type: string,
-      listener: (event: any) => void,
-    ) => void;
+    addEventListener?: (type: string, listener: (event: any) => void) => void;
   };
 
-  if (typeof runtime.addEventListener !== "function") return;
+  if (typeof runtime.addEventListener !== 'function') return;
 
   runtimeFlags.__pancakeGlobalErrorHandlersRegistered = true;
 
-  const errorLogger = createLogger("main.tsx", "window.onerror");
-  const rejectionLogger = createLogger("main.tsx", "window.unhandledrejection");
+  const errorLogger = createLogger('main.tsx', 'window.onerror');
+  const rejectionLogger = createLogger('main.tsx', 'window.unhandledrejection');
 
   // 捕获同步异常和资源加载错误
-  runtime.addEventListener("error", (event: ErrorEvent) => {
-    errorLogger.error("捕获到未处理异常", event?.error || event?.message, {
+  runtime.addEventListener('error', (event: ErrorEvent) => {
+    errorLogger.error('捕获到未处理异常', event?.error || event?.message, {
       filename: event?.filename,
       lineno: event?.lineno,
       colno: event?.colno,
@@ -266,7 +246,7 @@ export const registerGlobalErrorHandlers = () => {
   });
 
   // 捕获未处理的 Promise rejection
-  runtime.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
-    rejectionLogger.error("捕获到未处理 Promise 拒绝", event?.reason);
+  runtime.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+    rejectionLogger.error('捕获到未处理 Promise 拒绝', event?.reason);
   });
 };

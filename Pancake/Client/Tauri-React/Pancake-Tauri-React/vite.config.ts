@@ -1,15 +1,19 @@
-import { resolve } from "node:path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { resolve } from 'node:path';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import removeConsole from 'vite-plugin-remove-console';
 
 const host = process.env.TAURI_DEV_HOST;
 
+// Tauri 构建时保留 console（桌面端 DevTools 可见），纯 Web 构建时移除
+const isTauriBuild = process.env.__TAURI_BUILD === 'true';
+
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [react()],
+  plugins: [react(), ...(!isTauriBuild ? [removeConsole()] : [])],
   resolve: {
     alias: {
-      "@": resolve(import.meta.dirname, "src"),
+      '@': resolve(import.meta.dirname, 'src'),
     },
   },
 
@@ -24,14 +28,14 @@ export default defineConfig(async () => ({
     host: host || false,
     hmr: host
       ? {
-          protocol: "ws",
+          protocol: 'ws',
           host,
           port: 1421,
         }
       : undefined,
     watch: {
       // 3. tell Vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
     },
   },
 }));

@@ -185,7 +185,8 @@ pub fn run() {
             )
             .title("Pancake")
             .inner_size(1000.0, 600.0)
-            .min_inner_size(800.0, 500.0);
+            .min_inner_size(800.0, 500.0)
+            .decorations(false);
 
             #[cfg(not(debug_assertions))]
             {

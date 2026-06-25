@@ -1,0 +1,133 @@
+@import "./variables.css";
+
+/* ---- 全局重置 ---- */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+}
+
+/* ---- 全局按钮 ---- */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+button:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-hover);
+}
+
+button:active {
+  background: var(--color-bg-elevated);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+/* ---- 全局图标 ---- */
+.icon {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* ---- 自定义标题栏 ---- */
+.titlebar {
+  display: flex;
+  align-items: center;
+  height: var(--titlebar-height);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  user-select: none;
+  flex-shrink: 0;
+  -webkit-app-region: drag;
+}
+
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-btn {
+  width: 46px;
+  height: var(--titlebar-height);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar-btn:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.titlebar-btn-close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+/* ---- 字体声明 ---- */
+@font-face {
+  font-family: "优设标题黑";
+  src: url("/fonts/优设标题黑.woff2") format("woff2"),
+       url("/fonts/优设标题黑.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HarmonyOS Sans SC";
+  src: url("/fonts/HarmonyOS_Sans_SC_Light.woff2") format("woff2"),
+       url("/fonts/HarmonyOS_Sans_SC_Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HarmonyOS Sans SC";
+  src: url("/fonts/HarmonyOS_Sans_SC_Regular.woff2") format("woff2"),
+       url("/fonts/HarmonyOS_Sans_SC_Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HarmonyOS Sans SC";
+  src: url("/fonts/HarmonyOS_Sans_SC_Medium.woff2") format("woff2"),
+       url("/fonts/HarmonyOS_Sans_SC_Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HarmonyOS Sans SC";
+  src: url("/fonts/HarmonyOS_Sans_SC_Bold.woff2") format("woff2"),
+       url("/fonts/HarmonyOS_Sans_SC_Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
