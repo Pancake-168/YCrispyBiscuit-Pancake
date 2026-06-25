@@ -12,7 +12,7 @@ def setup_logging(log_level: str = "INFO") -> None:
     # 打包后 WRITABLE_DIR 指向 <install_dir>/data/，源码时指向 Server/FastAPI/
     logs_dir = WRITABLE_DIR / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
-    log_file = str(logs_dir / "app.log")
+    log_file = str(logs_dir / "pancake.be.log")
 
     # 打包为 GUI 应用（--noconsole）时 sys.stdout/stderr 为 None，
     # 必须跳过 console handler，否则 uvicorn 初始化日志格式化器会崩溃
@@ -24,7 +24,7 @@ def setup_logging(log_level: str = "INFO") -> None:
             "formatter": "default",
             "filename": log_file,
             "when": "midnight",
-            "backupCount": 7,
+            "backupCount": 0,
             "encoding": "utf-8",
         },
     }

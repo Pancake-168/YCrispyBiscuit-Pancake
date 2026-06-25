@@ -1,5 +1,9 @@
+use std::fs::{self, OpenOptions};
+use std::io::Write;
+use std::path::PathBuf;
 use std::process::{Child, Command};
 use std::sync::Mutex;
+use chrono::Local;
 use tauri::Manager;
 
 struct BackendProcess(Mutex<Option<Child>>);
@@ -57,6 +61,104 @@ impl Drop for BackendProcess {
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+// ============================================================================
+// 前端日志系统
+// ============================================================================
+
+/// 确定日志目录，与后端 pancake.be.log 保持一致：
+///   开发 → Server/FastAPI/logs/
+///   打包 → <安装目录>/data/logs/
+fn get_log_dir(app_handle: &tauri::AppHandle) -> PathBuf {
+    if cfg!(debug_assertions) {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../../Server/FastAPI")
+            .join("logs")
+    } else {
+        app_handle
+            .path()
+            .resource_dir()
+            .expect("failed to resolve resource dir")
+            .join("data")
+            .join("logs")
+    }
+}
+
+/// 日切轮转：如果 pancake.app.log 的最后修改日期不是今天，
+/// 将其重命名为 pancake.app.log.{修改日期}，下次写入自动创建新文件。
+fn rotate_log_if_needed(log_dir: &PathBuf) {
+    let current = log_dir.join("pancake.app.log");
+    if !current.exists() {
+        return;
+    }
+
+    let modified = match fs::metadata(&current).and_then(|m| m.modified()) {
+        Ok(t) => t,
+        Err(_) => return,
+    };
+
+    let modified_date = chrono::DateTime::<chrono::Local>::from(modified)
+        .format("%Y-%m-%d")
+        .to_string();
+    let today = Local::now().format("%Y-%m-%d").to_string();
+
+    if modified_date != today {
+        let rotated = log_dir.join(format!("pancake.app.log.{}", modified_date));
+        fs::rename(&current, &rotated).ok();
+    }
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct LogEntry {
+    level: String,
+    file_name: String,
+    function_name: String,
+    message: String,
+    details: Option<Vec<String>>,
+}
+
+#[tauri::command]
+fn write_log(app_handle: tauri::AppHandle, entry: LogEntry) -> Result<(), String> {
+    let log_dir = get_log_dir(&app_handle);
+    fs::create_dir_all(&log_dir).map_err(|e| e.to_string())?;
+
+    rotate_log_if_needed(&log_dir);
+
+    let timestamp = Local::now()
+        .format("%Y-%m-%dT%H:%M:%S%.3f%:z")
+        .to_string();
+    let prefix = format!(
+        "[Pancake:{}:{}]{}",
+        entry.file_name, entry.function_name, entry.message
+    );
+
+    let line = match entry.details {
+        Some(ref details) if !details.is_empty() => {
+            format!(
+                "{} [{}] {} {}\n",
+                timestamp,
+                entry.level.to_uppercase(),
+                prefix,
+                details.join(" | ")
+            )
+        }
+        _ => format!(
+            "{} [{}] {}\n",
+            timestamp,
+            entry.level.to_uppercase(),
+            prefix
+        ),
+    };
+
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(log_dir.join("pancake.app.log"))
+        .map_err(|e| e.to_string())?;
+
+    file.write_all(line.as_bytes())
+        .map_err(|e| e.to_string())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -119,7 +221,7 @@ pub fn run() {
             app.manage(BackendProcess(Mutex::new(Some(backend))));
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, write_log])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app_handle, _event| {});
