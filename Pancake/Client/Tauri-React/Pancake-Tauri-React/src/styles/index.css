@@ -42,48 +42,51 @@ button:focus-visible {
   outline-offset: 1px;
 }
 
+/* ---- 全局滑块 ---- */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+  outline: none;
+  cursor: pointer;
+}
+
+/* 滑块——WebKit (Chrome/Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  transition: transform var(--transition-fast);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* 滑块——Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
 /* ---- 全局图标 ---- */
 .icon {
   flex-shrink: 0;
   vertical-align: middle;
-}
-
-/* ---- 自定义标题栏 ---- */
-.titlebar {
-  display: flex;
-  align-items: center;
-  height: var(--titlebar-height);
-  background: var(--color-bg-primary);
-  color: var(--color-text-secondary);
-  user-select: none;
-  flex-shrink: 0;
-  -webkit-app-region: drag;
-}
-
-.titlebar-drag {
-  -webkit-app-region: drag;
-}
-
-.titlebar-btn {
-  width: 46px;
-  height: var(--titlebar-height);
-  border: none;
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-app-region: no-drag;
-}
-
-.titlebar-btn:hover {
-  background: var(--color-bg-tertiary);
-}
-
-.titlebar-btn-close:hover {
-  background: #e81123;
-  color: #fff;
 }
 
 /* ---- 字体声明 ---- */

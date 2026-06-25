@@ -9,13 +9,17 @@ import {
   VscChromeClose,
 } from 'react-icons/vsc';
 import { MdDarkMode, MdLightMode } from 'react-icons/md';
+import styles from './TauriBar.module.css';
+
+const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 export default function TauriBar() {
+  if (!isTauri) return null;
+
   const [maximized, setMaximized] = useState(false);
   const appWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
-    // 组件挂载后才获取窗口引用（确保 Tauri API 已初始化）
     const appWindow = getCurrentWindow();
     appWindowRef.current = appWindow;
 
@@ -38,31 +42,24 @@ export default function TauriBar() {
   const close = useCallback(() => appWindowRef.current?.close(), []);
 
   return (
-    <header className="titlebar">
-      {/* 左侧：图标 + 标题 */}
-      <span className="titlebar-drag">
-        <img src="/2.png" alt="" />
-        <span>Pancake</span>
+    <header className={styles.bar}>
+      <span className={styles.left}>
+        <img className={styles.logo} src="/2.png" alt="" />
+        <span className={styles.title}>Pancake</span>
       </span>
 
-      {/* 中间：拖拽区域 */}
-      <span className="titlebar-drag" />
+      <span className={styles.spacer} />
 
-      {/* 右侧：主题切换 + 窗口控制按钮 */}
-      <button onClick={toggleTheme} className="titlebar-btn" title="切换主题">
-        {theme === "dark" ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
+      <button onClick={toggleTheme} className={styles.btn} title="切换主题">
+        {theme === 'dark' ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
       </button>
-      <button onClick={minimize} className="titlebar-btn" title="最小化">
+      <button onClick={minimize} className={styles.btn} title="最小化">
         <VscChromeMinimize size={14} />
       </button>
-      <button
-        onClick={toggleMaximize}
-        className="titlebar-btn"
-        title={maximized ? '还原' : '最大化'}
-      >
+      <button onClick={toggleMaximize} className={styles.btn} title={maximized ? '还原' : '最大化'}>
         {maximized ? <VscChromeRestore size={14} /> : <VscChromeMaximize size={14} />}
       </button>
-      <button onClick={close} className="titlebar-btn titlebar-btn-close" title="关闭">
+      <button onClick={close} className={`${styles.btn} ${styles.btnClose}`} title="关闭">
         <VscChromeClose size={14} />
       </button>
     </header>
