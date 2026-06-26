@@ -24,6 +24,7 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
+import {isTauri} from '@/utils/isTauri'
 
 // ---- 类型定义 ----
 
@@ -177,8 +178,6 @@ export const createLogger = (fileName: string, functionName: string) => {
 // Tauri 桌面端集成
 // ============================================================================
 
-/** 检测是否运行在 Tauri 环境（v2 使用 __TAURI_INTERNALS__） */
-const isTauri = (): boolean => typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 /**
  * 注册 Tauri 桌面端的日志桥接传输器。
@@ -225,9 +224,13 @@ export const registerGlobalErrorHandlers = () => {
     return;
   }
 
+  /* 运行时存在性检查：globalThis 类型断言仅用于检测 addEventListener 是否存在，
+     实际事件监听器在下方各自持有正确的 ErrorEvent / PromiseRejectionEvent 类型。 */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const runtime = globalThis as {
-    addEventListener?: (type: string, listener: (event: Event) => void) => void;
+    addEventListener?: (type: string, listener: (event: any) => void) => void;
   };
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   if (typeof runtime.addEventListener !== 'function') return;
 
