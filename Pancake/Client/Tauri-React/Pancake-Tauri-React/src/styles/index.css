@@ -1,104 +1,59 @@
 @import "./variables.css";
 
-/*
- 整体项目风格，二次元亚克力版 搭配 半透明毛玻璃
+/* ============================================================================
+ * 重置 & 基础
+ * ============================================================================ */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-
-
-*/
-
-
-/* ---- 全局重置 ---- */
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
   overflow: hidden;
-  background: transparent;
-  color: var(--color-text-primary);
-  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
   font-size: var(--text-base);
+  line-height: 1.5;
 }
 
-/* ---- 全局按钮 ---- */
-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
-  font-family: var(--font-ui);
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+/* ---- 滚动条 ---- */
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
 }
 
-button:hover {
-  background: var(--color-bg-tertiary);
-  border-color: var(--color-border-hover);
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
 }
 
-button:active {
-  background: var(--color-bg-elevated);
+::-webkit-scrollbar-thumb {
+  background: var(--glass-brd);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }
 
-button:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent);
 }
 
-/* ---- 全局滑块 ---- */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--color-border);
-  outline: none;
-  cursor: pointer;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-brd) transparent;
 }
 
-/* 滑块——WebKit (Chrome/Edge) */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-accent);
-  transition: transform var(--transition-fast);
-}
+/* ============================================================================
+ * 字体声明
+ * ============================================================================ */
 
-input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-/* 滑块——Firefox */
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-accent);
-}
-
-input[type="range"]::-moz-range-thumb:hover {
-  transform: scale(1.2);
-}
-
-/* ---- 全局图标 ---- */
-.icon {
-  flex-shrink: 0;
-  vertical-align: middle;
-}
-
-/* ---- 字体声明 ---- */
 @font-face {
   font-family: "优设标题黑";
   src: url("/fonts/优设标题黑.woff2") format("woff2"),
@@ -108,3 +63,346 @@ input[type="range"]::-moz-range-thumb:hover {
   font-display: swap;
 }
 
+/* ============================================================================
+ * Glass 基类
+ * ============================================================================ */
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(var(--blur-panel));
+  border-radius: var(--radius-lg);
+}
+
+/* ============================================================================
+ * 按钮系统
+ * 使用方式：<button className="btn primary">...</button>
+ * 四种变体：primary / secondary / subtle / danger
+ * 加载态：追加 className="btn spinning"
+ * ============================================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  border: none;
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+/* primary */
+.btn.primary {
+  background-color: var(--accent);
+  color: #fff;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn.primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 4px 12px rgba(var(--accent-rgb), 0.4);
+}
+
+.btn.primary:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* secondary */
+.btn.secondary {
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  color: var(--accent);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: rgba(var(--accent-rgb), 0.15);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn.secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* subtle */
+.btn.subtle {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+}
+
+.btn.subtle:hover:not(:disabled) {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--glass-brd);
+  transform: translateY(-1px);
+}
+
+.btn.subtle:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.subtle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* danger */
+.btn.danger {
+  background: color-mix(in srgb, var(--color-error), transparent 82%);
+  border: 1px solid color-mix(in srgb, var(--color-error), transparent 55%);
+  color: var(--color-error);
+}
+
+.btn.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-error), transparent 68%);
+  border-color: var(--color-error);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-error), transparent 70%);
+  transform: translateY(-1px);
+}
+
+.btn.danger:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn.danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* spinning */
+.btn.spinning {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn.spinning::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  margin-left: -7px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ============================================================================
+ * 图标按钮
+ * ============================================================================ */
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================================================
+ * Pill 状态标签
+ * ============================================================================ */
+
+.pill {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.pill.success {
+  background: color-mix(in srgb, var(--color-success), transparent 80%);
+  border-color: color-mix(in srgb, var(--color-success), transparent 65%);
+  color: var(--color-success);
+}
+
+.pill.error {
+  background: color-mix(in srgb, var(--color-error), transparent 82%);
+  border-color: color-mix(in srgb, var(--color-error), transparent 55%);
+  color: var(--color-error);
+}
+
+.pill.warn {
+  background: color-mix(in srgb, var(--color-warn), transparent 80%);
+  border-color: color-mix(in srgb, var(--color-warn), transparent 55%);
+  color: var(--color-warn);
+}
+
+.pill.info {
+  background: color-mix(in srgb, var(--color-system), transparent 80%);
+  border-color: color-mix(in srgb, var(--color-system), transparent 50%);
+  color: var(--color-system);
+}
+
+/* ============================================================================
+ * 表单控件
+ * ============================================================================ */
+
+input,
+textarea,
+select {
+  box-sizing: border-box;
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.4;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.15);
+}
+
+/* ============================================================================
+ * 根布局
+ * ============================================================================ */
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+}
+
+.main-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 导航栏 */
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  height: var(--nav-height);
+  padding: 0 var(--spacing-xl);
+  border-bottom: 1px solid var(--glass-brd);
+  background: rgba(125, 125, 125, 0.02);
+  flex-shrink: 0;
+}
+
+.app-nav a {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.app-nav a:hover {
+  color: var(--accent);
+}
+
+/* ============================================================================
+ * HomePage
+ * ============================================================================ */
+
+.HomePage {
+  height: 100%;
+  overflow: hidden;
+}
+
+.HomePageTop {
+  display: flex;
+  height: 100%;
+}
+
+.HomePageLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+.HomePageRight {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.HomePageTop2 {
+  height: 100%;
+}
+
+/* ============================================================================
+ * 动画
+ * ============================================================================ */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

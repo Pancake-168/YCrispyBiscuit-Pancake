@@ -27,6 +27,7 @@
   --color-success: #2fcb5b;
   --color-warn:    #ff9a69;
   --color-error:   #f07178;
+  --color-error-rgb: 240, 113, 120;
 
   /* ---- 边框 ---- */
   --border: rgba(255, 255, 255, 0.08);
@@ -69,6 +70,21 @@
 
   /* ---- 过渡 ---- */
   --transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+
+  /* ---- 输入控件 ---- */
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --switch-track-bg: rgba(255, 255, 255, 0.12);
+
+  /* ---- 浮层/模态（不跟随主题） ---- */
+  --dialog-overlay-bg: rgba(0, 0, 0, 0.45);
+  --tooltip-bg: rgba(32, 32, 32, 0.92);
+  --tooltip-text: rgba(255, 255, 255, 0.93);
+  --tooltip-border: rgba(255, 255, 255, 0.12);
+
+  /* ---- 模糊值 ---- */
+  --blur-overlay: 4px;
+  --blur-panel: 10px;
+  --blur-tooltip: 12px;
 }
 
 /* ============================================================================
@@ -95,10 +111,14 @@
   --color-success: #2fcb5b;
   --color-warn:    #e87c44;
   --color-error:   #d94f56;
+  --color-error-rgb: 217, 79, 86;
 
   --border: rgba(0, 0, 0, 0.08);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+
+  --input-bg: rgba(0, 0, 0, 0.04);
+  --switch-track-bg: rgba(0, 0, 0, 0.12);
 }
