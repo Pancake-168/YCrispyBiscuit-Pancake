@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, ComponentType } from 'react';
 import * as RadixDropdown from '@radix-ui/react-dropdown-menu';
 import styles from './DropdownMenu.module.css';
 
@@ -22,17 +22,33 @@ interface DropdownMenuProps {
   align?: 'start' | 'center' | 'end';
 }
 
+/** renderMenuItem 所需的 Radix 原语注入 */
+interface MenuItemRenderParts {
+  Item: ComponentType<{
+    className?: string;
+    disabled?: boolean;
+    onClick?: () => void;
+    children: ReactNode;
+    key?: unknown;
+  }>;
+  Separator: ComponentType<{ className?: string; key?: unknown }>;
+}
+
 /**
  * 渲染单个菜单项（内容逻辑，供 DropdownMenu 和 ContextMenu 共用）。
+ * `parts` 由调用方注入各自 Radix 库的 Item / Separator 组件，
+ * 避免跨库混用 Radix 原语。
  */
 // eslint-disable-next-line react-refresh/only-export-components
-export function renderMenuItem(item: MenuItem, index: number) {
+export function renderMenuItem(item: MenuItem, index: number, parts: MenuItemRenderParts) {
+  const { Item, Separator } = parts;
+
   if (item.separator) {
-    return <RadixDropdown.Separator key={index} className={styles.separator} />;
+    return <Separator key={index} className={styles.separator} />;
   }
 
   return (
-    <RadixDropdown.Item
+    <Item
       key={index}
       className={`${styles.item} ${item.danger ? styles.itemDanger : ''}`}
       disabled={item.disabled}
@@ -41,9 +57,15 @@ export function renderMenuItem(item: MenuItem, index: number) {
       {item.icon}
       <span className={styles.itemLabel}>{item.label}</span>
       {item.shortcut && <span className={styles.shortcut}>{item.shortcut}</span>}
-    </RadixDropdown.Item>
+    </Item>
   );
 }
+
+/** DropdownMenu 专用的 parts */
+const dropdownParts: MenuItemRenderParts = {
+  Item: RadixDropdown.Item,
+  Separator: RadixDropdown.Separator,
+};
 
 /**
  * DropdownMenu — 下拉菜单，点击触发。
@@ -60,11 +82,11 @@ export default function DropdownMenu({
       <RadixDropdown.Trigger asChild>{trigger}</RadixDropdown.Trigger>
       <RadixDropdown.Portal>
         <RadixDropdown.Content className={styles.content} side={side} align={align} sideOffset={4}>
-          {items.map((item, i) => renderMenuItem(item, i))}
+          {items.map((item, i) => renderMenuItem(item, i, dropdownParts))}
         </RadixDropdown.Content>
       </RadixDropdown.Portal>
     </RadixDropdown.Root>
   );
 }
 
-export type { MenuItem, DropdownMenuProps };
+export type { MenuItem, DropdownMenuProps, MenuItemRenderParts };

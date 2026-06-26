@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import * as RadixContext from '@radix-ui/react-context-menu';
-import { renderMenuItem, type MenuItem } from './DropdownMenu';
+import { renderMenuItem, type MenuItem, type MenuItemRenderParts } from './DropdownMenu';
 import styles from './DropdownMenu.module.css';
 
 interface ContextMenuProps {
@@ -8,6 +8,12 @@ interface ContextMenuProps {
   items: MenuItem[];
   disabled?: boolean;
 }
+
+/** ContextMenu 专用的 parts，使用 RadixContext 的 Item/Separator */
+const contextParts: MenuItemRenderParts = {
+  Item: RadixContext.Item,
+  Separator: RadixContext.Separator,
+};
 
 /**
  * ContextMenu — 右键菜单。
@@ -21,7 +27,7 @@ export default function ContextMenu({ children, items, disabled = false }: Conte
       </RadixContext.Trigger>
       <RadixContext.Portal>
         <RadixContext.Content className={styles.content}>
-          {items.map((item, i) => renderMenuItem(item, i))}
+          {items.map((item, i) => renderMenuItem(item, i, contextParts))}
         </RadixContext.Content>
       </RadixContext.Portal>
     </RadixContext.Root>

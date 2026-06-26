@@ -115,7 +115,7 @@ body {
     0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn.primary:hover {
+.btn.primary:hover:not(:disabled) {
   filter: brightness(1.08);
   transform: translateY(-1px);
   box-shadow:
@@ -123,9 +123,14 @@ body {
     0 4px 12px rgba(var(--accent-rgb), 0.4);
 }
 
-.btn.primary:active {
+.btn.primary:active:not(:disabled) {
   transform: translateY(0);
   filter: brightness(0.95);
+}
+
+.btn.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* secondary */
@@ -340,7 +345,7 @@ select:focus {
 .app-content {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* 导航栏 */

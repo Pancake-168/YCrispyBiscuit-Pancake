@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { HashRouter } from 'react-router-dom';
 import { createLogger } from '@/utils/logger';
+import { ToastProvider } from '@/components/common';
 
 import TitleBar from '@/components/TauriBar';
 import MainPage from '@/views/MainPage';
@@ -14,10 +15,12 @@ function App() {
 
   return (
     <HashRouter>
-      <div className="app-layout">
-        <TitleBar />
-        <MainPage />
-      </div>
+      <ToastProvider>
+        <div className="app-layout">
+          <TitleBar />
+          <MainPage />
+        </div>
+      </ToastProvider>
     </HashRouter>
   );
 }

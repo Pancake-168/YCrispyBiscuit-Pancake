@@ -1,7 +1,9 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react';
 
+// ButtonVariant 意思是按钮等级，不同等级有不同颜色和语义
 type ButtonVariant = 'primary' | 'secondary' | 'subtle' | 'danger';
 
+// 按钮接收传参
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   variant?: ButtonVariant;
   loading?: boolean;
