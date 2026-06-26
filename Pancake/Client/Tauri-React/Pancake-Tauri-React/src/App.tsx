@@ -3,7 +3,7 @@ import { HashRouter } from 'react-router-dom';
 import { createLogger } from '@/utils/logger';
 
 import TitleBar from '@/components/TauriBar';
-import MainPage from '@/pages/MainPage';
+import MainPage from '@/views/MainPage';
 
 const log = createLogger('App.tsx', 'App');
 
