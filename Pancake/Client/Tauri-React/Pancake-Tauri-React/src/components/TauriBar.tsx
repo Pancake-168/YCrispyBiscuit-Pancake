@@ -10,8 +10,7 @@ import {
 } from 'react-icons/vsc';
 import { MdDarkMode, MdLightMode } from 'react-icons/md';
 import styles from './TauriBar.module.css';
-import {isTauri} from '@/utils/isTauri'
-
+import { isTauri } from '@/utils/isTauri';
 
 export default function TauriBar() {
   const [maximized, setMaximized] = useState(false);

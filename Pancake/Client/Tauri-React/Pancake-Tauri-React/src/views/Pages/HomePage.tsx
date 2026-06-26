@@ -9,8 +9,7 @@ export default function HomePage() {
     <main className="HomePage">
       <div className="HomePageTop">
         <div className="HomePageLeft"></div>
-        <div className="HomePageRight">
-        </div>
+        <div className="HomePageRight"></div>
       </div>
       <div className="HomePageTop2"></div>
     </main>

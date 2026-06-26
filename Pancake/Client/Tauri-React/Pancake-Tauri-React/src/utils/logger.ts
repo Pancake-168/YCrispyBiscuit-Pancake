@@ -24,7 +24,7 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import {isTauri} from '@/utils/isTauri'
+import { isTauri } from '@/utils/isTauri';
 
 // ---- 类型定义 ----
 
@@ -177,7 +177,6 @@ export const createLogger = (fileName: string, functionName: string) => {
 // ============================================================================
 // Tauri 桌面端集成
 // ============================================================================
-
 
 /**
  * 注册 Tauri 桌面端的日志桥接传输器。

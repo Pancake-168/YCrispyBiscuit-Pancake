@@ -99,7 +99,9 @@ function Section({
 /** 行内示例容器 */
 function Row({ label, children }: { label?: string; children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}>
+    <div
+      style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)', flexWrap: 'wrap' }}
+    >
       {label && (
         <span style={{ fontSize: 'var(--text-sm)', color: 'var(--muted)', minWidth: 80 }}>
           {label}
@@ -157,19 +159,44 @@ export default function DemoPage() {
 
   // ---- DropdownMenu 菜单项 ----
   const dropdownItems: MenuItem[] = [
-    { label: '编辑', icon: <VscEdit size={14} />, shortcut: '⌘E', onClick: () => toast('点击了编辑', 'info') },
-    { label: '复制', icon: <VscCopy size={14} />, shortcut: '⌘C', onClick: () => toast('已复制', 'success') },
+    {
+      label: '编辑',
+      icon: <VscEdit size={14} />,
+      shortcut: '⌘E',
+      onClick: () => toast('点击了编辑', 'info'),
+    },
+    {
+      label: '复制',
+      icon: <VscCopy size={14} />,
+      shortcut: '⌘C',
+      onClick: () => toast('已复制', 'success'),
+    },
     { label: '刷新', icon: <VscRefresh size={14} />, onClick: () => toast('已刷新', 'success') },
     { label: '', separator: true as const },
-    { label: '删除', icon: <VscTrash size={14} />, danger: true, onClick: () => toast('删除操作需确认', 'warn') },
+    {
+      label: '删除',
+      icon: <VscTrash size={14} />,
+      danger: true,
+      onClick: () => toast('删除操作需确认', 'warn'),
+    },
   ];
 
   // ---- ContextMenu 菜单项 ----
   const contextMenuItems: MenuItem[] = [
     { label: '查看详情', icon: <VscInfo size={14} />, onClick: () => toast('查看详情', 'info') },
-    { label: '复制文本', icon: <VscCopy size={14} />, shortcut: '⌘C', onClick: () => toast('已复制', 'success') },
+    {
+      label: '复制文本',
+      icon: <VscCopy size={14} />,
+      shortcut: '⌘C',
+      onClick: () => toast('已复制', 'success'),
+    },
     { label: '', separator: true as const },
-    { label: '删除', icon: <VscTrash size={14} />, danger: true, onClick: () => toast('已删除', 'error') },
+    {
+      label: '删除',
+      icon: <VscTrash size={14} />,
+      danger: true,
+      onClick: () => toast('已删除', 'error'),
+    },
   ];
 
   // ---- Tabs ----
@@ -178,25 +205,39 @@ export default function DemoPage() {
       id: 'tab-1',
       label: '概览',
       icon: <VscHome size={14} />,
-      content: <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是概览标签页的内容。</p>,
+      content: (
+        <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是概览标签页的内容。</p>
+      ),
     },
     {
       id: 'tab-2',
       label: '设置',
       icon: <VscSettingsGear size={14} />,
-      content: <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是设置标签页的内容。</p>,
+      content: (
+        <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是设置标签页的内容。</p>
+      ),
     },
     {
       id: 'tab-3',
       label: '通知',
       icon: <VscBell size={14} />,
-      content: <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是通知标签页的内容。</p>,
+      content: (
+        <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是通知标签页的内容。</p>
+      ),
     },
   ];
 
   // ---- ScrollArea 示例长文本 ----
   const scrollContent = Array.from({ length: 20 }, (_, i) => (
-    <p key={i} style={{ color: 'var(--text)', fontSize: 'var(--text-sm)', margin: 0, padding: 'var(--spacing-sm) 0' }}>
+    <p
+      key={i}
+      style={{
+        color: 'var(--text)',
+        fontSize: 'var(--text-sm)',
+        margin: 0,
+        padding: 'var(--spacing-sm) 0',
+      }}
+    >
       第 {i + 1} 行：这是一段用于演示滚动区域的示例文本内容。
     </p>
   ));
@@ -229,7 +270,14 @@ export default function DemoPage() {
         >
           Common 组件示例
         </h1>
-        <p style={{ margin: 0, marginTop: 'var(--spacing-sm)', color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
+        <p
+          style={{
+            margin: 0,
+            marginTop: 'var(--spacing-sm)',
+            color: 'var(--muted)',
+            fontSize: 'var(--text-sm)',
+          }}
+        >
           共 17 个基础组件，一一展示常规用法
         </p>
       </div>
@@ -237,7 +285,11 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §1 Button                                          */}
       {/* ================================================ */}
-      <Section id="button" title="§1 Button" description="封装 loading 态的原子按钮，样式来自全局 .btn.* 类。">
+      <Section
+        id="button"
+        title="§1 Button"
+        description="封装 loading 态的原子按钮，样式来自全局 .btn.* 类。"
+      >
         <Row label="变体">
           <Button variant="primary">主按钮</Button>
           <Button variant="secondary">次要按钮</Button>
@@ -245,35 +297,87 @@ export default function DemoPage() {
           <Button variant="danger">危险按钮</Button>
         </Row>
         <Row label="带图标">
-          <Button variant="primary" icon={<VscAdd size={14} />}>新建</Button>
-          <Button variant="secondary" icon={<VscSearch size={14} />}>搜索</Button>
-          <Button variant="subtle" icon={<VscEdit size={14} />}>编辑</Button>
-          <Button variant="danger" icon={<VscTrash size={14} />}>删除</Button>
+          <Button variant="primary" icon={<VscAdd size={14} />}>
+            新建
+          </Button>
+          <Button variant="secondary" icon={<VscSearch size={14} />}>
+            搜索
+          </Button>
+          <Button variant="subtle" icon={<VscEdit size={14} />}>
+            编辑
+          </Button>
+          <Button variant="danger" icon={<VscTrash size={14} />}>
+            删除
+          </Button>
         </Row>
         <Row label="Loading">
-          <Button variant="primary" loading>提交中</Button>
-          <Button variant="primary" loading loadingText="保存中...">保存</Button>
+          <Button variant="primary" loading>
+            提交中
+          </Button>
+          <Button variant="primary" loading loadingText="保存中...">
+            保存
+          </Button>
         </Row>
         <Row label="禁用">
-          <Button variant="primary" disabled>禁用主按钮</Button>
-          <Button variant="secondary" disabled>禁用次要按钮</Button>
-          <Button variant="subtle" disabled>禁用低调按钮</Button>
+          <Button variant="primary" disabled>
+            禁用主按钮
+          </Button>
+          <Button variant="secondary" disabled>
+            禁用次要按钮
+          </Button>
+          <Button variant="subtle" disabled>
+            禁用低调按钮
+          </Button>
         </Row>
       </Section>
 
       {/* ================================================ */}
       {/* §2 IconContainer                                   */}
       {/* ================================================ */}
-      <Section id="iconContainer" title="§2 IconContainer" description="统一图片/图标容器，固定尺寸居中裁剪。">
+      <Section
+        id="iconContainer"
+        title="§2 IconContainer"
+        description="统一图片/图标容器，固定尺寸居中裁剪。"
+      >
         <Row label="圆角方形">
-          <IconContainer size={48} shape="rounded" src="https://github.com/fluidicon.png" alt="GitHub" />
-          <IconContainer size={64} shape="rounded" src="https://github.com/fluidicon.png" alt="GitHub" />
-          <IconContainer size={80} shape="rounded" src="https://github.com/fluidicon.png" alt="GitHub" />
+          <IconContainer
+            size={48}
+            shape="rounded"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
+          <IconContainer
+            size={64}
+            shape="rounded"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
+          <IconContainer
+            size={80}
+            shape="rounded"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
         </Row>
         <Row label="圆形">
-          <IconContainer size={48} shape="circle" src="https://github.com/fluidicon.png" alt="GitHub" />
-          <IconContainer size={64} shape="circle" src="https://github.com/fluidicon.png" alt="GitHub" />
-          <IconContainer size={80} shape="circle" src="https://github.com/fluidicon.png" alt="GitHub" />
+          <IconContainer
+            size={48}
+            shape="circle"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
+          <IconContainer
+            size={64}
+            shape="circle"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
+          <IconContainer
+            size={80}
+            shape="circle"
+            src="https://github.com/fluidicon.png"
+            alt="GitHub"
+          />
         </Row>
         <Row label="ReactNode 图标">
           <IconContainer size={40} shape="rounded" src={<VscGithub size={22} />} />
@@ -282,14 +386,24 @@ export default function DemoPage() {
         </Row>
         <Row label="加载失败 fallback">
           <IconContainer size={48} shape="rounded" src="/nonexistent.png" alt="不存在的图片" />
-          <IconContainer size={48} shape="circle" src="/nonexistent.png" alt="不存在的图片" fallback={<VscError size={22} />} />
+          <IconContainer
+            size={48}
+            shape="circle"
+            src="/nonexistent.png"
+            alt="不存在的图片"
+            fallback={<VscError size={22} />}
+          />
         </Row>
       </Section>
 
       {/* ================================================ */}
       {/* §3 Input                                           */}
       {/* ================================================ */}
-      <Section id="input" title="§3 Input" description="单行文本输入，支持 label / helper / error 状态。">
+      <Section
+        id="input"
+        title="§3 Input"
+        description="单行文本输入，支持 label / helper / error 状态。"
+      >
         <Row label="基础">
           <Input
             value={inputValue}
@@ -331,20 +445,18 @@ export default function DemoPage() {
           <Input value="不可编辑" onChange={() => {}} disabled style={{ width: 260 }} />
         </Row>
         <Row label="数字">
-          <Input
-            value="42"
-            onChange={() => {}}
-            label="数量"
-            type="number"
-            style={{ width: 160 }}
-          />
+          <Input value="42" onChange={() => {}} label="数量" type="number" style={{ width: 160 }} />
         </Row>
       </Section>
 
       {/* ================================================ */}
       {/* §4 Textarea                                        */}
       {/* ================================================ */}
-      <Section id="textarea" title="§4 Textarea" description="多行文本输入，复用 Input 的 Token 体系。">
+      <Section
+        id="textarea"
+        title="§4 Textarea"
+        description="多行文本输入，复用 Input 的 Token 体系。"
+      >
         <Row label="基础">
           <Textarea
             value={textareaValue}
@@ -376,14 +488,23 @@ export default function DemoPage() {
           />
         </Row>
         <Row label="禁用">
-          <Textarea value="这是一段只读的文本内容。" onChange={() => {}} disabled style={{ width: 320 }} />
+          <Textarea
+            value="这是一段只读的文本内容。"
+            onChange={() => {}}
+            disabled
+            style={{ width: 320 }}
+          />
         </Row>
       </Section>
 
       {/* ================================================ */}
       {/* §5 Select                                          */}
       {/* ================================================ */}
-      <Section id="select" title="§5 Select" description="下拉选择器，Radix Select 骨架 + .glass 面板 Token。">
+      <Section
+        id="select"
+        title="§5 Select"
+        description="下拉选择器，Radix Select 骨架 + .glass 面板 Token。"
+      >
         <Row label="基础">
           <Select
             value={selectValue}
@@ -402,15 +523,16 @@ export default function DemoPage() {
           />
         </Row>
         <Row label="已选中">
-          <Select
-            value="apple"
-            onChange={() => {}}
-            options={fruitOptions}
-            label="已选水果"
-          />
+          <Select value="apple" onChange={() => {}} options={fruitOptions} label="已选水果" />
         </Row>
         <Row label="禁用">
-          <Select value="" onChange={() => {}} options={fruitOptions} placeholder="不可用" disabled />
+          <Select
+            value=""
+            onChange={() => {}}
+            options={fruitOptions}
+            placeholder="不可用"
+            disabled
+          />
         </Row>
       </Section>
 
@@ -422,7 +544,11 @@ export default function DemoPage() {
           <Switch checked={switchOn} onChange={setSwitchOn} />
         </Row>
         <Row label="带标签">
-          <Switch checked={switchOn} onChange={setSwitchOn} label={switchOn ? '已开启' : '已关闭'} />
+          <Switch
+            checked={switchOn}
+            onChange={setSwitchOn}
+            label={switchOn ? '已开启' : '已关闭'}
+          />
         </Row>
         <Row label="开启态">
           <Switch checked={true} onChange={() => {}} label="通知开关" />
@@ -436,7 +562,11 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §7 Tooltip                                         */}
       {/* ================================================ */}
-      <Section id="tooltip" title="§7 Tooltip" description="悬停提示，仅文字，深色固定不随主题变化。">
+      <Section
+        id="tooltip"
+        title="§7 Tooltip"
+        description="悬停提示，仅文字，深色固定不随主题变化。"
+      >
         <Row label="上（默认）">
           <Tooltip content="这是上方弹出的提示文字">
             <button className="btn subtle">悬停看提示（上）</button>
@@ -466,7 +596,11 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §8 Popover                                         */}
       {/* ================================================ */}
-      <Section id="popover" title="§8 Popover" description="轻量弹出卡片，点击触发，可嵌套任意组件。">
+      <Section
+        id="popover"
+        title="§8 Popover"
+        description="轻量弹出卡片，点击触发，可嵌套任意组件。"
+      >
         <Row label="表单卡片">
           <Popover
             trigger={<button className="btn secondary">打开筛选面板</button>}
@@ -503,18 +637,48 @@ export default function DemoPage() {
           </Popover>
         </Row>
         <Row label="不同对齐">
-          <Popover trigger={<button className="btn subtle">开头对齐</button>} side="bottom" align="start">
-            <div style={{ padding: 'var(--spacing-lg)', color: 'var(--text)', fontSize: 'var(--text-sm)' }}>
+          <Popover
+            trigger={<button className="btn subtle">开头对齐</button>}
+            side="bottom"
+            align="start"
+          >
+            <div
+              style={{
+                padding: 'var(--spacing-lg)',
+                color: 'var(--text)',
+                fontSize: 'var(--text-sm)',
+              }}
+            >
               这是一个开头对齐的卡片
             </div>
           </Popover>
-          <Popover trigger={<button className="btn subtle">居中对齐</button>} side="bottom" align="center">
-            <div style={{ padding: 'var(--spacing-lg)', color: 'var(--text)', fontSize: 'var(--text-sm)' }}>
+          <Popover
+            trigger={<button className="btn subtle">居中对齐</button>}
+            side="bottom"
+            align="center"
+          >
+            <div
+              style={{
+                padding: 'var(--spacing-lg)',
+                color: 'var(--text)',
+                fontSize: 'var(--text-sm)',
+              }}
+            >
               这是一个居中对齐的卡片
             </div>
           </Popover>
-          <Popover trigger={<button className="btn subtle">末尾对齐</button>} side="bottom" align="end">
-            <div style={{ padding: 'var(--spacing-lg)', color: 'var(--text)', fontSize: 'var(--text-sm)' }}>
+          <Popover
+            trigger={<button className="btn subtle">末尾对齐</button>}
+            side="bottom"
+            align="end"
+          >
+            <div
+              style={{
+                padding: 'var(--spacing-lg)',
+                color: 'var(--text)',
+                fontSize: 'var(--text-sm)',
+              }}
+            >
               这是一个末尾对齐的卡片
             </div>
           </Popover>
@@ -642,10 +806,7 @@ export default function DemoPage() {
           </Dialog>
         </Row>
         <Row label="无 description">
-          <Dialog
-            trigger={<button className="btn subtle">简洁弹窗</button>}
-            title="简洁标题"
-          >
+          <Dialog trigger={<button className="btn subtle">简洁弹窗</button>} title="简洁标题">
             <p style={{ color: 'var(--text)', fontSize: 'var(--text-sm)' }}>
               没有 description 的简洁弹窗。
             </p>
@@ -779,9 +940,21 @@ export default function DemoPage() {
           <div style={{ width: '100%' }}>
             <Tabs
               tabs={[
-                { id: 'a', label: '标签A', content: <span style={{ color: 'var(--text)' }}>内容 A</span> },
-                { id: 'b', label: '标签B', content: <span style={{ color: 'var(--text)' }}>内容 B</span> },
-                { id: 'c', label: '标签C', content: <span style={{ color: 'var(--text)' }}>内容 C</span> },
+                {
+                  id: 'a',
+                  label: '标签A',
+                  content: <span style={{ color: 'var(--text)' }}>内容 A</span>,
+                },
+                {
+                  id: 'b',
+                  label: '标签B',
+                  content: <span style={{ color: 'var(--text)' }}>内容 B</span>,
+                },
+                {
+                  id: 'c',
+                  label: '标签C',
+                  content: <span style={{ color: 'var(--text)' }}>内容 C</span>,
+                },
               ]}
               defaultTab="a"
             />
@@ -821,7 +994,11 @@ export default function DemoPage() {
               title="还没有收藏"
               description="收藏的内容会显示在这里"
               action={
-                <Button variant="primary" icon={<VscAdd size={14} />} onClick={() => toast('去发现内容', 'info')}>
+                <Button
+                  variant="primary"
+                  icon={<VscAdd size={14} />}
+                  onClick={() => toast('去发现内容', 'info')}
+                >
                   去发现
                 </Button>
               }
@@ -842,11 +1019,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §17 Skeleton                                       */}
       {/* ================================================ */}
-      <Section
-        id="skeleton"
-        title="§17 Skeleton"
-        description="骨架屏，内容加载中的占位动画。"
-      >
+      <Section id="skeleton" title="§17 Skeleton" description="骨架屏，内容加载中的占位动画。">
         <Row label="文本">
           <div style={{ width: 300 }}>
             <Skeleton variant="text" />
