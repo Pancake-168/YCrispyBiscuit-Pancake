@@ -1,0 +1,16 @@
+.env
+__pycache__/
+node_modules/
+dist/
+out/
+build/
+.venv/
+test/capture.png
+project_contents.txt
+show_files.ps1
+show_fstree.ps1
+test.png
+summaries/
+.codex/
+.shared/
+CLAUDE.md
