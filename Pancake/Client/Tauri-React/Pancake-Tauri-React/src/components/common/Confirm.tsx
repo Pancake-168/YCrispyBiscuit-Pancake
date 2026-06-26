@@ -52,12 +52,7 @@ export default function Confirm({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title={title}
-      description={description}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange} title={title} description={description}>
       {children}
       <div className={styles.footer}>
         <div className={styles.footerLeft}>

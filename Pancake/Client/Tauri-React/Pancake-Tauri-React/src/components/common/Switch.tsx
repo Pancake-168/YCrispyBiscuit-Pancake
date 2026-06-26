@@ -13,12 +13,7 @@ interface SwitchProps {
  * Switch — 布尔值开关。
  * Radix Switch 做骨架，样式用自己的 CSS Module。
  */
-export default function Switch({
-  checked,
-  onChange,
-  label,
-  disabled = false,
-}: SwitchProps) {
+export default function Switch({ checked, onChange, label, disabled = false }: SwitchProps) {
   const generatedId = useId();
 
   return (

@@ -12,12 +12,7 @@ interface EmptyStateProps {
  * EmptyState — 空状态占位。
  * 列表无数据、搜索无结果时显示。纯布局，使用全局 Token，不需要 module.css。
  */
-export default function EmptyState({
-  icon,
-  title,
-  description,
-  action,
-}: EmptyStateProps) {
+export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
     <div
       style={{
@@ -45,9 +40,7 @@ export default function EmptyState({
         {title}
       </span>
       {description && (
-        <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
-          {description}
-        </span>
+        <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>{description}</span>
       )}
       {action && <div style={{ marginTop: 'var(--spacing-sm)' }}>{action}</div>}
     </div>

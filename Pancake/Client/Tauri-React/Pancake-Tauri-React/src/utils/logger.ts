@@ -226,7 +226,7 @@ export const registerGlobalErrorHandlers = () => {
   }
 
   const runtime = globalThis as {
-    addEventListener?: (type: string, listener: (event: any) => void) => void;
+    addEventListener?: (type: string, listener: (event: Event) => void) => void;
   };
 
   if (typeof runtime.addEventListener !== 'function') return;

@@ -14,11 +14,7 @@ interface ScrollAreaProps {
  *
  * 部件结构：Root → Viewport → Scrollbar → Thumb
  */
-export default function ScrollArea({
-  children,
-  maxHeight,
-  className = '',
-}: ScrollAreaProps) {
+export default function ScrollArea({ children, maxHeight, className = '' }: ScrollAreaProps) {
   return (
     <RadixScroll.Root className={`${styles.root} ${className}`}>
       <RadixScroll.Viewport

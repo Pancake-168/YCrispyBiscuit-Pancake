@@ -28,12 +28,7 @@ export default function Button({
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
-  const classNames = [
-    'btn',
-    variant,
-    loading ? 'spinning' : '',
-    className,
-  ]
+  const classNames = ['btn', variant, loading ? 'spinning' : '', className]
     .filter(Boolean)
     .join(' ');
 

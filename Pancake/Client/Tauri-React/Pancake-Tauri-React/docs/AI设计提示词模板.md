@@ -1,12 +1,14 @@
 # AI 设计提示词模板
 
 ## 项目环境
+
 - React 19 + TypeScript + Vite 7 + Tauri 2
 - 图标库：react-icons (md 系列)
-- 无头交互库：@radix-ui/react-*
+- 无头交互库：@radix-ui/react-\*
 - 无 CSS 框架，无 Tailwind
 
 ## 样式系统
+
 - 设计 Token 在 `src/styles/variables.css`，CSS 变量命名：
   - 背景：`--bg`、`--bg-elev`、`--glass`、`--glass-brd`
   - 文字：`--text`、`--muted`
@@ -33,12 +35,14 @@
 - 组件自己的样式写在 `*.module.css`，**只能处理布局/定位/动画**，颜色和圆角必须引用 `var(--xxx)`，**绝对禁止写死颜色值**
 
 ## 组件规范
+
 - 有交互的复杂组件用 **Radix UI 原生部件**做骨架（Dialog、DropdownMenu、Tooltip、Switch、Select、Popover 等），样式用自己的 CSS
 - 简单展示组件直接用全局样式类（`.glass`、`.btn.*`、`.pill.*` 等），不需要额外 CSS 文件
 - 新组件放在 `src/components/common/`，统一从 `index.ts` 导出
 - 组件用 PascalCase，CSS 类用 camelCase
 
 ## 视觉风格
+
 - **暗色优先**（`:root` 是暗色，亮色通过 `data-theme="light"` 覆盖）
 - **毛玻璃面板**：半透明背景 + `backdrop-filter: blur(10px)` + `1px solid var(--glass-brd)`
 - **圆角偏克制**：默认 6px，面板 10px，大面板 12px，不滥用大圆角

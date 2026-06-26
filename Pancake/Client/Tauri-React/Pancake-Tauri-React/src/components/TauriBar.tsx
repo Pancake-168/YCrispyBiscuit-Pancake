@@ -14,12 +14,11 @@ import styles from './TauriBar.module.css';
 const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
 export default function TauriBar() {
-  if (!isTauri) return null;
-
   const [maximized, setMaximized] = useState(false);
   const appWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
+    if (!isTauri) return;
     const appWindow = getCurrentWindow();
     appWindowRef.current = appWindow;
 
@@ -40,6 +39,8 @@ export default function TauriBar() {
   const minimize = useCallback(() => appWindowRef.current?.minimize(), []);
   const toggleMaximize = useCallback(() => appWindowRef.current?.toggleMaximize(), []);
   const close = useCallback(() => appWindowRef.current?.close(), []);
+
+  if (!isTauri) return null;
 
   return (
     <header className={styles.bar}>

@@ -19,11 +19,7 @@ interface TabsProps {
  * Tabs — 标签页切换容器。
  * Radix Tabs 做骨架，样式引用全局 Token。
  */
-export default function Tabs({
-  tabs,
-  defaultTab,
-  onChange,
-}: TabsProps) {
+export default function Tabs({ tabs, defaultTab, onChange }: TabsProps) {
   return (
     <RadixTabs.Root
       className={styles.root}
@@ -32,11 +28,7 @@ export default function Tabs({
     >
       <RadixTabs.List className={styles.list}>
         {tabs.map((tab) => (
-          <RadixTabs.Trigger
-            key={tab.id}
-            className={styles.trigger}
-            value={tab.id}
-          >
+          <RadixTabs.Trigger key={tab.id} className={styles.trigger} value={tab.id}>
             {tab.icon}
             {tab.label}
           </RadixTabs.Trigger>
@@ -44,11 +36,7 @@ export default function Tabs({
       </RadixTabs.List>
 
       {tabs.map((tab) => (
-        <RadixTabs.Content
-          key={tab.id}
-          className={styles.panel}
-          value={tab.id}
-        >
+        <RadixTabs.Content key={tab.id} className={styles.panel} value={tab.id}>
           {tab.content}
         </RadixTabs.Content>
       ))}

@@ -38,10 +38,7 @@ export default function IconContainer({
   // React 图标组件
   if (typeof src !== 'string') {
     return (
-      <div
-        className={`${styles.container} ${shapeClass} ${className}`}
-        style={containerStyle}
-      >
+      <div className={`${styles.container} ${shapeClass} ${className}`} style={containerStyle}>
         {src}
       </div>
     );
@@ -56,26 +53,15 @@ export default function IconContainer({
 
   if (imgError) {
     return (
-      <div
-        className={`${styles.container} ${shapeClass} ${className}`}
-        style={containerStyle}
-      >
+      <div className={`${styles.container} ${shapeClass} ${className}`} style={containerStyle}>
         {fallback ?? defaultFallback}
       </div>
     );
   }
 
   return (
-    <div
-      className={`${styles.container} ${shapeClass} ${className}`}
-      style={containerStyle}
-    >
-      <img
-        className={styles.image}
-        src={src}
-        alt={alt}
-        onError={() => setImgError(true)}
-      />
+    <div className={`${styles.container} ${shapeClass} ${className}`} style={containerStyle}>
+      <img className={styles.image} src={src} alt={alt} onError={() => setImgError(true)} />
     </div>
   );
 }

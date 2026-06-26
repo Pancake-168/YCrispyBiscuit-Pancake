@@ -25,11 +25,10 @@ interface DropdownMenuProps {
 /**
  * 渲染单个菜单项（内容逻辑，供 DropdownMenu 和 ContextMenu 共用）。
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export function renderMenuItem(item: MenuItem, index: number) {
   if (item.separator) {
-    return (
-      <RadixDropdown.Separator key={index} className={styles.separator} />
-    );
+    return <RadixDropdown.Separator key={index} className={styles.separator} />;
   }
 
   return (
@@ -41,9 +40,7 @@ export function renderMenuItem(item: MenuItem, index: number) {
     >
       {item.icon}
       <span className={styles.itemLabel}>{item.label}</span>
-      {item.shortcut && (
-        <span className={styles.shortcut}>{item.shortcut}</span>
-      )}
+      {item.shortcut && <span className={styles.shortcut}>{item.shortcut}</span>}
     </RadixDropdown.Item>
   );
 }
@@ -60,16 +57,9 @@ export default function DropdownMenu({
 }: DropdownMenuProps) {
   return (
     <RadixDropdown.Root>
-      <RadixDropdown.Trigger asChild>
-        {trigger}
-      </RadixDropdown.Trigger>
+      <RadixDropdown.Trigger asChild>{trigger}</RadixDropdown.Trigger>
       <RadixDropdown.Portal>
-        <RadixDropdown.Content
-          className={styles.content}
-          side={side}
-          align={align}
-          sideOffset={4}
-        >
+        <RadixDropdown.Content className={styles.content} side={side} align={align} sideOffset={4}>
           {items.map((item, i) => renderMenuItem(item, i))}
         </RadixDropdown.Content>
       </RadixDropdown.Portal>

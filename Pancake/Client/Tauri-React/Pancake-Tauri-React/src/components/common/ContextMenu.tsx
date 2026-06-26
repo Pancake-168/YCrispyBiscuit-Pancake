@@ -13,20 +13,14 @@ interface ContextMenuProps {
  * ContextMenu — 右键菜单。
  * 菜单结构与样式完全复用 DropdownMenu。
  */
-export default function ContextMenu({
-  children,
-  items,
-  disabled = false,
-}: ContextMenuProps) {
+export default function ContextMenu({ children, items, disabled = false }: ContextMenuProps) {
   return (
     <RadixContext.Root>
       <RadixContext.Trigger asChild disabled={disabled}>
         {children}
       </RadixContext.Trigger>
       <RadixContext.Portal>
-        <RadixContext.Content
-          className={styles.content}
-        >
+        <RadixContext.Content className={styles.content}>
           {items.map((item, i) => renderMenuItem(item, i))}
         </RadixContext.Content>
       </RadixContext.Portal>

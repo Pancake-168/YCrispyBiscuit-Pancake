@@ -37,14 +37,9 @@ function notifyListeners(toast: ToastInstance) {
  *   toast('操作成功', 'success');
  *   toast({ message: '已删除', variant: 'error', action: { label: '撤销', onClick: undo } });
  */
-function toast(
-  messageOrConfig: string | Omit<ToastInstance, 'id'>,
-  variant?: ToastVariant,
-): void {
+function toast(messageOrConfig: string | Omit<ToastInstance, 'id'>, variant?: ToastVariant): void {
   const config =
-    typeof messageOrConfig === 'string'
-      ? { message: messageOrConfig, variant }
-      : messageOrConfig;
+    typeof messageOrConfig === 'string' ? { message: messageOrConfig, variant } : messageOrConfig;
 
   notifyListeners({
     id: `toast-${++toastCounter}`,
@@ -138,5 +133,6 @@ function ToastItem({
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { toast, ToastProvider };
 export type { ToastVariant, ToastInstance, ToastAction };

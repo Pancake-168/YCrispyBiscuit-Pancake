@@ -27,17 +27,11 @@ export default function Dialog({
 }: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
-      {trigger && (
-        <RadixDialog.Trigger asChild>
-          {trigger}
-        </RadixDialog.Trigger>
-      )}
+      {trigger && <RadixDialog.Trigger asChild>{trigger}</RadixDialog.Trigger>}
       <RadixDialog.Portal>
         <RadixDialog.Overlay className={styles.overlay} />
         <RadixDialog.Content className={styles.content}>
-          <RadixDialog.Title className={styles.title}>
-            {title}
-          </RadixDialog.Title>
+          <RadixDialog.Title className={styles.title}>{title}</RadixDialog.Title>
           {description && (
             <RadixDialog.Description className={styles.description}>
               {description}
@@ -45,7 +39,11 @@ export default function Dialog({
           )}
           <div className={styles.body}>{children}</div>
           <RadixDialog.Close asChild>
-            <button className="icon-btn" aria-label="关闭" style={{ position: 'absolute', top: 'var(--spacing-lg)', right: 'var(--spacing-lg)' }}>
+            <button
+              className="icon-btn"
+              aria-label="关闭"
+              style={{ position: 'absolute', top: 'var(--spacing-lg)', right: 'var(--spacing-lg)' }}
+            >
               <VscClose size={16} />
             </button>
           </RadixDialog.Close>

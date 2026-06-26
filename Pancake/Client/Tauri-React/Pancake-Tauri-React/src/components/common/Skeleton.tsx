@@ -10,18 +10,9 @@ interface SkeletonProps {
 /**
  * Skeleton — 骨架屏，内容加载中的占位动画。
  */
-export default function Skeleton({
-  variant = 'text',
-  width,
-  height,
-  count = 1,
-}: SkeletonProps) {
+export default function Skeleton({ variant = 'text', width, height, count = 1 }: SkeletonProps) {
   const variantClass =
-    variant === 'circle'
-      ? styles.circle
-      : variant === 'rect'
-        ? styles.rect
-        : styles.text;
+    variant === 'circle' ? styles.circle : variant === 'rect' ? styles.rect : styles.text;
 
   const baseStyle: React.CSSProperties = {
     width: width ?? (variant === 'circle' ? height || 32 : '100%'),

@@ -21,16 +21,9 @@ export default function Popover({
 }: PopoverProps) {
   return (
     <RadixPopover.Root>
-      <RadixPopover.Trigger asChild>
-        {trigger}
-      </RadixPopover.Trigger>
+      <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
       <RadixPopover.Portal>
-        <RadixPopover.Content
-          className={styles.content}
-          side={side}
-          align={align}
-          sideOffset={6}
-        >
+        <RadixPopover.Content className={styles.content} side={side} align={align} sideOffset={6}>
           {children}
           <RadixPopover.Arrow className={styles.arrow} />
         </RadixPopover.Content>

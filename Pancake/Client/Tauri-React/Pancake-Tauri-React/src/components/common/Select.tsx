@@ -40,7 +40,10 @@ export default function Select({
         </span>
       )}
       <RadixSelect.Root value={value} onValueChange={onChange} disabled={disabled}>
-        <RadixSelect.Trigger className={styles.trigger} aria-labelledby={label ? `${generatedId}-label` : undefined}>
+        <RadixSelect.Trigger
+          className={styles.trigger}
+          aria-labelledby={label ? `${generatedId}-label` : undefined}
+        >
           <RadixSelect.Value placeholder={placeholder}>
             {options.find((o) => o.value === value)?.label}
           </RadixSelect.Value>

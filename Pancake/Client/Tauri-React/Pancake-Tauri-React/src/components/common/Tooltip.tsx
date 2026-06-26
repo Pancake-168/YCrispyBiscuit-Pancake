@@ -22,9 +22,7 @@ export default function Tooltip({
   return (
     <RadixTooltip.Provider delayDuration={delayDuration}>
       <RadixTooltip.Root>
-        <RadixTooltip.Trigger asChild>
-          {children}
-        </RadixTooltip.Trigger>
+        <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
         <RadixTooltip.Portal>
           <RadixTooltip.Content className={styles.content} side={side} sideOffset={4}>
             {content}
