@@ -29,9 +29,9 @@ interface MenuItemRenderParts {
     disabled?: boolean;
     onClick?: () => void;
     children: ReactNode;
-    key?: unknown;
+    key?: React.Key;
   }>;
-  Separator: ComponentType<{ className?: string; key?: unknown }>;
+  Separator: ComponentType<{ className?: string; key?: React.Key }>;
 }
 
 /**

@@ -10,7 +10,7 @@ import { isTauri } from '@/utils/isTauri';
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<DemoPage />} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/demo" element={<DemoPage />} />
       <Route path="/audioswitch" element={<AudioSwitchPage />} />
       <Route path="/pictureswitch" element={<PictureSwitchPage />} />
