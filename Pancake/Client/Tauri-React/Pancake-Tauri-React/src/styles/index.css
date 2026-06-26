@@ -386,6 +386,7 @@ select:focus {
   height: 100%;
 }
 
+/* ---- 左侧：头像 + 标题 + 介绍 + 外链 ---- */
 .HomePageLeft {
   flex: 1;
   display: flex;
@@ -395,13 +396,75 @@ select:focus {
   gap: var(--spacing-xl);
 }
 
-.HomePageRight {
-  width: 360px;
+.HomePageAvatar {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--glass-brd);
+  box-shadow: var(--shadow-md);
+}
+
+.HomePageTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.HomePageIntro {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--muted);
+  max-width: 320px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.HomePageLinks {
   display: flex;
-  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.HomePageLink {
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-brd);
+  background: var(--glass);
+  color: var(--muted);
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.HomePageLink:hover {
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  border-color: var(--accent);
+}
+
+/* ---- 右侧：半圆轮盘 —— 紧贴右边缘 ---- */
+.HomePageRight {
+  position: relative;
+  width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0;
+}
+
+.HomePageCarouselWrap {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .HomePageTop2 {

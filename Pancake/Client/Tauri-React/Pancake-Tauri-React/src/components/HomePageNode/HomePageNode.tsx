@@ -1,6 +1,6 @@
 import { IconContainer } from '../common';
 
-interface MainPageNodeProps {
+interface HomePageNodeProps {
   image: string;
   title: string;
 }
@@ -9,7 +9,7 @@ interface MainPageNodeProps {
  * 节点：
  * 由一张图片+标题组成
  */
-export default function MainPageNode({ image, title }: MainPageNodeProps) {
+export default function HomePageNode({ image, title }: HomePageNodeProps) {
   return (
     <div className="">
       <IconContainer size={64} shape="rounded" src={image} alt={title} />

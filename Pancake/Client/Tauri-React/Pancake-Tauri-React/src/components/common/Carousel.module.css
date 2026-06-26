@@ -1,0 +1,143 @@
+/* ============================================================================
+ * Carousel — 纵向半圆弧轮播
+ * 卡片式横向长条：image[左] + title[右]
+ * ============================================================================ */
+
+/* ---- 容器 ---- */
+.container {
+  position: relative;
+  overflow: visible;
+  /* 上下两端渐变消失 */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+/* ---- 箭头按钮 ---- */
+.arrow {
+  position: absolute;
+  right: 6px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-full);
+  background: var(--glass);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.arrow:hover {
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.12);
+  border-color: var(--accent);
+}
+
+.arrow:active {
+  transform: scale(0.9);
+}
+
+.arrowUp {
+  top: 22%;
+}
+
+.arrowDown {
+  bottom: 22%;
+}
+
+/* ---- 卡片 ---- */
+.card {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: 6px 8px;
+  border-radius: var(--radius-lg);
+  background: var(--glass);
+  border: 1px solid var(--glass-brd);
+  backdrop-filter: blur(var(--blur-panel));
+  cursor: pointer;
+  user-select: none;
+  transition:
+    left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    top 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.35s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* ---- 卡片内图片 ---- */
+.cardImage {
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-brd);
+  background: var(--glass);
+}
+
+/* ---- 卡片文字区 ---- */
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cardTitle {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s ease;
+}
+
+.cardSubtitle {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- 高亮卡片（A0）---- */
+.cardActive {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 14px rgba(var(--accent-rgb), 0.3),
+    0 0 28px rgba(var(--accent-rgb), 0.12);
+  background: rgba(var(--accent-rgb), 0.06);
+}
+
+.cardActive .cardImage {
+  border-color: var(--accent);
+}
+
+.cardTitleActive {
+  color: var(--accent);
+}
