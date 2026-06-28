@@ -120,7 +120,9 @@ export default function Carousel({
       animating.current = true;
       if (e.deltaY > 0) stepDown();
       else stepUp();
-      setTimeout(() => { animating.current = false; }, 60);
+      setTimeout(() => {
+        animating.current = false;
+      }, 60);
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
@@ -137,11 +139,23 @@ export default function Carousel({
     >
       {/* 箭头：右边缘内侧，不参与圆弧坐标 */}
       <button className={`${styles.arrow} ${styles.arrowUp}`} onClick={stepUp} aria-label="上一个">
-        <IconContainer size={arrowSize} shape="circle" src={<MdKeyboardArrowUp size={arrowIconSize} />} />
+        <IconContainer
+          size={arrowSize}
+          shape="circle"
+          src={<MdKeyboardArrowUp size={arrowIconSize} />}
+        />
       </button>
 
-      <button className={`${styles.arrow} ${styles.arrowDown}`} onClick={stepDown} aria-label="下一个">
-        <IconContainer size={arrowSize} shape="circle" src={<MdKeyboardArrowDown size={arrowIconSize} />} />
+      <button
+        className={`${styles.arrow} ${styles.arrowDown}`}
+        onClick={stepDown}
+        aria-label="下一个"
+      >
+        <IconContainer
+          size={arrowSize}
+          shape="circle"
+          src={<MdKeyboardArrowDown size={arrowIconSize} />}
+        />
       </button>
 
       {/* 卡片：以 vp 为 key，始终渲染 5 张，位置随 activeIndex 变化动画过渡 */}

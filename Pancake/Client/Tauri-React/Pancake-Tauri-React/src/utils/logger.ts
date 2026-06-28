@@ -23,7 +23,6 @@
  *   unhandledrejection，确保未捕获错误也能进入日志
  */
 
-import { invoke } from '@tauri-apps/api/core';
 import { isTauri } from '@/utils/isTauri';
 
 // ---- 类型定义 ----
@@ -195,17 +194,19 @@ export const registerTauriTransport = () => {
 
   runtimeFlags.__pancakeTauriTransportRegistered = true;
 
-  registerLogTransport((payload) => {
-    const entry: LogEntry = {
-      level: payload.level,
-      file_name: payload.fileName,
-      function_name: payload.functionName,
-      message: payload.message,
-      details: payload.details ? payload.details.map(stringifyLogDetail) : null,
-    };
-    invoke('write_log', { entry }).catch((e) => {
-      // invoke 失败时仅输出控制台，不再次走 logger（避免无限循环）
-      console.error('[logger] invoke write_log 失败:', e);
+  // Tauri 桌面端：动态导入，避免 Web 构建引入 Tauri 内部模块
+  import('@tauri-apps/api/core').then(({ invoke }) => {
+    registerLogTransport((payload) => {
+      const entry: LogEntry = {
+        level: payload.level,
+        file_name: payload.fileName,
+        function_name: payload.functionName,
+        message: payload.message,
+        details: payload.details ? payload.details.map(stringifyLogDetail) : null,
+      };
+      invoke('write_log', { entry }).catch((e) => {
+        console.error('[logger] invoke write_log 失败:', e);
+      });
     });
   });
 };

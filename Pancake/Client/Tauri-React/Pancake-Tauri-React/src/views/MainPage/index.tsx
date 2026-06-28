@@ -3,8 +3,6 @@ import AppRouter from '@/router';
 import { useIsHome } from '@/utils/isHomePage';
 
 export default function MainPage() {
-
-
   return (
     <div className="main-page">
       {!useIsHome && <RouterBar />}

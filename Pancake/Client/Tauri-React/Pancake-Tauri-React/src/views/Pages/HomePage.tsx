@@ -3,7 +3,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { VscGithub } from 'react-icons/vsc';
 import { SiQq } from 'react-icons/si';
 import Carousel from '@/components/HomePageCarousel';
-import { Pancake_Tools } from '@/composables/FunctionList'
+import { Pancake_Tools } from '@/composables/FunctionList';
 import { IconContainer } from '@/components/common';
 import { isTauri } from '@/utils/isTauri';
 import { useThemeStore } from '@/stores/theme.store';
@@ -15,9 +15,10 @@ export default function HomePage() {
   const prevTheme = useRef(useThemeStore.getState().theme);
 
   useEffect(() => {
+    const prev = prevTheme.current;
     document.documentElement.setAttribute('data-theme', 'dark');
     return () => {
-      document.documentElement.setAttribute('data-theme', prevTheme.current);
+      document.documentElement.setAttribute('data-theme', prev);
     };
   }, []);
 
@@ -49,7 +50,17 @@ export default function HomePage() {
     const iconInner1 = Math.round(iconSize * 0.75);
     const iconInner2 = Math.round(iconSize * 0.55);
     const scrollIcon = Math.round(panelWidth * 0.056);
-    return { avatarSize, iconSize, iconInner1,iconInner2, radius, cardWidth, cardHeight, imageSize, scrollIcon };
+    return {
+      avatarSize,
+      iconSize,
+      iconInner1,
+      iconInner2,
+      radius,
+      cardWidth,
+      cardHeight,
+      imageSize,
+      scrollIcon,
+    };
   }, [vw]);
 
   return (
@@ -58,7 +69,13 @@ export default function HomePage() {
       <div className={styles.homePageTop}>
         {/* 左侧：头像 + 标题 + 介绍 + 外链 */}
         <div className={styles.homePageLeft}>
-          <IconContainer className={styles.homePageAvatar} size={sizes.avatarSize} shape="circle" src={`${import.meta.env.BASE_URL}3.jpg`} alt="Pancake" />
+          <IconContainer
+            className={styles.homePageAvatar}
+            size={sizes.avatarSize}
+            shape="circle"
+            src={`${import.meta.env.BASE_URL}3.jpg`}
+            alt="Pancake"
+          />
 
           <h1 className={styles.homePageTitle}>Pancake工具箱</h1>
 
@@ -72,7 +89,11 @@ export default function HomePage() {
               rel="noopener noreferrer"
               title="GitHub"
             >
-              <IconContainer size={sizes.iconSize} shape="circle" src={<VscGithub size={sizes.iconInner1} />} />
+              <IconContainer
+                size={sizes.iconSize}
+                shape="circle"
+                src={<VscGithub size={sizes.iconInner1} />}
+              />
             </a>
             <a
               className={styles.homePageLink}
@@ -81,7 +102,11 @@ export default function HomePage() {
               rel="noopener noreferrer"
               title="依酥饼"
             >
-              <IconContainer size={sizes.iconSize} shape="circle" src={<SiQq size={sizes.iconInner2} />} />
+              <IconContainer
+                size={sizes.iconSize}
+                shape="circle"
+                src={<SiQq size={sizes.iconInner2} />}
+              />
             </a>
           </div>
         </div>
