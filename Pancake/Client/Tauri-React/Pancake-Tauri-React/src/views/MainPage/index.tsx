@@ -1,13 +1,13 @@
 import RouterBar from '@/components/RouterBar';
 import AppRouter from '@/router';
-import { useLocation } from 'react-router-dom';
+import { useIsHome } from '@/utils/isHomePage';
 
 export default function MainPage() {
-  const { pathname } = useLocation();
+
 
   return (
     <div className="main-page">
-      {pathname !== '/' && <RouterBar />}
+      {!useIsHome && <RouterBar />}
       <div className="app-content">
         <AppRouter />
       </div>

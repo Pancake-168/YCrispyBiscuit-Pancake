@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useIsHome } from '@/utils/isHomePage';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import type { Window } from '@tauri-apps/api/window';
 import { useThemeStore } from '@/stores/theme.store';
@@ -50,9 +51,11 @@ export default function TauriBar() {
 
       <span className={styles.spacer} />
 
-      <button onClick={toggleTheme} className={styles.btn} title="切换主题">
-        {theme === 'dark' ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
-      </button>
+      {!useIsHome && (
+        <button onClick={toggleTheme} className={styles.btn} title="切换主题">
+          {theme === 'dark' ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
+        </button>
+      )}
       <button onClick={minimize} className={styles.btn} title="最小化">
         <VscChromeMinimize size={14} />
       </button>

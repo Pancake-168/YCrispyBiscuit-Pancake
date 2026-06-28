@@ -15,9 +15,9 @@
   --muted: #9aa3b2;
 
   /* ---- 强调色 ---- */
-  --accent: #7aa2ff;
-  --accent-2: #9bffce;
-  --accent-rgb: 122, 162, 255;
+  --accent: #e2b04a;
+  --accent-2: #f0c060;
+  --accent-rgb: 226, 176, 74;
 
   /* ---- 功能域色 ---- */
   --color-system: #82aaff;
@@ -100,9 +100,9 @@
   --text: #0c1117;
   --muted: #5a6678;
 
-  --accent: #4e8cff;
-  --accent-2: #2563eb;
-  --accent-rgb: 78, 140, 255;
+  --accent: #c78c2e;
+  --accent-2: #d4a040;
+  --accent-rgb: 199, 140, 46;
 
   --color-system: #4076f5;
   --color-job: #9d54d1;

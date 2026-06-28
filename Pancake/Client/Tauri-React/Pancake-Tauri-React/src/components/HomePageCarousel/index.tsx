@@ -89,8 +89,8 @@ export default function Carousel({
     const ay = radius - radius * sinA + edgePush;
 
     const abs = Math.abs(offset);
-    const scale = 1 - Math.min(abs, renderRange) * 0.18;
-    const opacity = Math.max(0, 1 - abs * 0.35);
+    const scale = 1 - Math.min(abs, renderRange) * 0.08;
+    const opacity = Math.max(0, 1 - abs * 0.15);
     const zIndex = 10 - abs;
 
     return {

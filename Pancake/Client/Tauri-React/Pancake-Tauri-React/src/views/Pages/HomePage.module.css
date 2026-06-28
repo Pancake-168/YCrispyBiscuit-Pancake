@@ -3,6 +3,9 @@
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.8)),
+    url('../../assets/HomePage/2.jpg') center / cover no-repeat;
 }
 
 .homePage::-webkit-scrollbar {
@@ -14,7 +17,7 @@
   display: flex;
   height: 100%;
   scroll-snap-align: start;
-  gap:20%
+  gap: 20%;
 }
 
 /* ---- 左侧：头像 + 标题 + 介绍 + 外链 ---- */
@@ -47,7 +50,7 @@
 .homePageIntro {
   margin: 0;
   font-size: clamp(1rem, 1.2vw, 1.4rem);
-  color: var(--muted);
+  color: var(--text);
   max-width: clamp(320px, 28%, 560px);
   text-align: center;
   line-height: 1.6;
@@ -60,7 +63,7 @@
 
 .homePageLink {
   display: inline-flex;
-  color: var(--muted);
+  color: var(--text);
   transition:
     color 0.15s ease,
     transform 0.15s ease;
@@ -90,6 +93,8 @@
 }
 
 .homePageTop2 {
+  position: relative;
+  z-index: 1;
   height: 100%;
   scroll-snap-align: start;
 }
@@ -104,7 +109,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.15em;
-  color: var(--muted);
+  color: var(--text);
   cursor: pointer;
   animation: hintBounce 2s ease-in-out infinite;
 }

@@ -5,11 +5,21 @@ import { SiQq } from 'react-icons/si';
 import Carousel from '@/components/HomePageCarousel';
 import { Pancake_Tools } from '@/composables/FunctionList'
 import { IconContainer } from '@/components/common';
+import { isTauri } from '@/utils/isTauri';
+import { useThemeStore } from '@/stores/theme.store';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
   const secondScreenRef = useRef<HTMLDivElement>(null);
   const [vw, setVw] = useState(window.innerWidth / 100);
+  const prevTheme = useRef(useThemeStore.getState().theme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    return () => {
+      document.documentElement.setAttribute('data-theme', prevTheme.current);
+    };
+  }, []);
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth / 100);
@@ -20,6 +30,11 @@ export default function HomePage() {
   const scrollToSecond = () => {
     secondScreenRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const tools = useMemo(
+    () => (!isTauri() ? Pancake_Tools.filter((t) => t.id !== 'pancakeworkflow') : Pancake_Tools),
+    [],
+  );
 
   const sizes = useMemo(() => {
     // 面板宽 = clamp(280px, 32%, 500px)，和 CSS .homePageRight 同步
@@ -75,7 +90,7 @@ export default function HomePage() {
         <div className={styles.homePageRight}>
           <div className={styles.homePageCarouselWrap}>
             <Carousel
-              items={Pancake_Tools}
+              items={tools}
               radius={sizes.radius}
               cardWidth={sizes.cardWidth}
               cardHeight={sizes.cardHeight}
