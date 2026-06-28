@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "dev:tauri": "node scripts/tauri.js dev",
+    "build:web": "tsc && WEB_BUILD=true vite build",
     "build:tauri": "node scripts/tauri.js build",
     "lint": "eslint .",
     "format": "prettier --check .",

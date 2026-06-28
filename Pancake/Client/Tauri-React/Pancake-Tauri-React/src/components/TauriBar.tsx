@@ -45,7 +45,7 @@ export default function TauriBar() {
   return (
     <header className={styles.bar}>
       <span className={styles.left}>
-        <img className={styles.logo} src="/3.jpg" alt="" />
+        <img className={styles.logo} src={`${import.meta.env.BASE_URL}3.jpg`} alt="" />
         <span className={styles.title}>Pancake</span>
       </span>
 

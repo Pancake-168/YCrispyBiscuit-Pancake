@@ -7,9 +7,11 @@ const host = process.env.TAURI_DEV_HOST;
 
 // Tauri 构建时保留 console（桌面端 DevTools 可见），纯 Web 构建时移除
 const isTauriBuild = process.env.__TAURI_BUILD === 'true';
+const isWebBuild = process.env.WEB_BUILD === 'true';
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
+  base: isWebBuild ? '/YCrispyBiscuit-Pancake/' : '/',
   plugins: [react(), ...(!isTauriBuild ? [removeConsole()] : [])],
   resolve: {
     alias: {

@@ -58,7 +58,7 @@ export default function HomePage() {
       <div className={styles.homePageTop}>
         {/* 左侧：头像 + 标题 + 介绍 + 外链 */}
         <div className={styles.homePageLeft}>
-          <IconContainer className={styles.homePageAvatar} size={sizes.avatarSize} shape="circle" src="/3.jpg" alt="Pancake" />
+          <IconContainer className={styles.homePageAvatar} size={sizes.avatarSize} shape="circle" src={`${import.meta.env.BASE_URL}3.jpg`} alt="Pancake" />
 
           <h1 className={styles.homePageTitle}>Pancake工具箱</h1>
 
