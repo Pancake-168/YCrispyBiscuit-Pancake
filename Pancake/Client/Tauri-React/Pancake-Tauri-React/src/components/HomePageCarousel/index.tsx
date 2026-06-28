@@ -1,6 +1,6 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
-import styles from './Carousel.module.css';
+import styles from './index.module.css';
 
 export interface CarouselItem {
   id: string;
@@ -26,9 +26,8 @@ interface CarouselProps {
 
 /** 半圆角度步长：180° / 4 间隔 = 45° */
 const ANGLE_STEP = Math.PI / 4;
-
-/** 可视偏移槽位：相对于 activeIndex */
-const VISIBLE_OFFSETS = [-2, -1, 0, 1, 2];
+/** 可见范围：A-2 ~ A2 */
+const RANGE = 2;
 
 /**
  * SemicircularCarousel — 纵向半圆弧轮播。
@@ -47,15 +46,15 @@ export default function Carousel({
 }: CarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
-  /** 顺时针（↓）：前进一个 */
+  /** 顺时针（↓）：前进一个，activeIndex 单调递增，不取模 */
   const stepDown = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % items.length);
-  }, [items.length]);
+    setActiveIndex((prev) => prev + 1);
+  }, []);
 
   /** 逆时针（↑）：后退一个 */
   const stepUp = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
-  }, [items.length]);
+    setActiveIndex((prev) => prev - 1);
+  }, []);
 
   /** 容器：R + cardWidth 宽（容纳 A0 卡片向左延伸），2R 高 */
   const containerWidth = radius + cardWidth;
@@ -68,20 +67,19 @@ export default function Carousel({
    * 角度从水平向左（0° = A0）量起，+90° = 正上方 A2。
    */
   const getCardStyle = (offset: number) => {
-    const angle = offset * ANGLE_STEP; // -90° ~ 90°
+    const angle = offset * ANGLE_STEP;
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
 
     // 圆上锚点（容器坐标系）
-    const ax = containerWidth - radius * (1 - cosA); // 锚点 x
+    const ax = containerWidth - radius * cosA; // 锚点 x
     const ay = radius - radius * sinA; // 锚点 y
 
     const abs = Math.abs(offset);
-    const scale = 1 - abs * 0.18;
-    const opacity = 1 - abs * 0.35;
+    const scale = 1 - Math.min(abs, RANGE) * 0.18;
+    const opacity = Math.max(0, 1 - abs * 0.35);
     const zIndex = 10 - abs;
 
-    // 卡片右边缘 = 锚点 x，向左摆 cardWidth
     return {
       left: ax - cardWidth,
       top: ay - cardHeight / 2,
@@ -93,10 +91,8 @@ export default function Carousel({
     };
   };
 
-  /** 循环取 items 下标 */
-  const getItemIndex = (offset: number) => {
-    return (((activeIndex + offset) % items.length) + items.length) % items.length;
-  };
+  /** 可见窗口半径 */
+  const fullRange = RANGE;
 
   return (
     <div
@@ -107,11 +103,7 @@ export default function Carousel({
       }}
     >
       {/* 箭头：右边缘内侧，不参与圆弧坐标 */}
-      <button
-        className={`${styles.arrow} ${styles.arrowUp}`}
-        onClick={stepUp}
-        aria-label="上一个"
-      >
+      <button className={`${styles.arrow} ${styles.arrowUp}`} onClick={stepUp} aria-label="上一个">
         <MdKeyboardArrowUp size={20} />
       </button>
 
@@ -123,18 +115,21 @@ export default function Carousel({
         <MdKeyboardArrowDown size={20} />
       </button>
 
-      {/* 卡片 */}
-      {VISIBLE_OFFSETS.map((offset) => {
-        const itemIndex = getItemIndex(offset);
-        const item = items[itemIndex];
+      {/* 卡片：以 vp 为 key，始终渲染 5 张，位置随 activeIndex 变化动画过渡 */}
+      {Array.from({ length: 2 * fullRange + 1 }, (_, i) => {
+        const vp = activeIndex - fullRange + i;
+        const offset = vp - activeIndex;
+        const realIndex = ((vp % items.length) + items.length) % items.length;
+        const item = items[realIndex];
         if (!item) return null;
 
+        const inView = Math.abs(offset) <= RANGE;
         const isActive = offset === 0;
         const pos = getCardStyle(offset);
 
         return (
           <div
-            key={`${item.id}-${itemIndex}`}
+            key={vp}
             className={`${styles.card} ${isActive ? styles.cardActive : ''}`}
             style={{
               width: pos.width,
@@ -142,13 +137,14 @@ export default function Carousel({
               left: pos.left,
               top: pos.top,
               transform: pos.transform,
-              opacity: pos.opacity,
-              zIndex: pos.zIndex,
+              opacity: inView ? pos.opacity : 0,
+              zIndex: inView ? pos.zIndex : -1,
+              pointerEvents: inView ? undefined : 'none',
             }}
-            onClick={item.onClick}
+            onClick={inView ? item.onClick : undefined}
           >
             {renderItem ? (
-              renderItem(item, itemIndex, isActive)
+              renderItem(item, realIndex, isActive)
             ) : (
               <>
                 <img
@@ -162,9 +158,7 @@ export default function Carousel({
                   <span className={`${styles.cardTitle} ${isActive ? styles.cardTitleActive : ''}`}>
                     {item.title}
                   </span>
-                  {item.subtitle && (
-                    <span className={styles.cardSubtitle}>{item.subtitle}</span>
-                  )}
+                  {item.subtitle && <span className={styles.cardSubtitle}>{item.subtitle}</span>}
                 </div>
               </>
             )}

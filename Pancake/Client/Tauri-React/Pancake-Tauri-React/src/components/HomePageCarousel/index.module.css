@@ -6,15 +6,9 @@
 /* ---- 容器 ---- */
 .container {
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   /* 上下两端渐变消失 */
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,
@@ -76,7 +70,6 @@
   border-radius: var(--radius-lg);
   background: var(--glass);
   border: 1px solid var(--glass-brd);
-  backdrop-filter: blur(var(--blur-panel));
   cursor: pointer;
   user-select: none;
   transition:

@@ -1,0 +1,117 @@
+.homePage {
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.homePageTop {
+  display: flex;
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+/* ---- 左侧：头像 + 标题 + 介绍 + 外链 ---- */
+.homePageLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+.homePageAvatar {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid var(--glass-brd);
+  box-shadow: var(--shadow-md);
+}
+
+.homePageTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.homePageIntro {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--muted);
+  max-width: 320px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.homePageLinks {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.homePageLink {
+  display: inline-flex;
+  color: var(--muted);
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.homePageLink:hover {
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+/* ---- 右侧：半圆轮盘 —— 紧贴右边缘 ---- */
+.homePageRight {
+  position: relative;
+  width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0;
+}
+
+.homePageCarouselWrap {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.homePageTop2 {
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+/* ---- 首屏底部向下提示 ---- */
+.scrollHint {
+  position: absolute;
+  bottom: var(--spacing-2xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  cursor: pointer;
+  animation: hintBounce 2s ease-in-out infinite;
+}
+
+.scrollHint:hover {
+  color: var(--accent);
+}
+
+@keyframes hintBounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(6px);
+  }
+}
