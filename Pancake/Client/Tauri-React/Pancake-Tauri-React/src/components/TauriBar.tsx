@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useIsHome } from '@/utils/isHomePage';
-import { getCurrentWindow } from '@tauri-apps/api/window';
 import type { Window } from '@tauri-apps/api/window';
 import { useThemeStore } from '@/stores/theme.store';
 import {
@@ -18,19 +17,17 @@ export default function TauriBar() {
   const appWindowRef = useRef<Window | null>(null);
 
   useEffect(() => {
-    if (!isTauri) return;
-    const appWindow = getCurrentWindow();
-    appWindowRef.current = appWindow;
+    if (!isTauri()) return;
+    import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
+      const appWindow = getCurrentWindow();
+      appWindowRef.current = appWindow;
 
-    appWindow.isMaximized().then(setMaximized);
-
-    const unlisten = appWindow.onResized(() => {
       appWindow.isMaximized().then(setMaximized);
-    });
 
-    return () => {
-      unlisten.then((fn) => fn());
-    };
+      appWindow.onResized(() => {
+        appWindow.isMaximized().then(setMaximized);
+      });
+    });
   }, []);
 
   const theme = useThemeStore((s) => s.theme);
