@@ -37,7 +37,7 @@ export default function TauriBar() {
   const toggleMaximize = useCallback(() => appWindowRef.current?.toggleMaximize(), []);
   const close = useCallback(() => appWindowRef.current?.close(), []);
 
-  if (!isTauri) return null;
+  if (!isTauri()) return null;
 
   return (
     <header className={styles.bar}>
