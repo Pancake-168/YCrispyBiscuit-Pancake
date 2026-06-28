@@ -62,7 +62,7 @@ export default function HomePage() {
 
           <h1 className={styles.homePageTitle}>Pancake工具箱</h1>
 
-          <p className={styles.homePageIntro}>XXXXXX</p>
+          <p className={styles.homePageIntro}>你好，你不好，我好，我也不好</p>
 
           <div className={styles.homePageLinks}>
             <a
@@ -79,7 +79,7 @@ export default function HomePage() {
               href="https://qm.qq.com/q/VeEWEMqdaM"
               target="_blank"
               rel="noopener noreferrer"
-              title="QQ"
+              title="依酥饼"
             >
               <IconContainer size={sizes.iconSize} shape="circle" src={<SiQq size={sizes.iconInner2} />} />
             </a>
