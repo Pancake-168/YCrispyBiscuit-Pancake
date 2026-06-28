@@ -71,4 +71,5 @@ pip-delete-this-directory.txt
 **/src-tauri/gen/
 
 .claude/
-.github/
+.github/*
+!.github/workflows/
