@@ -1,5 +1,6 @@
-import { useState, useCallback, type ReactNode } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect, type ReactNode } from 'react';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
+import { IconContainer } from '@/components/common';
 import styles from './index.module.css';
 
 export interface CarouselItem {
@@ -26,8 +27,9 @@ interface CarouselProps {
 
 /** 半圆角度步长：180° / 4 间隔 = 45° */
 const ANGLE_STEP = Math.PI / 4;
-/** 可见范围：A-2 ~ A2 */
+/** 可见范围：A-2 ~ A2，±1 缓冲防止进出时闪现幽灵 */
 const RANGE = 2;
+const BUFFER = 1;
 
 /**
  * SemicircularCarousel — 纵向半圆弧轮播。
@@ -56,8 +58,15 @@ export default function Carousel({
     setActiveIndex((prev) => prev - 1);
   }, []);
 
-  /** 容器：R + cardWidth 宽（容纳 A0 卡片向左延伸），2R 高 */
-  const containerWidth = radius + cardWidth;
+  /** 箭头图标尺寸：随卡片高度等比 */
+  const arrowSize = useMemo(() => Math.round(cardHeight * 0.45), [cardHeight]);
+  const arrowIconSize = useMemo(() => Math.round(arrowSize * 0.77), [arrowSize]);
+
+  /** 左侧留白，防止动画弹性 overshoot 被 overflow:hidden 裁切 */
+  const leftPad = Math.round(cardWidth * 0.5);
+  const renderRange = RANGE + BUFFER;
+  /** 容器：leftPad + R + cardWidth 宽，2R 高 */
+  const containerWidth = leftPad + radius + cardWidth;
   const containerHeight = radius * 2;
 
   /**
@@ -67,16 +76,20 @@ export default function Carousel({
    * 角度从水平向左（0° = A0）量起，+90° = 正上方 A2。
    */
   const getCardStyle = (offset: number) => {
-    const angle = offset * ANGLE_STEP;
+    // 位置钳到半圆边缘，缓冲区卡片在边缘原位淡入淡出，不绕回右侧
+    const clamped = Math.max(-RANGE, Math.min(RANGE, offset));
+    const angle = clamped * ANGLE_STEP;
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
 
     // 圆上锚点（容器坐标系）
-    const ax = containerWidth - radius * cosA; // 锚点 x
-    const ay = radius - radius * sinA; // 锚点 y
+    const ax = containerWidth - radius * cosA;
+    // A2/A-2 额外向上下偏移，拉开与 A1/A-1 的距离
+    const edgePush = Math.abs(offset) === 2 ? -Math.sign(offset) * radius * 0.18 : 0;
+    const ay = radius - radius * sinA + edgePush;
 
     const abs = Math.abs(offset);
-    const scale = 1 - Math.min(abs, RANGE) * 0.18;
+    const scale = 1 - Math.min(abs, renderRange) * 0.18;
     const opacity = Math.max(0, 1 - abs * 0.35);
     const zIndex = 10 - abs;
 
@@ -91,11 +104,31 @@ export default function Carousel({
     };
   };
 
-  /** 可见窗口半径 */
-  const fullRange = RANGE;
+  /** 渲染窗口半径（含缓冲） */
+  const fullRange = renderRange;
+
+  /** 原生滚轮监听：阻止页面滚动，动画期间限制切换速率 */
+  const containerRef = useRef<HTMLDivElement>(null);
+  const animating = useRef(false);
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (animating.current) return;
+      animating.current = true;
+      if (e.deltaY > 0) stepDown();
+      else stepUp();
+      setTimeout(() => { animating.current = false; }, 60);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [stepDown, stepUp]);
 
   return (
     <div
+      ref={containerRef}
       className={styles.container}
       style={{
         width: containerWidth,
@@ -104,15 +137,11 @@ export default function Carousel({
     >
       {/* 箭头：右边缘内侧，不参与圆弧坐标 */}
       <button className={`${styles.arrow} ${styles.arrowUp}`} onClick={stepUp} aria-label="上一个">
-        <MdKeyboardArrowUp size={20} />
+        <IconContainer size={arrowSize} shape="circle" src={<MdKeyboardArrowUp size={arrowIconSize} />} />
       </button>
 
-      <button
-        className={`${styles.arrow} ${styles.arrowDown}`}
-        onClick={stepDown}
-        aria-label="下一个"
-      >
-        <MdKeyboardArrowDown size={20} />
+      <button className={`${styles.arrow} ${styles.arrowDown}`} onClick={stepDown} aria-label="下一个">
+        <IconContainer size={arrowSize} shape="circle" src={<MdKeyboardArrowDown size={arrowIconSize} />} />
       </button>
 
       {/* 卡片：以 vp 为 key，始终渲染 5 张，位置随 activeIndex 变化动画过渡 */}

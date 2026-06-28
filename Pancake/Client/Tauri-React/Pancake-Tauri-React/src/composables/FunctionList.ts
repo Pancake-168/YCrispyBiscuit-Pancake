@@ -1,18 +1,23 @@
-export interface FunctionItem {
-  title: string;
-  image: string;
-  detail: string;
-}
+import type { CarouselItem } from '@/components/HomePageCarousel';
 
-export const functionList: FunctionItem[] = [
+/** 示例工具列表——图片和链接后续自行替换 */
+export const Pancake_Tools: CarouselItem[] = [
   {
-    title: '图片格式转换',
-    image: '/1.jpg',
-    detail: '支持 JSON / YAML / XML / CSV 互相转换',
+    id: 'audioswitch',
+    image: '/1.png',
+    title: '音频转码',
+    subtitle: '各类音频格式转换',
   },
   {
-    title: '音频格式转换',
-    image: '/2.jpg',
-    detail: '文本与 Base64 互转，支持 UTF-8 编码',
+    id: 'pictureswitch',
+    image: '/2.png',
+    title: '图片转码',
+    subtitle: '图片格式与压缩',
+  },
+  {
+    id: 'pancakeworkflow',
+    image: '/1.png',
+    title: '松饼工作流',
+    subtitle: '哎哎给自己搞点小东西',
   },
 ];

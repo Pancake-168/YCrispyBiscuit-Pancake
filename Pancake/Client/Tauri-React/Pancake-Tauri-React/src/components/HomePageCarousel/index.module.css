@@ -21,31 +21,20 @@
 /* ---- 箭头按钮 ---- */
 .arrow {
   position: absolute;
-  right: 6px;
+  right: 0.4em;
   z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
+  background: none;
+  border: none;
   padding: 0;
-  border: 1px solid var(--glass-brd);
-  border-radius: var(--radius-full);
-  background: var(--glass);
   color: var(--muted);
   cursor: pointer;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
+  transition: color 0.15s ease;
   mask-image: none;
   -webkit-mask-image: none;
 }
 
 .arrow:hover {
   color: var(--accent);
-  background: rgba(var(--accent-rgb), 0.12);
-  border-color: var(--accent);
 }
 
 .arrow:active {
@@ -66,7 +55,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
-  padding: 6px 8px;
+  padding: 0.4em 0.55em;
   border-radius: var(--radius-lg);
   background: var(--glass);
   border: 1px solid var(--glass-brd);
@@ -94,7 +83,7 @@
 .cardText {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.15em;
   min-width: 0;
   overflow: hidden;
 }

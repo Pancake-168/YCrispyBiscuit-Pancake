@@ -5,8 +5,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: var(--glass);
-  border: 1px solid var(--glass-brd);
+ 
+ 
 }
 
 .rounded {
