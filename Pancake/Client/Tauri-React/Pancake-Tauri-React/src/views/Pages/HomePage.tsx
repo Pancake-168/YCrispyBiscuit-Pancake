@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { VscGithub } from 'react-icons/vsc';
 import { SiQq } from 'react-icons/si';
@@ -10,6 +11,7 @@ import { useThemeStore } from '@/stores/theme.store';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const secondScreenRef = useRef<HTMLDivElement>(null);
   const [vw, setVw] = useState(window.innerWidth / 100);
   const prevTheme = useRef(useThemeStore.getState().theme);
@@ -32,10 +34,21 @@ export default function HomePage() {
     secondScreenRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const tools = useMemo(
-    () => (!isTauri() ? Pancake_Tools.filter((t) => t.id !== 'pancakeworkflow') : Pancake_Tools),
-    [],
-  );
+  const tools = useMemo(() => {
+    const base = !isTauri()
+      ? Pancake_Tools.filter((t) => t.id !== 'pancakeworkflow')
+      : Pancake_Tools;
+    // 为每个工具注入点击跳转
+    const routeMap: Record<string, string> = {
+      audioswitch: '/audioswitch',
+      picswitch: '/picswitch',
+      pancakeworkflow: '/pancakeworkflow',
+    };
+    return base.map((t) => ({
+      ...t,
+      onClick: routeMap[t.id] ? () => navigate(routeMap[t.id]) : undefined,
+    }));
+  }, [navigate]);
 
   const sizes = useMemo(() => {
     // 面板宽 = clamp(280px, 32%, 500px)，和 CSS .homePageRight 同步

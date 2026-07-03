@@ -11,7 +11,7 @@ export const Pancake_Tools: CarouselItem[] = [
     subtitle: '各类音频格式转换',
   },
   {
-    id: 'pictureswitch',
+    id: 'picswitch',
     image: `${BASE}2.png`,
     title: '图片转码',
     subtitle: '图片格式与压缩',

@@ -148,8 +148,8 @@ async def handle_broadcast(sid: str, data: dict):
             "message": data.get("message", ""),
             "from_sid": sid,
         },
-        room="lobby",   # 广播到 lobby 房间内的所有人
-        skip_sid=sid,   # 排除发送者自己
+        room="lobby",  # 广播到 lobby 房间内的所有人
+        skip_sid=sid,  # 排除发送者自己
     )
 
 

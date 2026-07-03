@@ -13,7 +13,7 @@ export default function AppRouter() {
       <Route path="/" element={<HomePage />} />
       <Route path="/demo" element={<DemoPage />} />
       <Route path="/audioswitch" element={<AudioSwitchPage />} />
-      <Route path="/pictureswitch" element={<PictureSwitchPage />} />
+      {isTauri() && <Route path="/picswitch" element={<PictureSwitchPage />} />}
       {isTauri() && <Route path="/pancakeworkflow" element={<PancakeWorkFlowPage />} />}
       <Route path="*" element={<NotFound />} />
     </Routes>

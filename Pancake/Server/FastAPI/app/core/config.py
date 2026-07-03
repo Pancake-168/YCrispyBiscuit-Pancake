@@ -35,7 +35,7 @@ def _get_writable_dir() -> Path:
     return Path(__file__).resolve().parent.parent.parent  # Server/FastAPI
 
 
-BASE_DIR = _get_base_dir()          # 读配置、json 等只读资源
+BASE_DIR = _get_base_dir()  # 读配置、json 等只读资源
 WRITABLE_DIR = _get_writable_dir()  # 写数据库、日志等用户数据
 JSON_DIR = BASE_DIR / "json"
 
@@ -68,8 +68,8 @@ class Settings(BaseSettings):
         "http://localhost:1420",
         "http://localhost:5173",
         "http://localhost:5175",
-        "http://tauri.localhost",       # Tauri 打包后 WebView 的 origin
-        "https://tauri.localhost",      # Tauri HTTPS 模式
+        "http://tauri.localhost",  # Tauri 打包后 WebView 的 origin
+        "https://tauri.localhost",  # Tauri HTTPS 模式
     ]
     cors_allow_credentials: bool = True
     allowed_hosts: List[str] = ["localhost", "127.0.0.1"]

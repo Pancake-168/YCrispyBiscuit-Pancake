@@ -106,15 +106,15 @@
 
 #### 不跟随主题的 Token（仅在 `:root`，亮色不覆盖）
 
-| Token | 值 | 用途 |
-|---|---|---|
-| `--dialog-overlay-bg` | `rgba(0,0,0,0.45)` | Dialog 遮罩层 |
-| `--tooltip-bg` | `rgba(32,32,32,0.92)` | Tooltip 背景（永远深色） |
-| `--tooltip-text` | `rgba(255,255,255,0.93)` | Tooltip 文字 |
-| `--tooltip-border` | `rgba(255,255,255,0.12)` | Tooltip 边框 |
-| `--blur-overlay` | `4px` | Dialog 遮罩层模糊 |
-| `--blur-panel` | `10px` | 面板/卡片模糊 |
-| `--blur-tooltip` | `12px` | Tooltip 模糊 |
+| Token                 | 值                       | 用途                     |
+| --------------------- | ------------------------ | ------------------------ |
+| `--dialog-overlay-bg` | `rgba(0,0,0,0.45)`       | Dialog 遮罩层            |
+| `--tooltip-bg`        | `rgba(32,32,32,0.92)`    | Tooltip 背景（永远深色） |
+| `--tooltip-text`      | `rgba(255,255,255,0.93)` | Tooltip 文字             |
+| `--tooltip-border`    | `rgba(255,255,255,0.12)` | Tooltip 边框             |
+| `--blur-overlay`      | `4px`                    | Dialog 遮罩层模糊        |
+| `--blur-panel`        | `10px`                   | 面板/卡片模糊            |
+| `--blur-tooltip`      | `12px`                   | Tooltip 模糊             |
 
 #### 自定义字体
 
@@ -140,12 +140,12 @@
 
 所有页面的外层容器，由 `MainPage` 提供：
 
-| 类名 | 作用 |
-|---|---|
-| `.app-layout` | 根容器（`flex column, height: 100vh`） |
-| `.main-page` | 主区域（`flex: 1, flex column, overflow: hidden`） |
-| `.app-content` | 内容滚动区（`flex: 1, overflow: auto`） |
-| `.app-nav` | 顶部导航栏（32px 高，底部边框分隔） |
+| 类名           | 作用                                               |
+| -------------- | -------------------------------------------------- |
+| `.app-layout`  | 根容器（`flex column, height: 100vh`）             |
+| `.main-page`   | 主区域（`flex: 1, flex column, overflow: hidden`） |
+| `.app-content` | 内容滚动区（`flex: 1, overflow: auto`）            |
+| `.app-nav`     | 顶部导航栏（32px 高，底部边框分隔）                |
 
 新页面组件渲染在 `.app-content` 内部，不需要自己写外层容器。
 
@@ -162,33 +162,34 @@
 ```
 
 行为规则：
+
 - hover：`translateY(-1px)` + 增强阴影（不缩放）
 - active：回弹 `translateY(0)`
 - disabled：`opacity: 0.5` + 禁止点击
 
 #### 其他全局类
 
-| 类名 | 用途 |
-|---|---|
-| `.glass` | 毛玻璃面板（`var(--glass)` 背景 + `blur(var(--blur-panel))` + 细边框） |
-| `.icon-btn` | 图标按钮（透明底色 + hover 高亮） |
-| `.pill.success` / `.error` / `.warn` / `.info` | 状态标签 |
+| 类名                                           | 用途                                                                   |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `.glass`                                       | 毛玻璃面板（`var(--glass)` 背景 + `blur(var(--blur-panel))` + 细边框） |
+| `.icon-btn`                                    | 图标按钮（透明底色 + hover 高亮）                                      |
+| `.pill.success` / `.error` / `.warn` / `.info` | 状态标签                                                               |
 
 ### 第三层：组件规范
 
 项目共有 **17 个通用组件**，统一从 `src/components/common/index.ts` 导出：
 
-| # | 组件 | 用途 | # | 组件 | 用途 |
-|---|---|---|---|---|---|
-| §1 | Button | 按钮（loading/disabled 封装） | §10 | ContextMenu | 右键菜单 |
-| §2 | IconContainer | 统一图片/图标容器 | §11 | Dialog | 通用弹窗 |
-| §3 | Input | 单行文本输入 | §12 | Confirm | Dialog 子集确认弹窗 |
-| §4 | Textarea | 多行文本输入 | §13 | Toast | 全局通知通道 |
-| §5 | Select | 下拉选择器 | §14 | Tabs | 标签页切换 |
-| §6 | Switch | 开关 | §15 | ScrollArea | 统一样式滚动区域 |
-| §7 | Tooltip | 悬停提示 | §16 | EmptyState | 空状态占位 |
-| §8 | Popover | 弹出卡片 | §17 | Skeleton | 骨架屏 |
-| §9 | DropdownMenu | 下拉菜单 | | | |
+| #   | 组件          | 用途                          | #   | 组件        | 用途                |
+| --- | ------------- | ----------------------------- | --- | ----------- | ------------------- |
+| §1  | Button        | 按钮（loading/disabled 封装） | §10 | ContextMenu | 右键菜单            |
+| §2  | IconContainer | 统一图片/图标容器             | §11 | Dialog      | 通用弹窗            |
+| §3  | Input         | 单行文本输入                  | §12 | Confirm     | Dialog 子集确认弹窗 |
+| §4  | Textarea      | 多行文本输入                  | §13 | Toast       | 全局通知通道        |
+| §5  | Select        | 下拉选择器                    | §14 | Tabs        | 标签页切换          |
+| §6  | Switch        | 开关                          | §15 | ScrollArea  | 统一样式滚动区域    |
+| §7  | Tooltip       | 悬停提示                      | §16 | EmptyState  | 空状态占位          |
+| §8  | Popover       | 弹出卡片                      | §17 | Skeleton    | 骨架屏              |
+| §9  | DropdownMenu  | 下拉菜单                      |     |             |                     |
 
 详细规范见 [基础组件规范.md](基础组件规范.md)，完整用法示例见 [DemoPage.tsx](../src/views/DemoPage.tsx)。
 
@@ -202,11 +203,11 @@
 
 #### 模糊值使用层次
 
-| 场景 | Token | 值 |
-|---|---|---|
-| Dialog 遮罩层 | `--blur-overlay` | 4px |
-| `.glass`、Popover、DropdownMenu、Select 面板、Toast | `--blur-panel` | 10px |
-| Tooltip | `--blur-tooltip` | 12px |
+| 场景                                                | Token            | 值   |
+| --------------------------------------------------- | ---------------- | ---- |
+| Dialog 遮罩层                                       | `--blur-overlay` | 4px  |
+| `.glass`、Popover、DropdownMenu、Select 面板、Toast | `--blur-panel`   | 10px |
+| Tooltip                                             | `--blur-tooltip` | 12px |
 
 #### 按钮 hover 规则
 
@@ -225,15 +226,16 @@
 function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  return 'light';  // 首次访问默认亮色
+  return 'light'; // 首次访问默认亮色
 }
 
-toggleTheme: () => set((state) => {
-  const next = state.theme === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('pancake-theme', next);
-  document.documentElement.setAttribute('data-theme', next);
-  return { theme: next };
-})
+toggleTheme: () =>
+  set((state) => {
+    const next = state.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('pancake-theme', next);
+    document.documentElement.setAttribute('data-theme', next);
+    return { theme: next };
+  });
 ```
 
 首页特殊处理：进入时强制切暗色（`setAttribute('data-theme', 'dark')`），离开时在 `useEffect` cleanup 中恢复用户原主题。

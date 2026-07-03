@@ -165,6 +165,8 @@ fn write_log(app_handle: tauri::AppHandle, entry: LogEntry) -> Result<(), String
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let resource_dir = app
                 .path()
