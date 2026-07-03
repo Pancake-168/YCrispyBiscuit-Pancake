@@ -102,6 +102,7 @@ class FormatDetail:
         supports_animation: bool,
         lossy_options: bool,
         quality_range: Optional[Tuple[int, int]],
+        supports_lossless: bool = False,
     ):
         self.extensions = extensions
         self.mime_type = mime_type
@@ -109,6 +110,7 @@ class FormatDetail:
         self.supports_animation = supports_animation
         self.lossy_options = lossy_options
         self.quality_range = list(quality_range) if quality_range else None
+        self.supports_lossless = supports_lossless
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -118,13 +120,14 @@ class FormatDetail:
             "supports_animation": self.supports_animation,
             "lossy_options": self.lossy_options,
             "quality_range": self.quality_range,
+            "supports_lossless": self.supports_lossless,
         }
 
 
 FORMAT_DETAILS: Dict[str, FormatDetail] = {
     "png": FormatDetail([".png"], "image/png", True, False, False, None),
     "jpeg": FormatDetail([".jpg", ".jpeg"], "image/jpeg", False, False, True, (1, 100)),
-    "webp": FormatDetail([".webp"], "image/webp", True, True, True, (0, 100)),
+    "webp": FormatDetail([".webp"], "image/webp", True, True, True, (0, 100), supports_lossless=True),
     "bmp": FormatDetail([".bmp"], "image/bmp", False, False, False, None),
     "tiff": FormatDetail([".tiff", ".tif"], "image/tiff", True, False, False, None),
     "gif": FormatDetail([".gif"], "image/gif", True, True, False, None),

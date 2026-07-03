@@ -57,6 +57,7 @@ export default function PictureSwitchPage() {
     const [exactWidth, setExactWidth] = useState(1920);
     const [exactHeight, setExactHeight] = useState(1080);
     const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+    const [colorMode, setColorMode] = useState<string>('auto');
     const [stripMetadata, setStripMetadata] = useState(true);
 
     // ---- 转换状态 ----
@@ -81,7 +82,10 @@ export default function PictureSwitchPage() {
 
     // ---- 显示质量参数的条件 ----
     const showQuality = targetDetail?.lossy_options === true;
-    const showLosslessSwitch = targetFormat === 'webp'; // AVIF lossless 待确认，保守仅 WebP
+    const showLosslessSwitch = targetDetail?.supports_lossless === true;
+
+    // ---- 当前格式的质量范围（来自后端，滑块不再写死 1-100） ----
+    const qualityRange = targetDetail?.quality_range;
 
     // ---- 缩放模式选项 ----
     const resizeModeOptions = [
@@ -93,6 +97,21 @@ export default function PictureSwitchPage() {
 
     const showFitFields = resizeMode === 'fit' || resizeMode === 'fill';
     const showExactFields = resizeMode === 'exact';
+
+    // ---- <input> accept 属性，与 Tauri 原生对话框 filter 一致 ----
+    const inputAccept = useMemo(() => {
+        if (supportedExtensions.length === 0) return 'image/*';
+        return supportedExtensions.map((e) => `.${e}`).join(',');
+    }, [supportedExtensions]);
+
+    // ---- 色彩模式选项 ----
+    const colorModeOptions = [
+        { value: 'auto', label: '自动' },
+        { value: 'RGB', label: 'RGB' },
+        { value: 'RGBA', label: 'RGBA（保留透明）' },
+        { value: 'L', label: '灰度' },
+        { value: 'P', label: '调色板' },
+    ];
 
 
     useEffect(() => {
@@ -320,10 +339,10 @@ export default function PictureSwitchPage() {
                 keep_aspect_ratio: resizeMode !== 'exact',
                 ...(showQuality && !lossless && { quality }),
                 ...(lossless && { lossless: true }),
-                ...(showFitFields && { max_width: maxWidth, max_height: maxHeight }),
-                ...(showExactFields && { width: exactWidth, height: exactHeight }),
+                ...(showFitFields && maxWidth > 0 && maxHeight > 0 && { max_width: maxWidth, max_height: maxHeight }),
+                ...(showExactFields && exactWidth > 0 && exactHeight > 0 && { width: exactWidth, height: exactHeight }),
                 background_color: backgroundColor,
-                color_mode: 'auto' as const,
+                color_mode: colorMode as 'auto' | 'RGB' | 'RGBA' | 'L' | 'P',
                 strip_metadata: stripMetadata,
             };
 
@@ -372,6 +391,7 @@ export default function PictureSwitchPage() {
         showQuality,
         showFitFields,
         showExactFields,
+        colorMode,
     ]);
 
 
@@ -414,7 +434,7 @@ export default function PictureSwitchPage() {
                 <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*"
+                    accept={inputAccept}
                     multiple
                     className={styles.hiddenInput}
                     onChange={handleFileInput}
@@ -431,6 +451,15 @@ export default function PictureSwitchPage() {
                             placeholder="选择格式"
                         />
                     </div>
+
+                    {/* ICO 方形裁切提示 */}
+                    {targetFormat === 'ico' && files.length > 0 && (
+                        <div className={styles.paramRow}>
+                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-warn)' }}>
+                                非方形图片将居中裁切为正方形后再转换为 ICO
+                            </span>
+                        </div>
+                    )}
 
                     {/* 压缩方式（仅 WebP） */}
                     {showLosslessSwitch && (
@@ -451,8 +480,8 @@ export default function PictureSwitchPage() {
                             </label>
                             <input
                                 type="range"
-                                min={1}
-                                max={100}
+                                min={qualityRange?.[0] ?? 1}
+                                max={qualityRange?.[1] ?? 100}
                                 value={quality}
                                 onChange={(e) => setQuality(Number(e.target.value))}
                                 className={styles.qualitySlider}
@@ -521,7 +550,19 @@ export default function PictureSwitchPage() {
                         </div>
                     )}
 
-                    {/* 填充色 */}
+                    {/* 色彩模式 */}
+                    <div className={styles.paramRow}>
+                        <label className={styles.paramLabel}>色彩模式</label>
+                        <Select
+                            value={colorMode}
+                            onChange={setColorMode}
+                            options={colorModeOptions}
+                            placeholder="自动"
+                        />
+                    </div>
+
+                    {/* 填充色（仅目标格式不支持透明时显示） */}
+                    {targetDetail && !targetDetail.supports_transparency && (
                     <div className={styles.paramRow}>
                         <label className={styles.paramLabel}>透明填充</label>
                         <div className={styles.colorRow}>
@@ -534,6 +575,7 @@ export default function PictureSwitchPage() {
                             <span className={styles.colorValue}>{backgroundColor}</span>
                         </div>
                     </div>
+                    )}
 
                     {/* 移除元数据 */}
                     <div className={styles.paramRow}>

@@ -16,6 +16,8 @@ export default function TauriBar() {
   const [maximized, setMaximized] = useState(false);
   const appWindowRef = useRef<Window | null>(null);
 
+    const isHome = useIsHome();
+
   useEffect(() => {
     if (!isTauri()) return;
     import('@tauri-apps/api/window').then(({ getCurrentWindow }) => {
@@ -48,7 +50,7 @@ export default function TauriBar() {
 
       <span className={styles.spacer} />
 
-      {!useIsHome && (
+      {!isHome && (
         <button onClick={toggleTheme} className={styles.btn} title="切换主题">
           {theme === 'dark' ? <MdLightMode size={16} /> : <MdDarkMode size={16} />}
         </button>

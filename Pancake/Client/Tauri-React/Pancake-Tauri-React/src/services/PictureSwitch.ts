@@ -20,6 +20,7 @@ export interface FormatDetail {
     supports_animation: boolean;
     lossy_options: boolean;
     quality_range: [number, number] | null;
+    supports_lossless: boolean;
 }
 
 // 获取支持的格式列表
