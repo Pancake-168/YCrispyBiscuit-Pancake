@@ -41,7 +41,7 @@ export default function HomePage() {
     // 为每个工具注入点击跳转
     const routeMap: Record<string, string> = {
       audioswitch: '/audioswitch',
-      picswitch: '/picswitch',
+      pictureswitch: '/pictureswitch',
       pancakeworkflow: '/pancakeworkflow',
     };
     return base.map((t) => ({
