@@ -14,7 +14,7 @@ httpx
 python-socketio
 ruff
 pyinstaller>=6.0
-# 图片转换
+# pictureswitch
 Pillow>=10.0
 pillow-heif>=0.15
 cairosvg>=2.7

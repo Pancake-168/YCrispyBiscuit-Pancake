@@ -1,6 +1,6 @@
 import { createLogger } from '@/utils/logger';
 import { API_URLS } from '@/ApiUrls';
-import type { ApiResult } from '@/types/api';
+import type { ApiResult } from '@/types/ApiResult';
 
 
 
