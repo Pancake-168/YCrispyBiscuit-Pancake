@@ -52,10 +52,10 @@ export default function PictureSwitchPage() {
     const [quality, setQuality] = useState(85);
     const [lossless, setLossless] = useState(false);
     const [resizeMode, setResizeMode] = useState<string>('none');
-    const [maxWidth, setMaxWidth] = useState(1920);
-    const [maxHeight, setMaxHeight] = useState(1080);
-    const [exactWidth, setExactWidth] = useState(1920);
-    const [exactHeight, setExactHeight] = useState(1080);
+    const [maxWidth, setMaxWidth] = useState(1024);
+    const [maxHeight, setMaxHeight] = useState(1024);
+    const [exactWidth, setExactWidth] = useState(1024);
+    const [exactHeight, setExactHeight] = useState(1024);
     const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
     const [colorMode, setColorMode] = useState<string>('auto');
     const [stripMetadata, setStripMetadata] = useState(true);
