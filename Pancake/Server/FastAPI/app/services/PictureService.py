@@ -38,6 +38,7 @@ from app.utils.PictureUtils import (
     OUTPUT_FORMAT_NAMES,      # 输出格式名列表（小写，去重）→ 供 GET /formats 返回，与 FORMAT_DETAILS key 对齐
 )
 from app.core.config import WRITABLE_DIR  # 可写目录路径（开发=FastAPI/temp/，生产=资源目录/data/）
+from app.exceptions.errors import ConfigurationError  # 配置/依赖缺失异常（走全局 handler，返回 500 + request_id）
 
 # ============================================================================
 # 常量
@@ -337,7 +338,7 @@ class PictureService:
                 from pillow_heif import register_heif_opener
                 register_heif_opener()                    # 注册后 Pillow 可直接 open HEIF
             except ImportError:
-                raise RuntimeError("pillow-heif 未安装，无法读取 HEIF/HEIC 文件")
+                raise ConfigurationError("pillow-heif 未安装，无法读取 HEIF/HEIC 文件")
 
         if detected_format == "AVIF":                     # AVIF：pyavif 解码
             return self._open_avif(data)
@@ -364,7 +365,7 @@ class PictureService:
                 png_data = cairosvg.svg2png(bytestring=data, **svg_kwargs)  # 渲染 SVG→PNG 字节
                 return Image.open(io.BytesIO(png_data))   # PNG 字节→Pillow Image
             except ImportError:
-                raise RuntimeError("cairosvg 未安装，无法渲染 SVG 文件")
+                raise ConfigurationError("cairosvg 未安装，无法渲染 SVG 文件")
 
         # 通用路径：PNG/JPEG/WEBP/BMP/TIFF/GIF/ICO/PPM/PGM/PBM/TGA
         img = Image.open(io.BytesIO(data))                # 从内存字节打开
@@ -383,7 +384,7 @@ class PictureService:
         try:
             import pyavif
         except ImportError:
-            raise RuntimeError("pyavif 未安装，无法读取 AVIF 文件")
+            raise ConfigurationError("pyavif 未安装，无法读取 AVIF 文件")
         tmp_path = None                                   # 临时文件路径，finally 清理
         try:
             fd, tmp_path = tempfile.mkstemp(suffix=".avif")  # 创建临时文件，返回 (fd, path)

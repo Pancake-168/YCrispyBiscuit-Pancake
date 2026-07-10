@@ -9,7 +9,7 @@
 
 from fastapi import APIRouter, UploadFile, File, Form  # File=标记为文件字段 Form=标记为表单字段
 from fastapi.responses import FileResponse              # 文件下载响应（设置 Content-Disposition）
-from fastapi import HTTPException                       # HTTP 异常（400/404 等）
+from app.exceptions.errors import BadRequestError, NotFoundError  # 项目统一异常体系（走全局 handler，响应带 request_id）
 from pathlib import Path
 from typing import List, Optional
 
@@ -86,10 +86,10 @@ async def convert_picture(
     """
     # ---- 校验 ----
     if not files:                                        # 空文件列表（前端已阻止，后端防御）
-        raise HTTPException(status_code=400, detail="请至少上传一个文件")
+        raise BadRequestError("请至少上传一个文件")
 
     if len(files) > MAX_FILES:                           # 超过单次上限 50 个
-        raise HTTPException(status_code=400, detail=f"单次最多转换 {MAX_FILES} 个文件")
+        raise BadRequestError(f"单次最多转换 {MAX_FILES} 个文件")
 
     # ---- 构建参数 dataclass ----
     # 将 Form 字段值打包为 ConversionParams，传给服务层
@@ -126,7 +126,7 @@ async def download_single(task_id: str, index: int):
     """
     file_path = service.get_file_path(task_id, index)    # 从 _tasks 字典查文件路径
     if file_path is None or not file_path.exists():       # 任务不存在/序号越界/文件已清理
-        raise HTTPException(status_code=404, detail="文件不存在或已过期")
+        raise NotFoundError("文件不存在或已过期")
 
     # 确定响应文件名（优先用存储的 converted_name）
     stored = service._tasks.get(task_id, [])               # 取任务的文件列表
@@ -154,7 +154,7 @@ async def download_batch(task_id: str):
     """
     zip_path = service.get_zip_path(task_id)              # 从 _tasks 字典查 zip 路径
     if zip_path is None or not zip_path.exists():          # 任务不存在/单文件无 zip/文件已清理
-        raise HTTPException(status_code=404, detail="文件不存在或已过期")
+        raise NotFoundError("文件不存在或已过期")
 
     return FileResponse(
         path=str(zip_path),
