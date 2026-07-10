@@ -461,6 +461,15 @@ export default function PictureSwitchPage() {
                         </div>
                     )}
 
+                    {/* SVG 矢量化提示 */}
+                    {targetFormat === 'svg' && files.length > 0 && (
+                        <div className={styles.paramRow}>
+                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-warn)' }}>
+                                SVG 输出为自动提取的矢量轮廓路径，照片类图像效果有限，适合图标/Logo/文字
+                            </span>
+                        </div>
+                    )}
+
                     {/* 压缩方式（仅 WebP） */}
                     {showLosslessSwitch && (
                         <div className={styles.paramRow}>

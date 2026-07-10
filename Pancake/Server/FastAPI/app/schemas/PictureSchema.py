@@ -18,6 +18,7 @@ class FormatDetail(BaseModel):
     supports_animation: bool
     lossy_options: bool
     quality_range: Optional[List[int]] = None
+    supports_lossless: bool = False
 
 
 class FormatsResponse(BaseModel):
@@ -51,4 +52,3 @@ class ConvertResponse(BaseModel):
     task_id: str
     total: int
     results: List[ConvertResultItem]
-    zip_url: Optional[str] = None

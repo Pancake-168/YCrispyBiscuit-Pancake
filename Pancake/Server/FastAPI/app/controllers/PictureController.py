@@ -59,7 +59,7 @@ async def convert_picture(
     # ConvertRequest Schema 仅用于文档组织，不直接用作 Body 参数
     files: List[UploadFile] = File(..., description="待转换图片（最多 50 个）"),
     target_format: str = Form(..., description="目标格式，如 webp / jpeg / png"),
-    quality: Optional[int] = Form(None, ge=0, le=100, description="有损格式质量 1-100"),
+    quality: Optional[int] = Form(None, ge=1, le=100, description="有损格式质量 1-100"),
     lossless: bool = Form(False, description="WebP 无损模式"),
     resize_mode: str = Form("none", description="缩放模式: none / fit / fill / exact"),
     max_width: Optional[int] = Form(None, ge=1, le=16384, description="最大宽度 px"),
@@ -71,7 +71,7 @@ async def convert_picture(
         None, ge=1, le=16384, description="精确高度 px（exact 模式）"
     ),
     keep_aspect_ratio: bool = Form(True, description="缩放时保持宽高比"),
-    background_color: str = Form("#FFFFFF", description="透明转不透明填充色"),
+    background_color: str = Form("#FFFFFF", pattern=r"^#[0-9a-fA-F]{6}$", description="透明转不透明填充色（#RRGGBB）"),
     color_mode: str = Form("auto", description="色彩模式: auto / RGB / RGBA / L / P"),
     strip_metadata: bool = Form(True, description="移除 EXIF 等元数据"),
 ):

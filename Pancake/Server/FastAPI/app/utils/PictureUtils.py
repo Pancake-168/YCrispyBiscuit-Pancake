@@ -33,9 +33,9 @@ EXT_TO_FORMAT: Dict[str, str] = {
     ".tga": "TGA",
 }
 
-# 输出格式（排除 HEIF/SVG——HEIF 仅读取，SVG Pillow 无法写入）
+# 输出格式（排除 HEIF——HEIF 仅读取）
 OUTPUT_FORMATS: Dict[str, str] = {
-    k: v for k, v in EXT_TO_FORMAT.items() if v not in ("HEIF", "SVG")
+    k: v for k, v in EXT_TO_FORMAT.items() if v != "HEIF"
 }
 
 # Pillow 格式名 → 标准扩展名（包含点）
@@ -57,8 +57,8 @@ FORMAT_TO_EXT: Dict[str, str] = {
 
 # 输入格式列表
 INPUT_EXTENSIONS = sorted(EXT_TO_FORMAT.keys())
-# 输出格式列表
-OUTPUT_EXTENSIONS = sorted(OUTPUT_FORMATS.keys())
+# 输出格式名称列表（按格式名去重，用于 output_formats 字段，与 FORMAT_DETAILS 的 key 对齐）
+OUTPUT_FORMAT_NAMES = sorted(set(v.lower() for v in OUTPUT_FORMATS.values()))
 
 
 # ============================================================================
@@ -136,7 +136,7 @@ FORMAT_DETAILS: Dict[str, FormatDetail] = {
     "avif": FormatDetail(
         [".avif"], "image/avif", True, False, True, (0, 100)
     ),  # 通过 pyavif 读写
-    "svg": FormatDetail([".svg"], "image/svg+xml", True, False, False, None),
+    "svg": FormatDetail([".svg"], "image/svg+xml", False, False, False, None),
     "ppm": FormatDetail([".ppm"], "image/x-portable-pixmap", False, False, False, None),
     "pgm": FormatDetail(
         [".pgm"], "image/x-portable-graymap", False, False, False, None
@@ -328,8 +328,11 @@ def resolve_color_mode(
 
 
 def get_pillow_format(ext: str) -> Optional[str]:
-    """扩展名 → Pillow 格式名。"""
-    return EXT_TO_FORMAT.get(ext.lower())
+    """扩展名（带点或不带点均可） → Pillow 格式名。"""
+    ext_lower = ext.lower()
+    if ext_lower in EXT_TO_FORMAT:
+        return EXT_TO_FORMAT[ext_lower]
+    return EXT_TO_FORMAT.get(f".{ext_lower}")
 
 
 def get_output_extension(pillow_format: str) -> str:

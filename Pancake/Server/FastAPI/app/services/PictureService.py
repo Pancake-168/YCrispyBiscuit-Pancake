@@ -6,6 +6,7 @@
 
 import asyncio
 import io
+import math
 import os
 import uuid
 import zipfile
@@ -34,7 +35,7 @@ from app.utils.PictureUtils import (
     get_save_kwargs,
     FORMAT_DETAILS,
     INPUT_EXTENSIONS,
-    OUTPUT_EXTENSIONS,
+    OUTPUT_FORMAT_NAMES,
 )
 from app.core.config import WRITABLE_DIR
 
@@ -104,76 +105,13 @@ class PictureService:
             details[key] = detail.to_dict()
         return {
             "input_formats": [ext.lstrip(".") for ext in INPUT_EXTENSIONS],
-            "output_formats": [ext.lstrip(".") for ext in OUTPUT_EXTENSIONS],
+            "output_formats": OUTPUT_FORMAT_NAMES,
             "format_details": details,
         }
 
     # ==========================================================================
     # 转换入口
     # ==========================================================================
-
-    async def convert(
-        self,
-        file_datas: List[Tuple[str, bytes]],
-        params: ConversionParams,
-    ) -> Dict[str, Any]:
-        """
-        执行批量转换。
-
-        Args:
-            file_datas: [(filename, file_bytes), ...]
-            params: 转换参数
-
-        Returns:
-            符合 ConvertResponse 的字典
-        """
-        task_id = uuid.uuid4().hex[:12]
-        results = []
-        stored: List[StoredFile] = []
-
-        task_dir = OUTPUT_DIR / task_id
-        task_dir.mkdir(parents=True, exist_ok=True)
-
-        for idx, (filename, data) in enumerate(file_datas):
-            result = self._convert_one_sync(idx, filename, data, params, task_dir)
-            results.append(result)
-            if result["status"] == "success":
-                stored.append(
-                    StoredFile(
-                        path=task_dir / result["converted_name"],
-                        converted_name=result["converted_name"],
-                        converted_size=result["converted_size"],
-                        converted_resolution=result["converted_resolution"],
-                    )
-                )
-
-        # 保存任务引用
-        self._tasks[task_id] = stored
-        # LRU 淘汰最旧任务
-        while len(self._tasks) > MAX_TASKS:
-            oldest_id, _ = self._tasks.popitem(last=False)
-            oldest_dir = OUTPUT_DIR / oldest_id
-            if oldest_dir.exists():
-                shutil.rmtree(oldest_dir, ignore_errors=True)
-
-        # 批量文件才提供 zip 下载链接
-        zip_url = None
-        if len(stored) > 1:
-            zip_path = task_dir / "batch.zip"
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-                for sf in stored:
-                    zf.write(sf.path, sf.converted_name)
-            zip_url = f"/api/picture/download/batch/{task_id}"
-
-        # 计划清理
-        self._schedule_cleanup(task_id, task_dir)
-
-        return {
-            "task_id": task_id,
-            "total": len(results),
-            "results": results,
-            "zip_url": zip_url,
-        }
 
     async def convert_stream(
         self,
@@ -226,13 +164,11 @@ class PictureService:
             if oldest_dir.exists():
                 shutil.rmtree(oldest_dir, ignore_errors=True)
 
-        zip_url = None
         if len(stored) > 1:
             zip_path = task_dir / "batch.zip"
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
                 for sf in stored:
                     zf.write(sf.path, sf.converted_name)
-            zip_url = f"/api/picture/download/batch/{task_id}"
 
         self._schedule_cleanup(task_id, task_dir)
 
@@ -240,7 +176,6 @@ class PictureService:
             "task_id": task_id,
             "total": len(results),
             "results": results,
-            "zip_url": zip_url,
         }
 
     # ==========================================================================
@@ -354,8 +289,10 @@ class PictureService:
                     img.info["icc_profile"] = icc_profile
 
             # ---- 保存 ----
-            if target_pillow_fmt == "AVIF":
-                converted_data = self._encode_avif(img)
+            if target_pillow_fmt == "SVG":
+                converted_data = self._save_as_svg(
+                    img, params.quality, params.background_color
+                )
             else:
                 save_kwargs = get_save_kwargs(
                     params.target_format, params.quality, params.lossless
@@ -436,8 +373,26 @@ class PictureService:
         if detected_format == "SVG":
             try:
                 import cairosvg
+                from xml.etree import ElementTree
 
-                png_data = cairosvg.svg2png(bytestring=data)
+                svg_kwargs = {}
+                # 解析 viewBox/width，仅当自然尺寸 > 4096 时才限制
+                try:
+                    root = ElementTree.fromstring(data)
+                    vb = root.get("viewBox")
+                    if vb:
+                        parts = vb.split()
+                        if len(parts) == 4:
+                            nat_w, nat_h = float(parts[2]), float(parts[3])
+                    else:
+                        nat_w = float(root.get("width", 0))
+                        nat_h = float(root.get("height", 0))
+                    if nat_w > 4096 or nat_h > 4096:
+                        svg_kwargs["output_width"] = 4096
+                except Exception:
+                    pass  # 解析失败走默认
+
+                png_data = cairosvg.svg2png(bytestring=data, **svg_kwargs)
                 return Image.open(io.BytesIO(png_data))
             except ImportError:
                 raise RuntimeError("cairosvg 未安装，无法渲染 SVG 文件")
@@ -479,29 +434,135 @@ class PictureService:
                 except OSError:
                     pass
 
-    def _encode_avif(self, img: Image.Image) -> bytes:
-        """用 pyavif 将 Pillow Image 编码为 AVIF 字节（pyavif 仅支持文件路径，需临时文件）。"""
-        try:
-            import pyavif
-        except ImportError:
-            raise RuntimeError("pyavif 未安装，无法写入 AVIF 文件")
+    def _save_as_svg(
+        self,
+        img: Image.Image,
+        quality: Optional[int] = None,
+        background_color: str = "#FFFFFF",
+    ) -> bytes:
+        """将位图矢量化输出为真正的 SVG 矢量路径。
+
+        使用 marching squares 提取各颜色层的轮廓，生成 <path> 元素。
+        quality 控制颜色量化的层级数（越高 → 越精细、路径越多、文件越大）。
+        """
+        # 处理透明：用 background_color 填充
+        if img.mode in ("RGBA", "LA", "PA") or (
+            img.mode == "P" and "transparency" in (img.info or {})
+        ):
+            bg = Image.new("RGB", img.size, background_color)
+            if img.mode == "RGBA":
+                bg.paste(img, mask=img.split()[3])
+            elif img.mode in ("LA", "PA"):
+                bg.paste(img.convert("RGBA"), mask=img.convert("RGBA").split()[3])
+            else:
+                bg.paste(img)
+            img = bg
+        elif img.mode not in ("RGB",):
+            img = img.convert("RGB")
+
         arr = np.array(img)
-        channels = 3 if img.mode in ("RGB", "L") else 4
-        tmp_path = None
-        try:
-            fd, tmp_path = tempfile.mkstemp(suffix=".avif")
-            os.close(fd)
-            encoder = pyavif.Encoder(tmp_path, img.width, img.height, channels, 8)
-            encoder.add_frame(arr)
-            encoder.finish()
-            with open(tmp_path, "rb") as f:
-                return f.read()
-        finally:
-            if tmp_path:
-                try:
-                    os.unlink(tmp_path)
-                except OSError:
-                    pass
+        h, w = arr.shape[:2]
+
+        # 颜色量化：quality 映射为颜色层级数（3–16）
+        levels = max(3, min(16, round((quality or 85) * 16 / 100)))
+        q_arr = (arr // (256 // levels)) * (256 // (levels - 1))
+        q_arr = np.clip(q_arr, 0, 255).astype(np.uint8)
+
+        paths: list[str] = []
+        seen_colors: set[tuple] = set()
+
+        for y in range(0, h, 2):
+            for x in range(0, w, 2):
+                color = tuple(q_arr[y, x].tolist())
+                if color in seen_colors:
+                    continue
+                seen_colors.add(color)
+                # 生成该量化颜色的 mask（用量化后的值比对，不是原始值）
+                ref_color = q_arr[y, x]
+                mask = np.all(q_arr == ref_color, axis=2) if q_arr.ndim == 3 else (q_arr == ref_color)
+                if not mask.any():
+                    continue
+                contours = self._trace_contours(mask)
+                if not contours:
+                    continue
+                hex_color = "#{:02x}{:02x}{:02x}".format(*color)
+                for contour in contours:
+                    if len(contour) < 3:
+                        continue
+                    d_parts = [f"M{contour[0][0]},{contour[0][1]}"]
+                    for px, py in contour[1:]:
+                        d_parts.append(f"L{px},{py}")
+                    d_parts.append("Z")
+                    paths.append(
+                        f'<path d="{" ".join(d_parts)}" fill="{hex_color}"'
+                        f' stroke="{hex_color}" stroke-width="1"/>'
+                    )
+
+        svg_body = "\n  ".join(paths) if paths else (
+            f'<rect width="{w}" height="{h}" fill="{background_color}"/>'
+        )
+        svg = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg"'
+            f' width="{w}" height="{h}" viewBox="0 0 {w} {h}">\n'
+            f'  {svg_body}\n'
+            f'</svg>'
+        )
+        return svg.encode("utf-8")
+
+    @staticmethod
+    def _trace_contours(mask: "np.ndarray") -> list[list[tuple[int, int]]]:
+        """从二值 mask 中提取连通区域的外轮廓（简化版 marching squares）。"""
+        contours: list[list[tuple[int, int]]] = []
+        visited = np.zeros_like(mask, dtype=bool)
+        h, w = mask.shape
+
+        # 8-邻域方向
+        dirs = [(-1, 0), (-1, 1), (0, 1), (1, 1),
+                (1, 0), (1, -1), (0, -1), (-1, -1)]
+
+        for y in range(h):
+            for x in range(w):
+                if not mask[y, x] or visited[y, x]:
+                    continue
+                # BFS 找到该连通区域的所有点
+                region: list[tuple[int, int]] = []
+                stack = [(y, x)]
+                visited[y, x] = True
+                while stack:
+                    cy, cx = stack.pop()
+                    region.append((cx, cy))
+                    for dy, dx in dirs:
+                        ny, nx = cy + dy, cx + dx
+                        if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not visited[ny, nx]:
+                            visited[ny, nx] = True
+                            stack.append((ny, nx))
+
+                # 对该区域提取外轮廓（边界点，按角度排序）
+                boundary: set[tuple[int, int]] = set()
+                for (cx, cy) in region:
+                    # 检查 4-邻域，如果任一不在区域内，该点为边界点
+                    if (cx == 0 or cx == w - 1 or cy == 0 or cy == h - 1):
+                        boundary.add((cx, cy))
+                    elif not all(mask[cy + dy, cx + dx] for dy, dx in [(0, 1), (0, -1), (1, 0), (-1, 0)]):
+                        boundary.add((cx, cy))
+
+                if len(boundary) < 3:
+                    continue
+
+                # 按极角排序边界点形成闭合路径
+                centroid = (sum(p[0] for p in boundary) / len(boundary),
+                           sum(p[1] for p in boundary) / len(boundary))
+                sorted_boundary = sorted(boundary,
+                    key=lambda p: math.atan2(p[1] - centroid[1], p[0] - centroid[0]))
+                # 简化：保留每第 N 个点
+                step = max(1, len(sorted_boundary) // 128)
+                simplified = sorted_boundary[::step]
+                if simplified[-1] != simplified[0]:
+                    simplified.append(simplified[0])
+                contours.append(simplified)
+
+        return contours
 
     def _apply_color_mode(
         self,
