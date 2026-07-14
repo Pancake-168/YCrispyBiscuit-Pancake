@@ -21,7 +21,6 @@ from app.schemas.PictureSchema import (  # Pydantic 模型（请求校验/响应
 from app.services.PictureService import (
     PictureService,
     ConversionParams,   # 转换参数 dataclass（由 Form 字段构造）
-    MAX_FILE_SIZE,      # 单文件上限常量（用于错误提示）
     MAX_FILES,          # 单次最大文件数常量
 )
 from app.utils.PictureUtils import EXT_TO_MIME  # 扩展名→MIME 映射（下载时设置 Content-Type）
@@ -77,6 +76,7 @@ async def convert_picture(
     # pattern 正则确保格式为 # 后接 6 位 hex，防止非法颜色值传入 PIL
     color_mode: str = Form("auto", description="色彩模式: auto / RGB / RGBA / L / P"),
     strip_metadata: bool = Form(True, description="移除 EXIF 等元数据"),
+    svg_mode: str = Form("embed", description="SVG 输出模式: embed / vectorize"),
 ):
     """批量转换图片格式，附带分辨率调整和压缩选项。
 
@@ -106,6 +106,7 @@ async def convert_picture(
         background_color=background_color,    # "#RRGGBB"
         color_mode=color_mode,                # "auto"/"RGB"/"RGBA"/"L"/"P"
         strip_metadata=strip_metadata,        # True/False
+        svg_mode=svg_mode,                    # "embed"/"vectorize"
     )
 
     # ---- 执行转换 ----

@@ -5,7 +5,7 @@
 multipart/form-data 中实际参数通过 Form() 逐个声明，不直接用作 Body。
 """
 
-from pydantic import BaseModel, Field              # BaseModel=序列化基类 Field=字段元信息
+from pydantic import BaseModel                     # BaseModel=序列化基类
 from typing import Optional, List, Literal          # Literal=字符串字面量类型（"success"|"error"）
 
 

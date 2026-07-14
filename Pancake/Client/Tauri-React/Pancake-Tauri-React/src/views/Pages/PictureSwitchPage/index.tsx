@@ -49,6 +49,7 @@ export default function PictureSwitchPage() {
 
     // ---- 转换参数 ----
     const [targetFormat, setTargetFormat] = useState('webp');
+    const [svgMode, setSvgMode] = useState<'embed' | 'vectorize'>('embed');
     const [quality, setQuality] = useState(85);
     const [lossless, setLossless] = useState(false);
     const [resizeMode, setResizeMode] = useState<string>('none');
@@ -97,6 +98,7 @@ export default function PictureSwitchPage() {
 
     const showFitFields = resizeMode === 'fit' || resizeMode === 'fill';
     const showExactFields = resizeMode === 'exact';
+    const showSvgModeSelect = targetFormat === 'svg';
 
     // ---- <input> accept 属性，与 Tauri 原生对话框 filter 一致 ----
     const inputAccept = useMemo(() => {
@@ -111,6 +113,11 @@ export default function PictureSwitchPage() {
         { value: 'RGBA', label: 'RGBA（保留透明）' },
         { value: 'L', label: '灰度' },
         { value: 'P', label: '调色板' },
+    ];
+
+    const svgModeOptions = [
+        { value: 'embed', label: '位图封装' },
+        { value: 'vectorize', label: '矢量化描摹' },
     ];
 
 
@@ -335,6 +342,7 @@ export default function PictureSwitchPage() {
         try {
             const params = {
                 target_format: targetFormat,
+                ...(showSvgModeSelect && { svg_mode: svgMode }),
                 resize_mode: resizeMode as 'none' | 'fit' | 'fill' | 'exact',
                 keep_aspect_ratio: resizeMode !== 'exact',
                 ...(showQuality && !lossless && { quality }),
@@ -382,6 +390,7 @@ export default function PictureSwitchPage() {
         files,
         targetFormat,
         quality,
+        svgMode,
         lossless,
         resizeMode,
         maxWidth,
@@ -391,6 +400,7 @@ export default function PictureSwitchPage() {
         showQuality,
         showFitFields,
         showExactFields,
+        showSvgModeSelect,
         colorMode,
     ]);
 
@@ -455,7 +465,7 @@ export default function PictureSwitchPage() {
                     {/* ICO 方形裁切提示 */}
                     {targetFormat === 'ico' && files.length > 0 && (
                         <div className={styles.paramRow}>
-                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-warn)' }}>
+                            <span className={styles.hintText}>
                                 非方形图片将居中裁切为正方形后再转换为 ICO
                             </span>
                         </div>
@@ -464,8 +474,28 @@ export default function PictureSwitchPage() {
                     {/* SVG 矢量化提示 */}
                     {targetFormat === 'svg' && files.length > 0 && (
                         <div className={styles.paramRow}>
-                            <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-warn)' }}>
-                                SVG 输出为自动提取的矢量轮廓路径，照片类图像效果有限，适合图标/Logo/文字
+                            <span className={styles.hintText}>
+                                SVG 支持位图封装和矢量化描摹两种模式，复杂图片建议优先使用位图封装
+                            </span>
+                        </div>
+                    )}
+
+                    {showSvgModeSelect && (
+                        <div className={styles.paramRow}>
+                            <label className={styles.paramLabel}>SVG 输出模式</label>
+                            <Select
+                                value={svgMode}
+                                onChange={(value) => setSvgMode(value as 'embed' | 'vectorize')}
+                                options={svgModeOptions}
+                                placeholder="选择 SVG 模式"
+                            />
+                        </div>
+                    )}
+
+                    {showSvgModeSelect && svgMode === 'vectorize' && (
+                        <div className={styles.paramRow}>
+                            <span className={styles.hintText}>
+                                矢量化描摹仅适合图标、Logo、线稿、少色图，不适合照片和截图
                             </span>
                         </div>
                     )}

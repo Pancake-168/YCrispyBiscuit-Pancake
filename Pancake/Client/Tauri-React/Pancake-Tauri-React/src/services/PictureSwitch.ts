@@ -52,6 +52,8 @@ export async function getFormats(): Promise<ApiResult<FormatsResponse>> {
 export interface ConvertParams {
     // 目标类型
     target_format: string;
+    // SVG 输出模式
+    svg_mode?: 'embed' | 'vectorize';
     // 质量参数
     quality?: number;
     // 无损参数

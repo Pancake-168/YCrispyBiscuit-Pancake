@@ -5,6 +5,7 @@
 """
 
 import asyncio
+import base64
 import io
 import math
 import os
@@ -12,22 +13,20 @@ import uuid
 import zipfile
 import tempfile
 import shutil
-import time
 from collections import OrderedDict                # 有序字典，LRU 淘汰依赖插入顺序
 from concurrent.futures import ThreadPoolExecutor   # 线程池，CPU 密集型 PIL 操作放到池里避免阻塞 asyncio 事件循环
 from pathlib import Path
-from typing import List, Optional, Dict, Any, Tuple
-from dataclasses import dataclass, field
+from typing import List, Optional, Dict, Any
+from dataclasses import dataclass
 
 import numpy as np                                   # 用于 AVIF 编解码的像素数组、SVG 矢量化的颜色量化
-from PIL import Image, ImageOps                     # Pillow：图片打开、色彩转换、缩放、保存
+from PIL import Image                               # Pillow：图片打开、色彩转换、缩放、保存
 from PIL.Image import Resampling                    # 缩放重采样算法（LANCZOS）
 
 from app.utils.PictureUtils import (
     detect_format_by_magic,   # 魔数检测 → 确定真实文件格式
     is_supported_input,       # 扩展名白名单检查 → 快速拒绝不支持的格式
     get_pillow_format,        # 扩展名/格式标识 → Pillow 规范格式名（如 "jpg" → "JPEG"）
-    get_output_extension,     # Pillow 格式名 → 标准扩展名（如 "JPEG" → ".jpg"）
     get_target_extension,     # 用户目标格式 → 标准扩展名（如 "webp" → ".webp"）
     change_extension,         # 替换文件扩展名（如 "a.jpg" → "a.webp"）
     calculate_resize,         # 根据缩放模式计算目标宽高
@@ -82,6 +81,7 @@ class ConversionParams:
     background_color: str         # 透明填充色，格式 "#RRGGBB"（默认 "#FFFFFF"）
     color_mode: str               # "auto" | "RGB" | "RGBA" | "L" | "P"
     strip_metadata: bool          # 是否移除 EXIF/XMP 等元数据
+    svg_mode: str                 # "embed" | "vectorize"，仅 target_format=svg 时生效
 
 
 @dataclass
@@ -277,8 +277,10 @@ class PictureService:
 
             # ---- 保存 ----
             if target_pillow_fmt == "SVG":
-                # SVG：走独立矢量化路径（Pillow 不支持写 SVG）
-                converted_data = self._save_as_svg(img, params.quality, params.background_color)
+                if params.svg_mode == "embed":
+                    converted_data = self._save_as_svg_embed(img)
+                else:
+                    converted_data = self._save_as_svg(img, params.quality, params.background_color)
             else:
                 save_kwargs = get_save_kwargs(  # 格式特定的保存参数
                     params.target_format, params.quality, params.lossless
@@ -484,6 +486,28 @@ class PictureService:
             f'<svg xmlns="http://www.w3.org/2000/svg"'
             f' width="{w}" height="{h}" viewBox="0 0 {w} {h}">\n'
             f'  {svg_body}\n</svg>'
+        )
+        return svg.encode("utf-8")
+
+    def _save_as_svg_embed(self, img: Image.Image) -> bytes:
+        """将当前位图封装进 SVG 容器，而不是做矢量化描摹。"""
+        if img.mode == "P":
+            img = img.convert("RGBA" if "transparency" in (img.info or {}) else "RGB")
+        elif img.mode not in ("RGB", "RGBA"):
+            img = img.convert("RGBA" if img.mode in ("LA", "PA") else "RGB")
+
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        png_base64 = base64.b64encode(buf.getvalue()).decode("ascii")
+        width, height = img.size
+        svg = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            f'<svg xmlns="http://www.w3.org/2000/svg" '
+            f'xmlns:xlink="http://www.w3.org/1999/xlink" '
+            f'width="{width}" height="{height}" viewBox="0 0 {width} {height}">\n'
+            f'  <image width="{width}" height="{height}" '
+            f'xlink:href="data:image/png;base64,{png_base64}" />\n'
+            '</svg>'
         )
         return svg.encode("utf-8")
 
