@@ -59,14 +59,14 @@
 我基于实际代码，判断当前风格状态如下：
 
 1. 架构方向基本清楚：已经有 controller、service、mapper、entity、schema、utils、core 的分层。
-2. 统一程度一般：部分模块已经接近标准分层，部分模块仍然偏脚本式或工具式写法。
-3. 命名风格不统一：`snake_case`、`camelCase`、缩写式命名混用。
-4. 依赖注入方式不统一：有模块级单例、有 `Depends` 注入、有函数内实例化。
-5. 异常边界不统一：有的层抛 `AppError`，有的层抛 `KeyError` / `RuntimeError`，再靠全局 handler 兜住。
-6. Schema 风格不统一：有的很规范，有的存在可变默认值、注释密度不一致等问题。
-7. Service 复杂度差异很大：有的 service 很薄，有的 service 已经包含大量协议、缓存、状态与工具函数。
+2. 主链路统一度已经明显提升：活跃 controller 已统一为 `Depends(...)` 注入 service。
+3. 活跃代码命名已基本收敛到 `snake_case`，但文件命名和个别历史文件仍有遗留差异。
+4. 项目异常边界已基本收口到 `AppError` 体系，业务主路径里已不再混用 `KeyError` / `RuntimeError`。
+5. Schema 层的明显可变默认值问题已清理，但注释密度和 `ConfigDict` 使用还未完全统一。
+6. 原先最厚的两个 service 已进入“编排层 + 子模块”结构，但外层编排 service 仍然存在进一步抽象空间。
+7. 鉴权实现已经从 `utils` 物理迁出，当前统一落在 `services/AuthService.py`。
 
-结论：当前项目已经具备“可统一”的基础，但还没有形成一套真正执行中的 FastAPI 编写规范。
+结论：当前项目已经从“风格明显发散”进入“主链路已统一、边角仍待继续收口”的状态。
 
 ---
 
@@ -105,31 +105,28 @@
 3. `WeatherController.py`
 4. `BilibiliController.py`
 5. `PictureController.py`
-6. `PCmethods.py`
+6. `PCmethodsController.py`
 
 排除：
 
 1. `PictureSwitchController.py`
 
-当前差异非常明显：
+当前状态：
 
-1. Service 获取方式不统一。
-   - `HealthController.py`、`BilibiliController.py`、`PictureController.py`、`PCmethods.py` 使用模块级 `service = XxxService()`。
-   - `UserController.py` 在函数体内 `service = UserService(db)`。
-   - `WeatherController.py` 用 `Depends(WeatherService)`。
+1. Service 获取方式已统一为 `Depends(provider)`。
+2. Controller 方法命名已统一为 `snake_case`。
+3. 仍然存在的差异主要是异常处理边界和响应包装风格。
 
-2. 命名风格不统一。
-   - `get_formats`、`download_batch` 是 `snake_case`。
-   - `getMMDPaths`、`openFolder` 是 `camelCase`。
+其中异常处理差异体现在：
 
-3. 异常处理风格不统一。
-   - `PictureController.py` 显式抛 `BadRequestError`、`NotFoundError`。
-   - 多数其他 controller 不在控制器层显式抛项目异常。
+1. `PictureController.py` 仍显式抛 `BadRequestError`、`NotFoundError`。
+2. 多数其他 controller 仍以“调用 service + 返回 response”为主，不在控制器层显式抛项目异常。
 
-4. 响应包装风格不统一。
-   - 有的统一 `Response(**result)`。
-   - 有的直接构造 `AuthResponse(...)`。
-   - 有的直接返回普通 dict。
+响应包装差异体现在：
+
+1. 有的统一 `Response(**result)`。
+2. 有的直接构造 `AuthResponse(...)`。
+3. 有的直接返回普通 dict。
 
 ## 3.3 Service 层
 
@@ -137,36 +134,38 @@
 
 1. `HealthService.py`
 2. `UserService.py`
-3. `Weather.py`
+3. `WeatherService.py`
 4. `PCmethodsService.py`
 5. `PictureService.py`
 6. `BilibiliService.py`
+7. `AuthService.py`
+8. `PictureImageIO.py`
+9. `PictureSvgService.py`
+10. `PictureTransformService.py`
+11. `PictureTaskStore.py`
+12. `BilibiliWbi.py`
+13. `BilibiliSession.py`
+14. `BilibiliPageService.py`
+15. `BilibiliLoginService.py`
 
 当前差异：
 
-1. 文件命名不统一。
-   - 大部分是 `XxxService.py`。
-   - `Weather.py` 不是 `WeatherService.py`。
-
-2. 方法命名不统一。
-   - `getHealth`、`registerUser`、`authenticateUser` 是 `camelCase`。
-   - `fetch_weather_data`、`open_mmd_folders`、`get_supported_formats` 是 `snake_case`。
-
-3. 服务职责厚度不统一。
+1. 文件命名现在已统一为 `XxxService.py`。
+2. 活跃公开方法命名已基本统一为 `snake_case`。
+3. 当前最大差异转为“编排 service 与子模块之间的职责边界细化程度不同”。
    - `HealthService` 很薄，只是 mapper 转发。
    - `UserService` 是标准业务 service。
-   - `PictureService` 已经是“复杂领域服务 + 文件系统 + 编码器编排 + 任务缓存”。
-   - `BilibiliService` 已经包含会话状态、缓存、协议细节、签名逻辑、HTTP 调用，实际更接近 SDK / gateway。
+   - `PictureService` 已收缩为图片转换编排层，底层能力已拆到 `PictureImageIO.py`、`PictureSvgService.py`、`PictureTransformService.py`、`PictureTaskStore.py`。
+   - `BilibiliService` 已收缩为聚合层，登录、页面抓取、会话/WBI 已拆到独立模块。
 
-4. 异常风格不统一。
-   - `UserService`、`WeatherService`、`PCmethodsService` 倾向抛项目自定义异常。
-   - `BilibiliService` 混用 `RuntimeError`、`KeyError`。
-   - `PictureService` 既有 `ConfigurationError`，也有局部 `RuntimeError`。
+4. 异常风格较整改前统一。
+   - `UserService`、`WeatherService`、`PCmethodsService`、`BilibiliService`、`PictureService` 已主要使用项目自定义异常。
+   - 目前保留的通用 `RuntimeError` 主要在基础设施层，而不在业务主路径中。
 
 判断：
 
 1. `UserService` 最接近可复制的标准 service 风格。
-2. `PictureService` 和 `BilibiliService` 是重量级服务，但边界没有继续拆细。
+2. `PictureService` 和 `BilibiliService` 的第一轮深拆已经完成，后续重点不再是“必须拆”，而是“是否继续抽象编排层”。
 
 ## 3.4 Mapper 层
 
@@ -217,10 +216,9 @@
    - `BilibiliSchema.py` 极简。
    - `UserSchema.py` 混有大量 `###` 风格注释。
 
-3. 默认值写法不统一。
-   - `PCmethodsWorkflowResponse.folder: list[PCmethodsFolder] = []`
-   - `BilibiliStoredValuesResponse.cookies: dict = {}`
-   这类可变默认值不建议继续使用。
+3. 可变默认值问题已整改完成。
+   - `PCmethodsWorkflowResponse.folder` 已改为 `Field(default_factory=list)`。
+   - `BilibiliStoredValuesResponse.cookies` 已改为 `Field(default_factory=dict)`。
 
 4. Pydantic 配置使用不统一。
    - `UserResponse`、`HealthResponse` 用了 `ConfigDict(from_attributes=True)`。
@@ -230,18 +228,17 @@
 
 代表文件：
 
-1. `JWT.py`
-2. `PictureUtils.py`
+1. `PictureUtils.py`
 
 当前差异：
 
-1. `JWT.py` 实际不是纯工具，它同时承担依赖注入、鉴权服务、token 编解码。
-2. `PictureUtils.py` 则更接近真正的纯函数工具模块。
+1. `PictureUtils.py` 仍是典型纯函数工具模块。
+2. 鉴权相关实现已迁出 `utils`，因此 `utils` 目录边界较整改前更清晰。
 
 结论：
 
-1. 当前 `utils` 目录里既有“工具函数”，也有“半服务模块”。
-2. `JWT.py` 更合理的位置其实接近 `services/auth` 或 `security`。
+1. 当前 `utils` 目录基本只保留纯工具模块。
+2. 鉴权实现已完成迁移，`services/AuthService.py` 已成为唯一服务入口。
 
 ## 3.8 Core / Exceptions / Middleware 层
 
@@ -277,7 +274,7 @@
 
 6. `utils/`
    - 只放纯函数、无状态工具。
-   - 依赖注入类、安全认证类不要继续塞进这里。
+   - 当前项目已经将鉴权实现迁出 `utils`，后续继续保持这个边界。
 
 7. `core/`
    - 只放配置、数据库、日志、生命周期等基础设施。
@@ -359,11 +356,13 @@
 5. 第五优先级：拆分超厚 service。
    - 重点对象是 `PictureService.py` 和 `BilibiliService.py`。
 
+> 更新：上述第五优先级的第一轮拆分已经完成。当前更适合做运行验证和文档同步，而不是继续无条件机械拆分。
+
 ---
 
 ## 七、最终判断
 
-当前后端不是“没有架构”，而是“已经有架构骨架，但执行层面的编码风格还没有收口”。
+当前后端不是“没有架构”，而是“已经有架构骨架，且主链路风格已经基本收口，但仍有少量文档、注释和进一步抽象空间”。
 
 最成熟的部分：
 

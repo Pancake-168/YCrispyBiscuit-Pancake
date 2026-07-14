@@ -5,23 +5,23 @@
 """
 
 import asyncio
-import base64
 import io
-import math
-import os
 import uuid
-import zipfile
-import tempfile
-import shutil
-from collections import OrderedDict                # 有序字典，LRU 淘汰依赖插入顺序
 from concurrent.futures import ThreadPoolExecutor   # 线程池，CPU 密集型 PIL 操作放到池里避免阻塞 asyncio 事件循环
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 
-import numpy as np                                   # 用于 AVIF 编解码的像素数组、SVG 矢量化的颜色量化
 from PIL import Image                               # Pillow：图片打开、色彩转换、缩放、保存
 from PIL.Image import Resampling                    # 缩放重采样算法（LANCZOS）
+from app.services.PictureImageIO import open_image
+from app.services.PictureSvgService import save_as_svg, save_as_svg_embed
+from app.services.PictureTransformService import (
+    apply_color_mode,
+    center_crop_square,
+    center_crop_to,
+)
+from app.services.PictureTaskStore import PictureTaskStore, StoredFile
 
 from app.utils.PictureUtils import (
     detect_format_by_magic,   # 魔数检测 → 确定真实文件格式
@@ -37,7 +37,6 @@ from app.utils.PictureUtils import (
     OUTPUT_FORMAT_NAMES,      # 输出格式名列表（小写，去重）→ 供 GET /formats 返回，与 FORMAT_DETAILS key 对齐
 )
 from app.core.config import WRITABLE_DIR  # 可写目录路径（开发=FastAPI/temp/，生产=资源目录/data/）
-from app.exceptions.errors import ConfigurationError  # 配置/依赖缺失异常（走全局 handler，返回 500 + request_id）
 
 # ============================================================================
 # 常量
@@ -84,20 +83,10 @@ class ConversionParams:
     svg_mode: str                 # "embed" | "vectorize"，仅 target_format=svg 时生效
 
 
-@dataclass
-class StoredFile:
-    """转换完成的文件引用。"""
-
-    path: Path                    # 磁盘上的完整路径（如 OUTPUT_DIR/<task_id>/photo.webp）
-    converted_name: str           # 转换后的文件名（如 "photo.webp"）
-    converted_size: int           # 文件大小（字节），用于前端展示压缩比
-    converted_resolution: str     # 分辨率字符串（如 "1920×1080"）
-
-
 class PictureService:
-    """图片转换服务。单例，由 PictureController 在模块加载时创建。"""
+    """图片转换编排服务，共享任务状态由类级 task store 维护。"""
 
-    _tasks: OrderedDict[str, List[StoredFile]] = OrderedDict()  # 任务存储（LRU，超出 MAX_TASKS 时淘汰最旧）
+    _task_store = PictureTaskStore(OUTPUT_DIR, MAX_TASKS, TASK_CLEANUP_SECONDS)
 
     # ==========================================================================
     # 格式查询
@@ -154,22 +143,7 @@ class PictureService:
                     )
                 )
 
-        self._tasks[task_id] = stored            # 注册到任务字典
-        # LRU 淘汰：超出容量时删除最早的任务及其临时目录
-        while len(self._tasks) > MAX_TASKS:
-            oldest_id, _ = self._tasks.popitem(last=False)  # 从 OrderedDict 头部弹出
-            oldest_dir = OUTPUT_DIR / oldest_id
-            if oldest_dir.exists():
-                shutil.rmtree(oldest_dir, ignore_errors=True)  # 递归删目录
-
-        # 多个文件时打包 batch.zip
-        if len(stored) > 1:
-            zip_path = task_dir / "batch.zip"
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-                for sf in stored:
-                    zf.write(sf.path, sf.converted_name)  # 写入 zip，文件名为 converted_name
-
-        self._schedule_cleanup(task_id, task_dir)  # 启动 10 分钟后自动清理
+        self._task_store.register(task_id, task_dir, stored)
 
         return {
             "task_id": task_id,
@@ -241,7 +215,7 @@ class PictureService:
                 img.mode, target_pillow_fmt, params.color_mode, has_alpha
             )
             if target_mode != img.mode:  # 模式不同才转换
-                img = self._apply_color_mode(img, target_mode, params.background_color)
+                img = apply_color_mode(img, target_mode, params.background_color)
 
             # ---- GIF 动画：取首帧 ----
             if detected == "GIF" and getattr(img, "is_animated", False):  # is_animated 表示多帧
@@ -253,7 +227,7 @@ class PictureService:
 
             # ---- ICO：非方形→居中裁切为正方形 ----
             if target_pillow_fmt == "ICO" and img.width != img.height:
-                img = self._center_crop_square(img)  # 以较短边为边长，居中裁切
+                img = center_crop_square(img)  # 以较短边为边长，居中裁切
 
             # ---- 缩放 ----
             new_size = calculate_resize(  # 根据 resize_mode 计算目标尺寸
@@ -266,7 +240,7 @@ class PictureService:
 
             # fill 模式第二步：等比缩放填满后，居中裁切至精确尺寸
             if params.resize_mode == "fill" and params.max_width and params.max_height:
-                img = self._center_crop_to(img, params.max_width, params.max_height)
+                img = center_crop_to(img, params.max_width, params.max_height)
 
             # ---- 移除元数据（保留 ICC 色彩配置文件） ----
             if params.strip_metadata:
@@ -278,9 +252,9 @@ class PictureService:
             # ---- 保存 ----
             if target_pillow_fmt == "SVG":
                 if params.svg_mode == "embed":
-                    converted_data = self._save_as_svg_embed(img)
+                    converted_data = save_as_svg_embed(img)
                 else:
-                    converted_data = self._save_as_svg(img, params.quality, params.background_color)
+                    converted_data = save_as_svg(img, params.quality, params.background_color)
             else:
                 save_kwargs = get_save_kwargs(  # 格式特定的保存参数
                     params.target_format, params.quality, params.lossless
@@ -335,329 +309,21 @@ class PictureService:
         特殊路径：HEIF（pillow-heif 注册 opener）、AVIF（pyavif 临时文件解码）、
         SVG（cairosvg 渲染为 PNG）。其余走 Pillow 原生 Image.open。
         """
-        if detected_format == "HEIF":                     # HEIF/HEIC：需要 pillow-heif 插件
-            try:
-                from pillow_heif import register_heif_opener
-                register_heif_opener()                    # 注册后 Pillow 可直接 open HEIF
-            except ImportError:
-                raise ConfigurationError("pillow-heif 未安装，无法读取 HEIF/HEIC 文件")
-
-        if detected_format == "AVIF":                     # AVIF：pyavif 解码
-            return self._open_avif(data)
-
-        if detected_format == "SVG":                      # SVG：cairosvg 渲染为位图
-            try:
-                import cairosvg
-                from xml.etree import ElementTree
-                svg_kwargs = {}
-                try:  # 解析 viewBox/width，仅在自然尺寸 >4096 时才限制渲染宽度
-                    root = ElementTree.fromstring(data)   # 解析 SVG XML
-                    vb = root.get("viewBox")              # viewBox="min-x min-y w h"
-                    if vb:
-                        parts = vb.split()
-                        if len(parts) == 4:
-                            nat_w, nat_h = float(parts[2]), float(parts[3])
-                    else:                                 # 无 viewBox，尝试 width/height 属性
-                        nat_w = float(root.get("width", 0))
-                        nat_h = float(root.get("height", 0))
-                    if nat_w > 4096 or nat_h > 4096:      # 仅超大图限制
-                        svg_kwargs["output_width"] = 4096 # 宽度限制，高度等比
-                except Exception:
-                    pass                                  # XML 解析失败→走默认
-                png_data = cairosvg.svg2png(bytestring=data, **svg_kwargs)  # 渲染 SVG→PNG 字节
-                return Image.open(io.BytesIO(png_data))   # PNG 字节→Pillow Image
-            except ImportError:
-                raise ConfigurationError("cairosvg 未安装，无法渲染 SVG 文件")
-
-        # 通用路径：PNG/JPEG/WEBP/BMP/TIFF/GIF/ICO/PPM/PGM/PBM/TGA
-        img = Image.open(io.BytesIO(data))                # 从内存字节打开
-        img.load()                                         # 强制加载像素数据（避免惰性加载）
-        return img
-
-    # ==========================================================================
-    # AVIF 解码（pyavif 需临时文件）
-    # ==========================================================================
-
-    def _open_avif(self, data: bytes) -> Image.Image:
-        """pyavif 解码 AVIF：字节→临时文件→解码→numpy 数组→Pillow Image。
-
-        pyavif 不支持内存流输入，必须写临时文件。
-        """
-        try:
-            import pyavif
-        except ImportError:
-            raise ConfigurationError("pyavif 未安装，无法读取 AVIF 文件")
-        tmp_path = None                                   # 临时文件路径，finally 清理
-        try:
-            fd, tmp_path = tempfile.mkstemp(suffix=".avif")  # 创建临时文件，返回 (fd, path)
-            os.close(fd)                                     # 关闭 fd（用 open 写）
-            with open(tmp_path, "wb") as f:
-                f.write(data)                                # 写入 AVIF 字节
-            decoder = pyavif.Decoder()
-            decoder.init(tmp_path)                           # 从文件初始化解码器
-            count = decoder.get_image_count()                # 图片数量（序列图）
-            if count == 0:
-                raise RuntimeError("AVIF 文件中无图像")
-            img_data = decoder.get_image(0)                  # 取第一帧（numpy 数组）
-            has_alpha = decoder.has_alpha()                  # 是否有 alpha 通道
-            mode = "RGBA" if has_alpha else "RGB"
-            return Image.fromarray(img_data, mode)           # numpy→Pillow
-        finally:
-            if tmp_path:
-                try:
-                    os.unlink(tmp_path)                      # 删除临时文件
-                except OSError:
-                    pass
-
-    # ==========================================================================
-    # SVG 矢量化输出
-    # ==========================================================================
-
-    def _save_as_svg(
-        self, img: Image.Image, quality: Optional[int] = None,
-        background_color: str = "#FFFFFF",
-    ) -> bytes:
-        """将位图矢量化输出为真正的 SVG 矢量路径。
-
-        颜色量化 + 连通区域轮廓提取 → SVG <path> 元素。
-        quality 控制颜色量化层级（越高越精细、路径越多、文件越大）。
-        """
-        # ---- 处理透明：用 background_color 填充 alpha 区域 ----
-        if img.mode in ("RGBA", "LA", "PA") or (
-            img.mode == "P" and "transparency" in (img.info or {})
-        ):
-            bg = Image.new("RGB", img.size, background_color)  # 纯色 RGB 背景
-            if img.mode == "RGBA":
-                bg.paste(img, mask=img.split()[3])  # alpha 通道做遮罩
-            elif img.mode in ("LA", "PA"):
-                bg.paste(img.convert("RGBA"), mask=img.convert("RGBA").split()[3])
-            else:
-                bg.paste(img)
-            img = bg                                        # 替换为无透明的 RGB 图
-        elif img.mode not in ("RGB",):
-            img = img.convert("RGB")                       # 统一为 RGB
-
-        arr = np.array(img)                                # (h, w, 3) uint8 数组
-        h, w = arr.shape[:2]
-
-        # ---- 颜色量化：连续颜色→离散层级 ----
-        # quality 0–100 → levels 3–16。桶大小 = 256 // levels
-        levels = max(3, min(16, round((quality or 85) * 16 / 100)))
-        bucket = 256 // levels                              # 量化桶大小
-        q_arr = (arr // bucket) * (256 // (levels - 1))    # 整除归并 → 映射回色域
-        q_arr = np.clip(q_arr, 0, 255).astype(np.uint8)    # 钳位防溢出
-
-        paths: list[str] = []                               # 收集 SVG <path> 元素
-        seen_colors: set[tuple] = set()                     # 已处理的量化色调
-
-        for y in range(0, h, 2):                            # 步长 2 采样（相邻像素通常同色）
-            for x in range(0, w, 2):
-                color = tuple(q_arr[y, x].tolist())         # 量化色 RGB 元组
-                if color in seen_colors:                     # 已处理→跳过
-                    continue
-                seen_colors.add(color)
-                ref_color = q_arr[y, x]                     # 当前像素的量化色值
-                # 生成二值 mask（True=该颜色的像素）
-                mask = np.all(q_arr == ref_color, axis=2) if q_arr.ndim == 3 else (q_arr == ref_color)
-                if not mask.any():
-                    continue
-                contours = self._trace_contours(mask)       # 提取该颜色的所有轮廓
-                if not contours:
-                    continue
-                hex_color = "#{:02x}{:02x}{:02x}".format(*color)  # #RRGGBB
-                for contour in contours:
-                    if len(contour) < 3:                    # 至少 3 个点才能闭合
-                        continue
-                    # 构建 SVG path d 属性：M=moveto L=lineto Z=closepath
-                    d_parts = [f"M{contour[0][0]},{contour[0][1]}"]  # 起始点
-                    for px, py in contour[1:]:
-                        d_parts.append(f"L{px},{py}")       # 连线到后续点
-                    d_parts.append("Z")                      # 闭合路径
-                    paths.append(
-                        f'<path d="{" ".join(d_parts)}" fill="{hex_color}"'
-                        f' stroke="{hex_color}" stroke-width="1"/>'  # 同色描边消除间隙
-                    )
-
-        svg_body = "\n  ".join(paths) if paths else (
-            f'<rect width="{w}" height="{h}" fill="{background_color}"/>'  # 无路径=纯色图
-        )
-        svg = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            f'<svg xmlns="http://www.w3.org/2000/svg"'
-            f' width="{w}" height="{h}" viewBox="0 0 {w} {h}">\n'
-            f'  {svg_body}\n</svg>'
-        )
-        return svg.encode("utf-8")
-
-    def _save_as_svg_embed(self, img: Image.Image) -> bytes:
-        """将当前位图封装进 SVG 容器，而不是做矢量化描摹。"""
-        if img.mode == "P":
-            img = img.convert("RGBA" if "transparency" in (img.info or {}) else "RGB")
-        elif img.mode not in ("RGB", "RGBA"):
-            img = img.convert("RGBA" if img.mode in ("LA", "PA") else "RGB")
-
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        png_base64 = base64.b64encode(buf.getvalue()).decode("ascii")
-        width, height = img.size
-        svg = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            f'<svg xmlns="http://www.w3.org/2000/svg" '
-            f'xmlns:xlink="http://www.w3.org/1999/xlink" '
-            f'width="{width}" height="{height}" viewBox="0 0 {width} {height}">\n'
-            f'  <image width="{width}" height="{height}" '
-            f'xlink:href="data:image/png;base64,{png_base64}" />\n'
-            '</svg>'
-        )
-        return svg.encode("utf-8")
-
-    @staticmethod
-    def _trace_contours(mask: "np.ndarray") -> list[list[tuple[int, int]]]:
-        """从二值 mask 提取连通区域外轮廓（BFS + 边界点极角排序 + 采样简化）。"""
-        contours: list[list[tuple[int, int]]] = []
-        visited = np.zeros_like(mask, dtype=bool)          # BFS 访问标记
-        h, w = mask.shape
-        dirs = [(-1, 0), (-1, 1), (0, 1), (1, 1),         # 8-邻域方向
-                (1, 0), (1, -1), (0, -1), (-1, -1)]
-
-        for y in range(h):
-            for x in range(w):
-                if not mask[y, x] or visited[y, x]:        # 非目标色或已访问→跳过
-                    continue
-                # BFS flood-fill：找该颜色的连通区域
-                region: list[tuple[int, int]] = []
-                stack = [(y, x)]
-                visited[y, x] = True
-                while stack:
-                    cy, cx = stack.pop()
-                    region.append((cx, cy))                 # 存入 (x, y)
-                    for dy, dx in dirs:
-                        ny, nx = cy + dy, cx + dx
-                        if 0 <= ny < h and 0 <= nx < w and mask[ny, nx] and not visited[ny, nx]:
-                            visited[ny, nx] = True
-                            stack.append((ny, nx))
-
-                # 提取边界点：4-邻域不全在区域内=边界
-                boundary: set[tuple[int, int]] = set()
-                for (cx, cy) in region:
-                    if cx == 0 or cx == w - 1 or cy == 0 or cy == h - 1:  # 图像边缘
-                        boundary.add((cx, cy))
-                    elif not all(mask[cy + dy, cx + dx] for dy, dx in
-                                 [(0, 1), (0, -1), (1, 0), (-1, 0)]):   # 4-邻域有缺口
-                        boundary.add((cx, cy))
-                if len(boundary) < 3:                       # 点数不足→跳过
-                    continue
-
-                # 极角排序 + 采样简化
-                centroid = (sum(p[0] for p in boundary) / len(boundary),
-                           sum(p[1] for p in boundary) / len(boundary))
-                sorted_boundary = sorted(boundary,
-                    key=lambda p: math.atan2(p[1] - centroid[1], p[0] - centroid[0]))
-                step = max(1, len(sorted_boundary) // 128)  # 保留约 128 点
-                simplified = sorted_boundary[::step]
-                if simplified[-1] != simplified[0]:          # 确保闭合
-                    simplified.append(simplified[0])
-                contours.append(simplified)
-
-        return contours
-
-    # ==========================================================================
-    # 色彩模式转换
-    # ==========================================================================
-
-    def _apply_color_mode(
-        self, img: Image.Image, target_mode: str,
-        background_color: str = "#FFFFFF",
-    ) -> Image.Image:
-        """将图片转换为目标色彩模式。
-
-        三条路径：调色板→中间 RGB、含 alpha→背景填充、标准 convert。
-        """
-        current = img.mode
-        # P（调色板）→ 先转 RGB 或 RGBA（视是否含透明索引）
-        if current == "P":
-            img = img.convert("RGBA" if "transparency" in (img.info or {}) else "RGB")
-            current = img.mode                              # 更新，后续分支继续处理
-
-        # RGBA/LA → RGB/L/1：用背景色填充透明区域
-        if current in ("RGBA", "LA") and target_mode in ("RGB", "L", "1"):
-            bg = Image.new("RGB", img.size, background_color)
-            if current == "RGBA":
-                bg.paste(img, mask=img.split()[3])          # alpha 通道做遮罩
-            else:  # LA
-                bg.paste(img, mask=img.split()[1])
-            img = bg
-            if target_mode != "RGB":
-                img = img.convert(target_mode)
-            return img
-
-        # PA → RGB/L/1：先转 RGBA 再合成
-        if current == "PA" and target_mode in ("RGB", "L", "1"):
-            bg = Image.new("RGB", img.size, background_color)
-            bg.paste(img.convert("RGBA"), mask=img.convert("RGBA").split()[3])
-            img = bg
-            if target_mode != "RGB":
-                img = img.convert(target_mode)
-            return img
-
-        # 标准转换：模式不同→Pillow convert
-        if current != target_mode:
-            img = img.convert(target_mode)
-        return img
-
-    # ==========================================================================
-    # 裁剪工具
-    # ==========================================================================
-
-    def _center_crop_square(self, img: Image.Image) -> Image.Image:
-        """居中裁切为正方形（取短边边长），用于 ICO 预处理。"""
-        w, h = img.size
-        side = min(w, h)                                   # 短边作为边长
-        left = (w - side) // 2                              # 水平居中偏移
-        top = (h - side) // 2                               # 垂直居中偏移
-        return img.crop((left, top, left + side, top + side))
-
-    def _center_crop_to(self, img: Image.Image, target_w: int, target_h: int) -> Image.Image:
-        """居中裁切到指定尺寸，用于 fill 模式第二步。"""
-        w, h = img.size
-        left = max(0, (w - target_w) // 2)                  # max 防负偏移
-        top = max(0, (h - target_h) // 2)
-        right = min(w, left + target_w)                     # min 防出界
-        bottom = min(h, top + target_h)
-        return img.crop((left, top, right, bottom))
+        return open_image(data, detected_format, filename)
 
     # ==========================================================================
     # 下载
     # ==========================================================================
 
     def get_file_path(self, task_id: str, index: int) -> Optional[Path]:
-        """根据 task_id 和序号返回单个文件路径，供下载端点调用。"""
-        stored = self._tasks.get(task_id, [])               # 查任务列表
-        if index < 0 or index >= len(stored):               # 序号越界
-            return None
-        return stored[index].path                           # 返回磁盘路径
+        return self._task_store.get_file_path(task_id, index)
+
+    def get_filename(self, task_id: str, index: int) -> str:
+        return self._task_store.get_filename(task_id, index)
 
     def get_zip_path(self, task_id: str) -> Optional[Path]:
-        """根据 task_id 返回 batch.zip 路径，供批量下载端点调用。"""
-        if task_id not in self._tasks:                      # 任务不存在或已过期
-            return None
-        zip_path = OUTPUT_DIR / task_id / "batch.zip"
-        if zip_path.exists():                               # 文件确实存在
-            return zip_path
-        return None
+        return self._task_store.get_zip_path(task_id)
 
-    # ==========================================================================
-    # 清理
-    # ==========================================================================
 
-    def _schedule_cleanup(self, task_id: str, task_dir: Path):
-        """延迟清理：10 分钟后删除任务临时目录和内存引用。"""
-
-        async def _clean():
-            await asyncio.sleep(TASK_CLEANUP_SECONDS)      # 等 600 秒
-            if task_dir.exists():
-                shutil.rmtree(task_dir, ignore_errors=True) # 删目录
-            self._tasks.pop(task_id, None)                  # 清内存引用
-
-        loop = asyncio.get_running_loop()
-        loop.create_task(_clean())                          # 非阻塞后台协程
+def get_picture_service() -> PictureService:
+    return PictureService()

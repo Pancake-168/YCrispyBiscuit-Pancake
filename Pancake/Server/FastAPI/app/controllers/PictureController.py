@@ -7,7 +7,7 @@
 - GET  /api/picture/download/batch/{task_id}           下载批量 zip
 """
 
-from fastapi import APIRouter, UploadFile, File, Form  # File=标记为文件字段 Form=标记为表单字段
+from fastapi import APIRouter, UploadFile, File, Form, Depends  # File=文件字段 Form=表单字段 Depends=依赖注入
 from fastapi.responses import FileResponse              # 文件下载响应（设置 Content-Disposition）
 from app.exceptions.errors import BadRequestError, NotFoundError  # 项目统一异常体系（走全局 handler，响应带 request_id）
 from pathlib import Path
@@ -22,11 +22,11 @@ from app.services.PictureService import (
     PictureService,
     ConversionParams,   # 转换参数 dataclass（由 Form 字段构造）
     MAX_FILES,          # 单次最大文件数常量
+    get_picture_service,
 )
 from app.utils.PictureUtils import EXT_TO_MIME  # 扩展名→MIME 映射（下载时设置 Content-Type）
 
 router = APIRouter()          # 创建路由实例，由 app/api/router.py include
-service = PictureService()    # 服务单例（模块加载时创建，生命周期=进程）
 
 
 @router.get(
@@ -35,7 +35,9 @@ service = PictureService()    # 服务单例（模块加载时创建，生命周
     tags=["Picture"],
     response_model=FormatsResponse,  # FastAPI 自动将返回字典序列化为 Pydantic 模型
 )
-async def get_formats():
+async def get_formats(
+    service: PictureService = Depends(get_picture_service),
+):
     """返回所有支持输入/输出的格式及详情。前端 PictureSwitchPage 在 useEffect 中调用。"""
     data = await service.get_supported_formats()  # 调用服务层获取格式化数据
     # 将 FORMAT_DETAILS 的字典值构造为 Pydantic FormatDetail 对象
@@ -77,6 +79,7 @@ async def convert_picture(
     color_mode: str = Form("auto", description="色彩模式: auto / RGB / RGBA / L / P"),
     strip_metadata: bool = Form(True, description="移除 EXIF 等元数据"),
     svg_mode: str = Form("embed", description="SVG 输出模式: embed / vectorize"),
+    service: PictureService = Depends(get_picture_service),
 ):
     """批量转换图片格式，附带分辨率调整和压缩选项。
 
@@ -120,7 +123,11 @@ async def convert_picture(
     summary="下载单个转换结果",
     tags=["Picture"],
 )
-async def download_single(task_id: str, index: int):
+async def download_single(
+    task_id: str,
+    index: int,
+    service: PictureService = Depends(get_picture_service),
+):
     """根据 task_id 和文件序号下载转换后的单个文件。
 
     前端调用：handleDownloadSingle → getSingleDownloadUrl(taskId, index) → 此端点。
@@ -130,8 +137,7 @@ async def download_single(task_id: str, index: int):
         raise NotFoundError("文件不存在或已过期")
 
     # 确定响应文件名（优先用存储的 converted_name）
-    stored = service._tasks.get(task_id, [])               # 取任务的文件列表
-    filename = stored[index].converted_name if index < len(stored) else "converted"
+    filename = service.get_filename(task_id, index)
     ext = Path(filename).suffix.lower()                    # 提取扩展名（含点，如 ".webp"）
     media_type = EXT_TO_MIME.get(ext, "application/octet-stream")  # 查 MIME 表，找不到回退二进制流
 
@@ -147,7 +153,10 @@ async def download_single(task_id: str, index: int):
     summary="下载批量转换结果（zip）",
     tags=["Picture"],
 )
-async def download_batch(task_id: str):
+async def download_batch(
+    task_id: str,
+    service: PictureService = Depends(get_picture_service),
+):
     """下载所有转换结果的 zip 打包文件。
 
     前端调用：handleDownloadBatch → getBatchDownloadUrl(taskId) → 此端点。
