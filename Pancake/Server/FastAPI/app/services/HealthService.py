@@ -2,18 +2,22 @@
 
 # 健康检查数据层
 from app.mappers.HealthMapper import HealthMapper
-
+import logging
 
 
 class HealthService:
     """健康检查业务逻辑。"""
 
     def __init__(self, mapper: HealthMapper | None = None) -> None:
+
+        logger = logging.getLogger("HealthService")
+
+
         if(mapper):
-            print("健康检查接收到mapper：",mapper)
+            logger.info("健康检查接收到mapper：",mapper)
             self.mapper = mapper
         else:
-            print("健康检查未接收到mapper，将采用默认mapper!")
+            logger.info("健康检查未接收到mapper，将采用默认mapper!")
             self.mapper = HealthMapper() 
         # 允许注入自定义 mapper，默认使用 HealthMapper
 
