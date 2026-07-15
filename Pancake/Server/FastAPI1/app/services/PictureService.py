@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 from PIL import Image                               # Pillow：图片打开、色彩转换、缩放、保存
 from PIL.Image import Resampling                    # 缩放重采样算法（LANCZOS）
+from app.exceptions.errors import BadRequestError, NotFoundError, AppError  # 项目统一异常体系
 from app.services.PictureImageIO import open_image
 from app.services.PictureSvgService import save_as_svg, save_as_svg_embed
 from app.services.PictureTransformService import (
@@ -115,6 +116,13 @@ class PictureService:
         params: ConversionParams,
     ) -> Dict[str, Any]:
         """流式批量转换：逐文件读取→线程池转换→释放，避免全量驻留内存。"""
+
+        # ---- 请求级校验 ----
+        if not uploads:
+            raise BadRequestError("请至少上传一个文件")
+        if len(uploads) > MAX_FILES:
+            raise BadRequestError(f"单次最多转换 {MAX_FILES} 个文件")
+
         task_id = uuid.uuid4().hex[:12]     # 12 位随机 hex 任务 ID
         results = []                         # 所有文件的转换结果
         stored: List[StoredFile] = []        # 成功的文件引用
@@ -126,11 +134,28 @@ class PictureService:
             content = await f.read()         # 异步读取文件全部字节
             filename = getattr(f, "filename", None) or "unknown"  # 安全提取文件名
             loop = asyncio.get_running_loop()                     # 获取当前事件循环
-            result = await loop.run_in_executor(  # 提交到线程池，避免阻塞事件循环
-                _PIL_EXECUTOR,                    # 专用 PIL 线程池（max_workers=2）
-                self._convert_one_sync,           # 同步转换函数
-                idx, filename, content, params, task_dir,  # 按位置传参
-            )
+            try:
+                result = await loop.run_in_executor(  # 提交到线程池，避免阻塞事件循环
+                    _PIL_EXECUTOR,                    # 专用 PIL 线程池（max_workers=2）
+                    self._convert_one_sync,           # 同步转换函数
+                    idx, filename, content, params, task_dir,  # 按位置传参
+                )
+            except AppError as e:  # 文件级校验/转换失败 → 转为 error 条目，不中断批量处理
+                result = {
+                    "index": idx, "original_name": filename,
+                    "converted_name": "", "original_format": "", "target_format": "",
+                    "original_size": 0, "converted_size": 0,
+                    "original_resolution": "", "converted_resolution": "",
+                    "size_ratio": 0.0, "status": "error", "error": e.detail,
+                }
+            except Exception as e:  # 非预期错误兜底
+                result = {
+                    "index": idx, "original_name": filename,
+                    "converted_name": "", "original_format": "", "target_format": "",
+                    "original_size": 0, "converted_size": 0,
+                    "original_resolution": "", "converted_resolution": "",
+                    "size_ratio": 0.0, "status": "error", "error": f"转换失败: {str(e)}",
+                }
             results.append(result)               # 收集结果（成功或失败都收集）
             del content                           # 显式释放字节引用，帮助 GC
             if result["status"] == "success":     # 仅成功文件加入 stored
@@ -163,31 +188,24 @@ class PictureService:
         params: ConversionParams,
         task_dir: Path,
     ) -> Dict[str, Any]:
-        """转换单个文件（同步方法，由线程池执行以避免阻塞 asyncio 事件循环）。"""
-        # 默认失败结果模板
-        base_result = {
-            "index": index, "original_name": filename,
-            "converted_name": "", "original_format": "", "target_format": "",
-            "original_size": 0, "converted_size": 0,
-            "original_resolution": "", "converted_resolution": "",
-            "size_ratio": 0.0, "status": "error", "error": None,
-        }
+        """转换单个文件（同步方法，由线程池执行以避免阻塞 asyncio 事件循环）。
+
+        文件级校验失败（过大/格式不支持/无法识别/损坏）直接 raise BadRequestError，
+        由上层 convert_stream 捕获后转为 results 数组中的 error 条目。
+        """
 
         # ---- 文件大小校验（后端防御层，前端已有 100MB 过滤） ----
         if len(data) > MAX_FILE_SIZE:
-            base_result["error"] = f"文件过大（>{MAX_FILE_SIZE // (1024 * 1024)}MB）"
-            return base_result
+            raise BadRequestError(f"文件过大（>{MAX_FILE_SIZE // (1024 * 1024)}MB）: {filename}")
 
         # ---- 扩展名白名单检查（快速拒绝不支持格式） ----
         if not is_supported_input(filename):  # 检查 Path.suffix 是否在 EXT_TO_FORMAT 中
-            base_result["error"] = "不支持的图片格式"
-            return base_result
+            raise BadRequestError(f"不支持的图片格式: {filename}")
 
         # ---- 魔数检测（绕过扩展名伪造） ----
         detected = detect_format_by_magic(data, filename)  # 魔数优先，失败回退扩展名
         if detected is None:
-            base_result["error"] = "无法识别图片格式"
-            return base_result
+            raise BadRequestError(f"无法识别图片格式: {filename}")
 
         ext = Path(filename).suffix.lower()          # 提取含点扩展名并小写（如 ".jpg"）
         original_format = ext.lstrip(".")            # 去点得格式标识（如 "jpg"）
@@ -196,108 +214,102 @@ class PictureService:
         try:
             img = self._open_image(data, detected, filename)  # 根据检测到的格式选打开方式
         except Exception as e:
-            base_result["error"] = f"文件损坏或无法打开: {str(e)}"
-            return base_result
+            raise BadRequestError(f"文件损坏或无法打开: {filename}") from e
 
         original_size = len(data)
         original_resolution = f"{img.width}×{img.height}"
 
-        try:
-            # ---- 色彩模式：确定目标 Pillow 模式 ----
-            has_alpha = img.mode in ("RGBA", "LA", "PA") or (
-                img.mode == "P" and "transparency" in (img.info or {})  # P 模式可带透明索引
+        # ---- 色彩模式：确定目标 Pillow 模式 ----
+        has_alpha = img.mode in ("RGBA", "LA", "PA") or (
+            img.mode == "P" and "transparency" in (img.info or {})  # P 模式可带透明索引
+        )
+        target_pillow_fmt = (
+            get_pillow_format(params.target_format)        # 规范化为 Pillow 名（如 "jpg"→"JPEG"）
+            or params.target_format.upper()               # 极端情况 fallback
+        )
+        target_mode = resolve_color_mode(  # 综合格式能力+原图模式+用户选择，返回目标模式
+            img.mode, target_pillow_fmt, params.color_mode, has_alpha
+        )
+        if target_mode != img.mode:  # 模式不同才转换
+            img = apply_color_mode(img, target_mode, params.background_color)
+
+        # ---- GIF 动画：取首帧 ----
+        if detected == "GIF" and getattr(img, "is_animated", False):  # is_animated 表示多帧
+            import logging
+            logging.getLogger("app.PictureService").warning(
+                f"GIF 动画 '{filename}' 包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧将被丢弃"
             )
-            target_pillow_fmt = (
-                get_pillow_format(params.target_format)        # 规范化为 Pillow 名（如 "jpg"→"JPEG"）
-                or params.target_format.upper()               # 极端情况 fallback
-            )
-            target_mode = resolve_color_mode(  # 综合格式能力+原图模式+用户选择，返回目标模式
-                img.mode, target_pillow_fmt, params.color_mode, has_alpha
-            )
-            if target_mode != img.mode:  # 模式不同才转换
-                img = apply_color_mode(img, target_mode, params.background_color)
+            img.seek(0)  # 确保帧指针在首帧
 
-            # ---- GIF 动画：取首帧 ----
-            if detected == "GIF" and getattr(img, "is_animated", False):  # is_animated 表示多帧
-                import logging
-                logging.getLogger("app.PictureService").warning(
-                    f"GIF 动画 '{filename}' 包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧将被丢弃"
-                )
-                img.seek(0)  # 确保帧指针在首帧
+        # ---- ICO：非方形→居中裁切为正方形 ----
+        if target_pillow_fmt == "ICO" and img.width != img.height:
+            img = center_crop_square(img)  # 以较短边为边长，居中裁切
 
-            # ---- ICO：非方形→居中裁切为正方形 ----
-            if target_pillow_fmt == "ICO" and img.width != img.height:
-                img = center_crop_square(img)  # 以较短边为边长，居中裁切
+        # ---- 缩放 ----
+        new_size = calculate_resize(  # 根据 resize_mode 计算目标尺寸
+            img.width, img.height,
+            params.resize_mode, params.max_width, params.max_height,
+            params.width, params.height, params.keep_aspect_ratio,
+        )
+        if new_size != (img.width, img.height):    # 尺寸有变化才执行 resize
+            img = img.resize(new_size, Resampling.LANCZOS)  # Lanczos 高质量重采样
 
-            # ---- 缩放 ----
-            new_size = calculate_resize(  # 根据 resize_mode 计算目标尺寸
-                img.width, img.height,
-                params.resize_mode, params.max_width, params.max_height,
-                params.width, params.height, params.keep_aspect_ratio,
-            )
-            if new_size != (img.width, img.height):    # 尺寸有变化才执行 resize
-                img = img.resize(new_size, Resampling.LANCZOS)  # Lanczos 高质量重采样
+        # fill 模式第二步：等比缩放填满后，居中裁切至精确尺寸
+        if params.resize_mode == "fill" and params.max_width and params.max_height:
+            img = center_crop_to(img, params.max_width, params.max_height)
 
-            # fill 模式第二步：等比缩放填满后，居中裁切至精确尺寸
-            if params.resize_mode == "fill" and params.max_width and params.max_height:
-                img = center_crop_to(img, params.max_width, params.max_height)
+        # ---- 移除元数据（保留 ICC 色彩配置文件） ----
+        if params.strip_metadata:
+            icc_profile = img.info.get("icc_profile")  # 提取 ICC profile
+            img.info.clear()                            # 清空所有 info（EXIF/XMP 等）
+            if icc_profile:
+                img.info["icc_profile"] = icc_profile   # 写回 ICC profile
 
-            # ---- 移除元数据（保留 ICC 色彩配置文件） ----
-            if params.strip_metadata:
-                icc_profile = img.info.get("icc_profile")  # 提取 ICC profile
-                img.info.clear()                            # 清空所有 info（EXIF/XMP 等）
-                if icc_profile:
-                    img.info["icc_profile"] = icc_profile   # 写回 ICC profile
-
-            # ---- 保存 ----
-            if target_pillow_fmt == "SVG":
-                if params.svg_mode == "embed":
-                    converted_data = save_as_svg_embed(img)
-                else:
-                    converted_data = save_as_svg(img, params.quality, params.background_color)
+        # ---- 保存 ----
+        if target_pillow_fmt == "SVG":
+            if params.svg_mode == "embed":
+                converted_data = save_as_svg_embed(img)
             else:
-                save_kwargs = get_save_kwargs(  # 格式特定的保存参数
-                    params.target_format, params.quality, params.lossless
-                )
-                save_format = "JPEG" if target_pillow_fmt == "JPEG" else target_pillow_fmt
-                # 色彩模式兼容性：确保写入前模式与格式兼容
-                if save_format == "JPEG" and img.mode not in ("RGB", "L"):
-                    img = img.convert("RGB")   # JPEG 只接受 RGB/L
-                elif save_format == "GIF" and img.mode != "P":
-                    img = img.convert("P")     # GIF 只接受调色板 P
-                buf = io.BytesIO()
-                img.save(buf, format=save_format, **save_kwargs)  # Pillow 编码写入内存
-                converted_data = buf.getvalue()
+                converted_data = save_as_svg(img, params.quality, params.background_color)
+        else:
+            save_kwargs = get_save_kwargs(  # 格式特定的保存参数
+                params.target_format, params.quality, params.lossless
+            )
+            save_format = "JPEG" if target_pillow_fmt == "JPEG" else target_pillow_fmt
+            # 色彩模式兼容性：确保写入前模式与格式兼容
+            if save_format == "JPEG" and img.mode not in ("RGB", "L"):
+                img = img.convert("RGB")   # JPEG 只接受 RGB/L
+            elif save_format == "GIF" and img.mode != "P":
+                img = img.convert("P")     # GIF 只接受调色板 P
+            buf = io.BytesIO()
+            img.save(buf, format=save_format, **save_kwargs)  # Pillow 编码写入内存
+            converted_data = buf.getvalue()
 
-            # ---- 写入磁盘 ----
-            target_ext = get_target_extension(params.target_format)  # 如 "webp"→".webp"
-            converted_name = change_extension(filename, target_ext)  # 如 "a.jpg"→"a.webp"
+        # ---- 写入磁盘 ----
+        target_ext = get_target_extension(params.target_format)  # 如 "webp"→".webp"
+        converted_name = change_extension(filename, target_ext)  # 如 "a.jpg"→"a.webp"
+        out_path = task_dir / converted_name
+        counter = 1
+        while out_path.exists():                          # 处理重名：追加 _1, _2...
+            stem = Path(filename).stem
+            converted_name = f"{stem}_{counter}{target_ext}"
             out_path = task_dir / converted_name
-            counter = 1
-            while out_path.exists():                          # 处理重名：追加 _1, _2...
-                stem = Path(filename).stem
-                converted_name = f"{stem}_{counter}{target_ext}"
-                out_path = task_dir / converted_name
-                counter += 1
-            out_path.write_bytes(converted_data)              # 写入磁盘
+            counter += 1
+        out_path.write_bytes(converted_data)              # 写入磁盘
 
-            converted_size = len(converted_data)
-            converted_resolution = f"{img.width}×{img.height}"
-            size_ratio = round(converted_size / original_size, 4) if original_size > 0 else 0.0
+        converted_size = len(converted_data)
+        converted_resolution = f"{img.width}×{img.height}"
+        size_ratio = round(converted_size / original_size, 4) if original_size > 0 else 0.0
 
-            return {
-                "index": index, "original_name": filename,
-                "converted_name": converted_name, "original_format": original_format,
-                "target_format": params.target_format.lstrip("."),
-                "original_size": original_size, "converted_size": converted_size,
-                "original_resolution": original_resolution,
-                "converted_resolution": converted_resolution,
-                "size_ratio": size_ratio, "status": "success", "error": None,
-            }
-
-        except Exception as e:
-            base_result["error"] = f"转换失败: {str(e)}"
-            return base_result
+        return {
+            "index": index, "original_name": filename,
+            "converted_name": converted_name, "original_format": original_format,
+            "target_format": params.target_format.lstrip("."),
+            "original_size": original_size, "converted_size": converted_size,
+            "original_resolution": original_resolution,
+            "converted_resolution": converted_resolution,
+            "size_ratio": size_ratio, "status": "success", "error": None,
+        }
 
     # ==========================================================================
     # 图片打开（含 HEIF/AVIF/SVG 特殊处理）
@@ -315,14 +327,20 @@ class PictureService:
     # 下载
     # ==========================================================================
 
-    def get_file_path(self, task_id: str, index: int) -> Optional[Path]:
-        return self._task_store.get_file_path(task_id, index)
+    def get_file_path(self, task_id: str, index: int) -> Path:
+        path = self._task_store.get_file_path(task_id, index)
+        if path is None or not path.exists():
+            raise NotFoundError("文件不存在或已过期")
+        return path
 
     def get_filename(self, task_id: str, index: int) -> str:
         return self._task_store.get_filename(task_id, index)
 
-    def get_zip_path(self, task_id: str) -> Optional[Path]:
-        return self._task_store.get_zip_path(task_id)
+    def get_zip_path(self, task_id: str) -> Path:
+        path = self._task_store.get_zip_path(task_id)
+        if path is None or not path.exists():
+            raise NotFoundError("文件不存在或已过期")
+        return path
 
 
 def get_picture_service() -> PictureService:

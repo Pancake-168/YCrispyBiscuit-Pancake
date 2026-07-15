@@ -9,7 +9,6 @@
 
 from fastapi import APIRouter, UploadFile, File, Form, Depends  # File=文件字段 Form=表单字段 Depends=依赖注入
 from fastapi.responses import FileResponse              # 文件下载响应（设置 Content-Disposition）
-from app.exceptions.errors import BadRequestError, NotFoundError  # 项目统一异常体系（走全局 handler，响应带 request_id）
 from pathlib import Path
 from typing import List, Optional
 
@@ -21,7 +20,6 @@ from app.schemas.PictureSchema import (  # Pydantic 模型（请求校验/响应
 from app.services.PictureService import (
     PictureService,
     ConversionParams,   # 转换参数 dataclass（由 Form 字段构造）
-    MAX_FILES,          # 单次最大文件数常量
     get_picture_service,
 )
 from app.utils.PictureUtils import EXT_TO_MIME  # 扩展名→MIME 映射（下载时设置 Content-Type）
@@ -87,13 +85,6 @@ async def convert_picture(
     参数发送条件：quality/lossless/max_width/max_height/width/height 是条件发送的，
     不满足条件时不 append 到 FormData → 后端收到 None 或默认值。
     """
-    # ---- 校验 ----
-    if not files:                                        # 空文件列表（前端已阻止，后端防御）
-        raise BadRequestError("请至少上传一个文件")
-
-    if len(files) > MAX_FILES:                           # 超过单次上限 50 个
-        raise BadRequestError(f"单次最多转换 {MAX_FILES} 个文件")
-
     # ---- 构建参数 dataclass ----
     # 将 Form 字段值打包为 ConversionParams，传给服务层
     params = ConversionParams(
@@ -132,9 +123,7 @@ async def download_single(
 
     前端调用：handleDownloadSingle → getSingleDownloadUrl(taskId, index) → 此端点。
     """
-    file_path = service.get_file_path(task_id, index)    # 从 _tasks 字典查文件路径
-    if file_path is None or not file_path.exists():       # 任务不存在/序号越界/文件已清理
-        raise NotFoundError("文件不存在或已过期")
+    file_path = service.get_file_path(task_id, index)    # 不存在时 service 层 raise NotFoundError
 
     # 确定响应文件名（优先用存储的 converted_name）
     filename = service.get_filename(task_id, index)
@@ -162,9 +151,7 @@ async def download_batch(
     前端调用：handleDownloadBatch → getBatchDownloadUrl(taskId) → 此端点。
     注意：前端不使用 ConvertResponse.zip_url，直接硬编码拼接此路径。
     """
-    zip_path = service.get_zip_path(task_id)              # 从 _tasks 字典查 zip 路径
-    if zip_path is None or not zip_path.exists():          # 任务不存在/单文件无 zip/文件已清理
-        raise NotFoundError("文件不存在或已过期")
+    zip_path = service.get_zip_path(task_id)              # 不存在时 service 层 raise NotFoundError
 
     return FileResponse(
         path=str(zip_path),
