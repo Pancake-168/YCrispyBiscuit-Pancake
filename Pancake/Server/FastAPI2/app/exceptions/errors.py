@@ -2,6 +2,7 @@
 # 所有业务可预期错误都通过这里的异常类抛出，
 # 由 exceptions/handlers.py 的全局 handler 统一捕获并返回 JSON 响应（含 request_id）。
 
+
 class AppError(Exception):
     """业务异常基类。所有自定义异常继承此类，handler 根据 status_code 设置 HTTP 状态码。"""
     status_code = 400  # 默认 400，子类覆盖为各自的 HTTP 状态码

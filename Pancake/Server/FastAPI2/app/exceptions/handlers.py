@@ -1,12 +1,17 @@
-import logging  # 日志记录
-from fastapi import FastAPI, Request, HTTPException  # FastAPI 应用、请求对象、HTTP 异常
-from fastapi.responses import JSONResponse  # JSON 格式响应
-from fastapi.exceptions import RequestValidationError  # FastAPI 参数校验失败异常
-from sqlalchemy.exc import IntegrityError, OperationalError  # SQLAlchemy 数据库异常
-import asyncio  # 超时异常类型
+# 日志记录
+import logging  
+# FastAPI 应用、请求对象、HTTP 异常
+from fastapi import FastAPI, Request, HTTPException  
+# JSON 格式响应
+from fastapi.responses import JSONResponse  
+# FastAPI 参数校验失败异常
+from fastapi.exceptions import RequestValidationError  
+# SQLAlchemy 数据库异常
+from sqlalchemy.exc import IntegrityError, OperationalError
+# 超时异常类型  
+import asyncio  
 
 from app.exceptions.errors import AppError  # 项目自定义异常基类
-
 
 def register_exception_handlers(app: FastAPI) -> None:
     """在 app 上注册所有全局异常处理器，统一错误响应格式（均含 request_id）。"""

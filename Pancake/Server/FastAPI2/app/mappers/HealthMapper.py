@@ -4,3 +4,4 @@ class HealthMapper:
     async def select_health_raw(self) -> dict:
         """返回健康状态原始数据。mapper 不负责类型转换到 response schema。"""
         return {"status": "ok"}  # 硬编码健康状态，无需数据库查询
+

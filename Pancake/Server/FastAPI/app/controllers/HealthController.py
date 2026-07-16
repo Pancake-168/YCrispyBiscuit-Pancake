@@ -1,15 +1,9 @@
-# APIRouter=路由分组
-from fastapi import APIRouter
-# Depends=依赖注入
-from fastapi import Depends
-# 响应模型（定义 API 文档和序列化）
-from app.schemas.HealthSchema import HealthResponse
-# 服务层
-from app.services.HealthService import HealthService 
-#工厂函数
-from app.services.HealthService import get_health_service
+from fastapi import APIRouter, Depends  # APIRouter=路由分组 Depends=依赖注入
+from app.schemas.HealthSchema import HealthResponse  # 响应模型（定义 API 文档和序列化）
+from app.services.HealthService import HealthService, get_health_service  # 服务层 + 工厂函数
 
-router=APIRouter()
+router = APIRouter()  # 创建此模块的路由实例
+
 
 @router.get(
     "/health",  # 路径: /api/health（router.py 中设置了 prefix="/api"）

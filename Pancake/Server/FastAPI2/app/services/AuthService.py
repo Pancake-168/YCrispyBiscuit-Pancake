@@ -1,5 +1,6 @@
 """认证与授权服务。JWT token 签发、验证，以及统一鉴权依赖注入。"""
 
+
 import time  # token 签发时间/过期时间
 import uuid  # JWT jti 唯一标识
 from typing import Dict  # payload 类型标注
@@ -17,11 +18,9 @@ from app.services.UserService import UserService  # 用户查询服务
 settings = get_settings()  # 获取全局配置实例
 security = HTTPBearer()  # FastAPI 安全依赖：从 Authorization 头提取 Bearer token
 
-
 # ============================================================================
 # 依赖注入工厂
 # ============================================================================
-
 
 def get_jwt_service(db: AsyncSession = Depends(get_db)) -> "JWTService":
     """工厂函数：创建绑定数据库会话的 JWTService 实例。"""
@@ -43,7 +42,6 @@ async def require_user_id(
 # JWT 服务
 # ============================================================================
 
-
 class JWTService:
     """JWT token 签发与验证。"""
 
@@ -54,7 +52,7 @@ class JWTService:
 
     def __init__(self, db: AsyncSession):
         self.service = UserService(db)  # 内部持有用户服务，用于验证用户存在性
-
+   
     # ------------------------------------------------------------------
     # Token 签发
     # ------------------------------------------------------------------
@@ -107,7 +105,8 @@ class JWTService:
         except Exception:
             raise AuthenticationError("非法的用户ID")
 
-    # ------------------------------------------------------------------
+
+ # ------------------------------------------------------------------
     # 用户验证
     # ------------------------------------------------------------------
 
@@ -136,3 +135,6 @@ class JWTService:
         """
         user = await self.get_current_user(credentials)  # 完整验证流程
         return str(user.id)  # 返回字符串类型的用户 ID
+
+
+

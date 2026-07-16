@@ -42,24 +42,6 @@ OUTPUT_FORMATS: Dict[str, str] = {
     k: v for k, v in EXT_TO_FORMAT.items() if v != "HEIF"
 }
 
-# Pillow 格式名 → 标准扩展名（包含点）
-# 反向映射，用于根据格式名确定输出文件扩展名
-# 每个格式名只保留一个规范扩展名（如 JPEG → .jpg，TIFF → .tiff）
-FORMAT_TO_EXT: Dict[str, str] = {
-    "PNG": ".png",
-    "JPEG": ".jpg",
-    "WEBP": ".webp",
-    "BMP": ".bmp",
-    "TIFF": ".tiff",
-    "GIF": ".gif",
-    "ICO": ".ico",
-    "AVIF": ".avif",
-    "SVG": ".svg",
-    "PPM": ".ppm",
-    "PGM": ".pgm",
-    "PBM": ".pbm",
-    "TGA": ".tga",
-}
 
 # 输入格式列表
 # sorted() 保证列表顺序稳定，方便调试和前端展示
@@ -443,14 +425,6 @@ def get_pillow_format(ext: str) -> Optional[str]:
         return EXT_TO_FORMAT[ext_lower]  # 带点匹配（如 ".png" → "PNG"）
     return EXT_TO_FORMAT.get(f".{ext_lower}")  # 不带点→补点后匹配（如 "png" → ".png" → "PNG"）
 
-
-def get_output_extension(pillow_format: str) -> str:
-    """Pillow 格式名 → 标准扩展名。
-
-    反向查询 FORMAT_TO_EXT，找不到时回退 ".png"。
-    用于已知 Pillow 格式名时获取对应的文件扩展名。
-    """
-    return FORMAT_TO_EXT.get(pillow_format, ".png")
 
 
 def get_target_extension(target_format: str) -> str:
