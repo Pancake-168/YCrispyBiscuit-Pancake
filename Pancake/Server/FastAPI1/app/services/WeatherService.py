@@ -21,6 +21,9 @@ def get_weather_service() -> "WeatherService":
 class WeatherService:
     """天气数据获取服务。"""
 
+
+    """杭州是58457"""
+
     def get_weather_api(self) -> str:
         """从 Apis.json 中读取 Weather API 的 URL。"""
         json_path = JSON_DIR / "Apis.json"  # 拼接 JSON 文件路径
