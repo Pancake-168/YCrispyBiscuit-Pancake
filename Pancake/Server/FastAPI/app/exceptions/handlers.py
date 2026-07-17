@@ -1,9 +1,20 @@
-import logging  # 日志记录
-from fastapi import FastAPI, Request, HTTPException  # FastAPI 应用、请求对象、HTTP 异常
-from fastapi.responses import JSONResponse  # JSON 格式响应
-from fastapi.exceptions import RequestValidationError  # FastAPI 参数校验失败异常
-from sqlalchemy.exc import IntegrityError, OperationalError  # SQLAlchemy 数据库异常
-import asyncio  # 超时异常类型
+# 日志记录
+import logging
+
+# FastAPI 应用、请求对象、HTTP 异常
+from fastapi import FastAPI, Request, HTTPException
+
+# JSON 格式响应
+from fastapi.responses import JSONResponse
+
+# FastAPI 参数校验失败异常
+from fastapi.exceptions import RequestValidationError
+
+# SQLAlchemy 数据库异常
+from sqlalchemy.exc import IntegrityError, OperationalError
+
+# 超时异常类型
+import asyncio
 
 from app.exceptions.errors import AppError  # 项目自定义异常基类
 
@@ -22,9 +33,9 @@ def register_exception_handlers(app: FastAPI) -> None:
         logger.warning(
             "AppError [%s] %s %s -> %s",
             rid,
-            request.method,   # HTTP 方法（GET/POST/...）
-            request.url.path, # 请求路径
-            exc.detail,       # 错误详情
+            request.method,  # HTTP 方法（GET/POST/...）
+            request.url.path,  # 请求路径
+            exc.detail,  # 错误详情
         )
         return JSONResponse(
             status_code=exc.status_code,  # 异常子类定义的 HTTP 状态码
@@ -119,9 +130,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def timeout_error_handler(request: Request, exc: asyncio.TimeoutError):
         """asyncio 超时 → 408。"""
         rid = getattr(request.state, "request_id", "-")
-        logger.warning(
-            "TimeoutError [%s] %s %s", rid, request.method, request.url.path
-        )
+        logger.warning("TimeoutError [%s] %s %s", rid, request.method, request.url.path)
         return JSONResponse(
             status_code=408,  # Request Timeout
             content={"detail": "Request timeout", "request_id": rid},

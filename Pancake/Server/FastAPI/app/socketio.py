@@ -17,11 +17,13 @@ Socket.IO 服务端模块。
 import logging
 import socketio
 
+
 from app.core.config import get_settings
 
 logger = logging.getLogger("app.socketio")
 
 settings = get_settings()
+
 
 # =============================================================================
 # 创建 Socket.IO 服务端实例
@@ -43,8 +45,6 @@ sio = socketio.AsyncServer(
 # 以下每个装饰器对应 Socket.IO 的一个内置事件。
 # 当客户端触发对应行为时，python-socketio 自动回调这些函数。
 # 函数签名由 python-socketio 约定，不能随意改名。
-
-
 @sio.event
 async def connect(sid: str, environ: dict, auth: dict | None = None):
     """

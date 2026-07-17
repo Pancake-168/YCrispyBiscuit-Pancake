@@ -25,7 +25,9 @@ class UserMapper:
             )
             return result.scalar_one_or_none()  # 最多一条记录，不存在返回 None
         except SQLAlchemyError as exc:
-            raise DatabaseError("通过用户名查找用户实体失败") from exc  # 底层异常 → 项目异常
+            raise DatabaseError(
+                "通过用户名查找用户实体失败"
+            ) from exc  # 底层异常 → 项目异常
 
     async def find_by_email(self, email: str) -> Optional[UserEntity]:
         """根据邮箱查找用户实体，不存在返回 None。"""
@@ -70,7 +72,9 @@ class UserMapper:
             )
             self.db.add(entity)  # 加入会话待提交队列
             await self.db.commit()  # 提交事务，写入数据库
-            await self.db.refresh(entity)  # 刷新以获取数据库生成的 id、created_at 等字段
+            await self.db.refresh(
+                entity
+            )  # 刷新以获取数据库生成的 id、created_at 等字段
             return entity
         except IntegrityError as exc:
             await self.db.rollback()  # 唯一约束冲突时回滚

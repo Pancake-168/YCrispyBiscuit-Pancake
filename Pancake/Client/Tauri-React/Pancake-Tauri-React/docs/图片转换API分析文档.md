@@ -3,10 +3,12 @@
 > 分析日期：2026-07-10
 >
 > **数据来源说明：**
+>
 > - 前端源码部分：API 端点、TypeScript 类型定义、UI 交互逻辑、参数发送条件、边界行为 —— 全部来自四个前端源文件的分析
 > - 后端数据部分：具体的格式名列表、MIME 类型、`format_details` 各布尔字段值 —— 来自用户提供的后端数据字典（`EXT_TO_FORMAT`、`FORMAT_TO_EXT`、`EXT_TO_MIME`、`FORMAT_DETAILS`），这些数据在运行时通过 `/api/picture/formats` 返回，前端源码中不存在任何硬编码的格式列表
 >
 > 分析源文件：
+>
 > - `src/services/PictureSwitch.ts` — API 调用与类型定义
 > - `src/ApiUrls.ts` — API 端点路径
 > - `src/views/Pages/PictureSwitchPage/index.tsx` — UI 逻辑与参数交互
@@ -16,12 +18,12 @@
 
 ## 1. API 端点总览
 
-| 方法 | 路径 | 用途 |
-|------|------|------|
-| GET | `/api/picture/formats` | 获取后端支持的格式列表及每种格式的详细信息 |
-| POST | `/api/picture/convert` | 批量转换图片（FormData 提交） |
-| GET | `/api/picture/download/single/{taskId}/{index}` | 下载单个转换结果文件 |
-| GET | `/api/picture/download/batch/{taskId}` | 批量下载全部转换结果（ZIP 包） |
+| 方法 | 路径                                            | 用途                                       |
+| ---- | ----------------------------------------------- | ------------------------------------------ |
+| GET  | `/api/picture/formats`                          | 获取后端支持的格式列表及每种格式的详细信息 |
+| POST | `/api/picture/convert`                          | 批量转换图片（FormData 提交）              |
+| GET  | `/api/picture/download/single/{taskId}/{index}` | 下载单个转换结果文件                       |
+| GET  | `/api/picture/download/batch/{taskId}`          | 批量下载全部转换结果（ZIP 包）             |
 
 ---
 
@@ -35,27 +37,28 @@
 
 `EXT_TO_FORMAT` 共定义 17 个扩展名 → 格式名映射。API 返回的 `input_formats` 即为此表中的扩展名去掉前导点（如 `.png` → `"png"`）。
 
-| API 返回的扩展名 | 对应后端格式名 | 数据来源 |
-|-----------------|---------------|----------|
-| `png` | PNG | EXT_TO_FORMAT |
-| `jpg` | JPEG | EXT_TO_FORMAT |
-| `jpeg` | JPEG | EXT_TO_FORMAT |
-| `webp` | WebP | EXT_TO_FORMAT |
-| `bmp` | BMP | EXT_TO_FORMAT |
-| `tiff` | TIFF | EXT_TO_FORMAT |
-| `tif` | TIFF | EXT_TO_FORMAT |
-| `gif` | GIF | EXT_TO_FORMAT |
-| `ico` | ICO | EXT_TO_FORMAT |
-| `avif` | AVIF | EXT_TO_FORMAT |
-| `heif` | HEIF | EXT_TO_FORMAT（**仅输入**） |
-| `heic` | HEIF | EXT_TO_FORMAT（**仅输入**） |
-| `svg` | SVG | EXT_TO_FORMAT |
-| `ppm` | PPM | EXT_TO_FORMAT |
-| `pgm` | PGM | EXT_TO_FORMAT |
-| `pbm` | PBM | EXT_TO_FORMAT |
-| `tga` | TGA | EXT_TO_FORMAT |
+| API 返回的扩展名 | 对应后端格式名 | 数据来源                    |
+| ---------------- | -------------- | --------------------------- |
+| `png`            | PNG            | EXT_TO_FORMAT               |
+| `jpg`            | JPEG           | EXT_TO_FORMAT               |
+| `jpeg`           | JPEG           | EXT_TO_FORMAT               |
+| `webp`           | WebP           | EXT_TO_FORMAT               |
+| `bmp`            | BMP            | EXT_TO_FORMAT               |
+| `tiff`           | TIFF           | EXT_TO_FORMAT               |
+| `tif`            | TIFF           | EXT_TO_FORMAT               |
+| `gif`            | GIF            | EXT_TO_FORMAT               |
+| `ico`            | ICO            | EXT_TO_FORMAT               |
+| `avif`           | AVIF           | EXT_TO_FORMAT               |
+| `heif`           | HEIF           | EXT_TO_FORMAT（**仅输入**） |
+| `heic`           | HEIF           | EXT_TO_FORMAT（**仅输入**） |
+| `svg`            | SVG            | EXT_TO_FORMAT               |
+| `ppm`            | PPM            | EXT_TO_FORMAT               |
+| `pgm`            | PGM            | EXT_TO_FORMAT               |
+| `pbm`            | PBM            | EXT_TO_FORMAT               |
+| `tga`            | TGA            | EXT_TO_FORMAT               |
 
 > 前端代码中使用 `input_formats` 的细节：
+>
 > - `filterSupportedFiles()`（PictureSwitch.ts:177-178）：提取文件扩展名（不带点）后直接与 `supportedExtensions` 做 `includes` 比对
 > - `<input accept>`（index.tsx:104）：手动补点 `.${e}` 拼接，因为 HTML `accept` 属性需要带点格式
 > - Tauri 原生对话框 filter（index.tsx:216-218）：`extensions: supportedExtensions`，直接使用不带点形式
@@ -85,21 +88,21 @@
 
 `FORMAT_TO_EXT` 共定义 13 个格式名。API 返回的 `output_formats` 即为此表的键转为小写（如 `"PNG"` → `"png"`）。
 
-| API 返回的格式标识 | 对应 MIME 类型（来自 EXT_TO_MIME） | 前端源码中的特殊行为 |
-|-------------------|----------------------------------|---------------------|
-| `png` | `image/png` | — |
-| `jpeg` | `image/jpeg` | — |
-| `webp` | `image/webp` | 前端 `useState` 默认值（index.tsx:51） |
-| `bmp` | `image/bmp` | — |
-| `tiff` | `image/tiff` | — |
-| `gif` | `image/gif` | — |
-| `ico` | `image/vnd.microsoft.icon` | 前端硬编码警告"非方形图片将居中裁切为正方形"（index.tsx:456-462） |
-| `avif` | `image/avif` | — |
-| `svg` | `image/svg+xml` | — |
-| `ppm` | `image/x-portable-pixmap` | — |
-| `pgm` | `image/x-portable-graymap` | — |
-| `pbm` | `image/x-portable-bitmap` | — |
-| `tga` | `image/x-tga` | — |
+| API 返回的格式标识 | 对应 MIME 类型（来自 EXT_TO_MIME） | 前端源码中的特殊行为                                              |
+| ------------------ | ---------------------------------- | ----------------------------------------------------------------- |
+| `png`              | `image/png`                        | —                                                                 |
+| `jpeg`             | `image/jpeg`                       | —                                                                 |
+| `webp`             | `image/webp`                       | 前端 `useState` 默认值（index.tsx:51）                            |
+| `bmp`              | `image/bmp`                        | —                                                                 |
+| `tiff`             | `image/tiff`                       | —                                                                 |
+| `gif`              | `image/gif`                        | —                                                                 |
+| `ico`              | `image/vnd.microsoft.icon`         | 前端硬编码警告"非方形图片将居中裁切为正方形"（index.tsx:456-462） |
+| `avif`             | `image/avif`                       | —                                                                 |
+| `svg`              | `image/svg+xml`                    | —                                                                 |
+| `ppm`              | `image/x-portable-pixmap`          | —                                                                 |
+| `pgm`              | `image/x-portable-graymap`         | —                                                                 |
+| `pbm`              | `image/x-portable-bitmap`          | —                                                                 |
+| `tga`              | `image/x-tga`                      | —                                                                 |
 
 ### 3.3 仅输入、不可输出的格式
 
@@ -115,24 +118,24 @@
 
 ```typescript
 interface FormatDetail {
-    extensions: string[];            // 该格式的扩展名列表
-    mime_type: string;               // MIME 类型
-    supports_transparency: boolean;  // → 控制透明填充色控件显隐
-    supports_animation: boolean;     // （前端未使用此字段控制 UI）
-    lossy_options: boolean;          // → 控制质量滑块显隐
-    quality_range: [number, number] | null;  // → 决定滑块 min/max
-    supports_lossless: boolean;      // → 控制无损开关显隐
+  extensions: string[]; // 该格式的扩展名列表
+  mime_type: string; // MIME 类型
+  supports_transparency: boolean; // → 控制透明填充色控件显隐
+  supports_animation: boolean; // （前端未使用此字段控制 UI）
+  lossy_options: boolean; // → 控制质量滑块显隐
+  quality_range: [number, number] | null; // → 决定滑块 min/max
+  supports_lossless: boolean; // → 控制无损开关显隐
 }
 ```
 
 ### 4.2 前端 UI 显隐逻辑（全部来自源码）
 
-| UI 控件 | 显隐条件（源码位置） | 判定字段 |
-|---------|---------------------|----------|
-| 质量滑块 | `targetDetail?.lossy_options === true` **且** `!lossless`（index.tsx:84, 476） | `lossy_options` |
-| 无损开关 | `targetDetail?.supports_lossless === true`（index.tsx:85, 465） | `supports_lossless` |
-| 透明填充色 | `!targetDetail.supports_transparency`（index.tsx:565） | `supports_transparency` |
-| 质量滑块范围 | `qualityRange?.[0] ?? 1` 到 `qualityRange?.[1] ?? 100`（index.tsx:483-484） | `quality_range` |
+| UI 控件      | 显隐条件（源码位置）                                                           | 判定字段                |
+| ------------ | ------------------------------------------------------------------------------ | ----------------------- |
+| 质量滑块     | `targetDetail?.lossy_options === true` **且** `!lossless`（index.tsx:84, 476） | `lossy_options`         |
+| 无损开关     | `targetDetail?.supports_lossless === true`（index.tsx:85, 465）                | `supports_lossless`     |
+| 透明填充色   | `!targetDetail.supports_transparency`（index.tsx:565）                         | `supports_transparency` |
+| 质量滑块范围 | `qualityRange?.[0] ?? 1` 到 `qualityRange?.[1] ?? 100`（index.tsx:483-484）    | `quality_range`         |
 
 > 注意：`supports_animation` 字段在 `FormatDetail` 接口中定义，但前端 UI 未使用该字段控制任何控件显隐。
 
@@ -140,22 +143,22 @@ interface FormatDetail {
 
 以下内容为后端数据字典的翻译，前端在运行时通过 `/api/picture/formats` 获取：
 
-| 格式 | 支持透明<br>(supports_transparency) | 支持动画<br>(supports_animation) | 有损压缩<br>(lossy_options) | 质量范围<br>(quality_range) | 无损模式<br>(supports_lossless) |
-|------|:---:|:---:|:---:|:---:|:---:|
-| png | ✓ | ✗ | ✗ | — | — |
-| jpeg | ✗ | ✗ | ✓ | 1–100 | — |
-| webp | ✓ | ✓ | ✓ | 0–100 | ✓ |
-| bmp | ✗ | ✗ | ✗ | — | — |
-| tiff | ✓ | ✗ | ✗ | — | — |
-| gif | ✓ | ✓ | ✗ | — | — |
-| ico | ✓ | ✗ | ✗ | — | — |
-| avif | ✓ | ✗ | ✓ | 0–100 | — |
-| svg | ✓ | ✗ | ✗ | — | — |
-| ppm | ✗ | ✗ | ✗ | — | — |
-| pgm | ✗ | ✗ | ✗ | — | — |
-| pbm | ✗ | ✗ | ✗ | — | — |
-| tga | ✓ | ✗ | ✗ | — | — |
-| **heif**（仅输入） | ✓ | ✗ | ✓ | 0–100 | — |
+| 格式               | 支持透明<br>(supports_transparency) | 支持动画<br>(supports_animation) | 有损压缩<br>(lossy_options) | 质量范围<br>(quality_range) | 无损模式<br>(supports_lossless) |
+| ------------------ | :---------------------------------: | :------------------------------: | :-------------------------: | :-------------------------: | :-----------------------------: |
+| png                |                  ✓                  |                ✗                 |              ✗              |              —              |                —                |
+| jpeg               |                  ✗                  |                ✗                 |              ✓              |            1–100            |                —                |
+| webp               |                  ✓                  |                ✓                 |              ✓              |            0–100            |                ✓                |
+| bmp                |                  ✗                  |                ✗                 |              ✗              |              —              |                —                |
+| tiff               |                  ✓                  |                ✗                 |              ✗              |              —              |                —                |
+| gif                |                  ✓                  |                ✓                 |              ✗              |              —              |                —                |
+| ico                |                  ✓                  |                ✗                 |              ✗              |              —              |                —                |
+| avif               |                  ✓                  |                ✗                 |              ✓              |            0–100            |                —                |
+| svg                |                  ✓                  |                ✗                 |              ✗              |              —              |                —                |
+| ppm                |                  ✗                  |                ✗                 |              ✗              |              —              |                —                |
+| pgm                |                  ✗                  |                ✗                 |              ✗              |              —              |                —                |
+| pbm                |                  ✗                  |                ✗                 |              ✗              |              —              |                —                |
+| tga                |                  ✓                  |                ✗                 |              ✗              |              —              |                —                |
+| **heif**（仅输入） |                  ✓                  |                ✗                 |              ✓              |            0–100            |                —                |
 
 > 前端对任意格式使用统一的 `targetDetail?.supports_lossless === true` 判断，不做格式名判断。上表中仅 webp 的 `supports_lossless` 为 `true`（来自后端数据），因此当前仅 webp 会显示无损开关。
 >
@@ -179,14 +182,14 @@ POST `/api/picture/convert` 的参数通过 `handleConvert`（index.tsx:336-347�
 
 以下参数不依赖任何条件，每次请求都会作为 FormData 字段发送（`undefined` 或 `null` 值除外，由 PictureSwitch.ts:116-118 的 `if (value !== undefined && value !== null)` 过滤）：
 
-| 参数名 | 类型 | state 初始值 | 源码行 |
-|--------|------|-------------|--------|
-| `target_format` | `string` | `"webp"` | index.tsx:51, 337 |
-| `resize_mode` | `"none" \| "fit" \| "fill" \| "exact"` | `"none"` | index.tsx:54, 338 |
-| `keep_aspect_ratio` | `boolean` | 由 resizeMode 决定 | index.tsx:339 |
-| `background_color` | `string` | `"#FFFFFF"` | index.tsx:59, 344 |
-| `color_mode` | `"auto" \| "RGB" \| "RGBA" \| "L" \| "P"` | `"auto"` | index.tsx:60, 345 |
-| `strip_metadata` | `boolean` | `true` | index.tsx:61, 346 |
+| 参数名              | 类型                                      | state 初始值       | 源码行            |
+| ------------------- | ----------------------------------------- | ------------------ | ----------------- |
+| `target_format`     | `string`                                  | `"webp"`           | index.tsx:51, 337 |
+| `resize_mode`       | `"none" \| "fit" \| "fill" \| "exact"`    | `"none"`           | index.tsx:54, 338 |
+| `keep_aspect_ratio` | `boolean`                                 | 由 resizeMode 决定 | index.tsx:339     |
+| `background_color`  | `string`                                  | `"#FFFFFF"`        | index.tsx:59, 344 |
+| `color_mode`        | `"auto" \| "RGB" \| "RGBA" \| "L" \| "P"` | `"auto"`           | index.tsx:60, 345 |
+| `strip_metadata`    | `boolean`                                 | `true`             | index.tsx:61, 346 |
 
 > **UI 显隐 vs 发送分离：** `background_color` 的 UI 控件仅在 `!targetDetail.supports_transparency` 时显示（index.tsx:565），但其值始终发送。
 
@@ -194,14 +197,14 @@ POST `/api/picture/convert` 的参数通过 `handleConvert`（index.tsx:336-347�
 
 以下参数仅在特定条件满足时才作为 FormData 字段发送；条件不满足时该字段**不存在于请求中**（非空值、非默认值）：
 
-| 参数名 | state 初始值 | 发送条件（源码） | 不发送时的行为 |
-|--------|-------------|-----------------|---------------|
-| `quality` | `85` | `showQuality && !lossless`（index.tsx:340） | 字段不发送，无默认值 |
-| `lossless` | `false` | `lossless` 为 `true`（index.tsx:341） | 字段不发送（**不是**发送 `lossless=false`） |
-| `max_width` | `1024` | `showFitFields && maxWidth > 0 && maxHeight > 0`（index.tsx:342） | 字段不发送 |
-| `max_height` | `1024` | 同上 | 字段不发送 |
-| `width` | `1024` | `showExactFields && exactWidth > 0 && exactHeight > 0`（index.tsx:343） | 字段不发送 |
-| `height` | `1024` | 同上 | 字段不发送 |
+| 参数名       | state 初始值 | 发送条件（源码）                                                        | 不发送时的行为                              |
+| ------------ | ------------ | ----------------------------------------------------------------------- | ------------------------------------------- |
+| `quality`    | `85`         | `showQuality && !lossless`（index.tsx:340）                             | 字段不发送，无默认值                        |
+| `lossless`   | `false`      | `lossless` 为 `true`（index.tsx:341）                                   | 字段不发送（**不是**发送 `lossless=false`） |
+| `max_width`  | `1024`       | `showFitFields && maxWidth > 0 && maxHeight > 0`（index.tsx:342）       | 字段不发送                                  |
+| `max_height` | `1024`       | 同上                                                                    | 字段不发送                                  |
+| `width`      | `1024`       | `showExactFields && exactWidth > 0 && exactHeight > 0`（index.tsx:343） | 字段不发送                                  |
+| `height`     | `1024`       | 同上                                                                    | 字段不发送                                  |
 
 > **state 初始值不等于发送值：** `quality` 的 state 初始值为 `85`，但当 `showQuality && !lossless` 为 `false` 时根本不发送；`lossless` 的 state 初始值为 `false`，但为 `false` 时也不发送。表格中的"初始值"列是 `useState` 的默认值，不要理解为"会以该值发送"。
 
@@ -209,22 +212,22 @@ POST `/api/picture/convert` 的参数通过 `handleConvert`（index.tsx:336-347�
 
 ### 5.3 缩放模式选项
 
-| 值 | label（index.tsx:92-96） |
-|----|-------------------------|
-| `none` | 不缩放 |
-| `fit` | 等比适配 |
-| `fill` | 等比填充 |
-| `exact` | 精确尺寸 |
+| 值      | label（index.tsx:92-96） |
+| ------- | ------------------------ |
+| `none`  | 不缩放                   |
+| `fit`   | 等比适配                 |
+| `fill`  | 等比填充                 |
+| `exact` | 精确尺寸                 |
 
 ### 5.4 色彩模式选项
 
-| 值 | label（index.tsx:108-114） |
-|----|---------------------------|
-| `auto` | 自动 |
-| `RGB` | RGB |
-| `RGBA` | RGBA（保留透明） |
-| `L` | 灰度 |
-| `P` | 调色板 |
+| 值     | label（index.tsx:108-114） |
+| ------ | -------------------------- |
+| `auto` | 自动                       |
+| `RGB`  | RGB                        |
+| `RGBA` | RGBA（保留透明）           |
+| `L`    | 灰度                       |
+| `P`    | 调色板                     |
 
 ---
 
@@ -272,10 +275,10 @@ POST `/api/picture/convert` 的参数通过 `handleConvert`（index.tsx:336-347�
     original_resolution: string;
     converted_resolution: string;
     size_ratio: number;
-    status: "success" | "error";
+    status: 'success' | 'error';
     error: string | null;
   }>;
-  zip_url: string | null;     // 前端未使用此字段
+  zip_url: string | null; // 前端未使用此字段
 }
 ```
 
@@ -284,9 +287,7 @@ POST `/api/picture/convert` 的参数通过 `handleConvert`（index.tsx:336-347�
 ### 6.4 统一起始类型
 
 ```typescript
-type ApiResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; data: null; error: string };
+type ApiResult<T> = { ok: true; data: T } | { ok: false; data: null; error: string };
 ```
 
 ---

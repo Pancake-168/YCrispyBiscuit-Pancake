@@ -1,11 +1,15 @@
-from pydantic import BaseModel, EmailStr, ConfigDict  # EmailStr=邮箱格式校验 ConfigDict=Pydantic v2 配置
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    ConfigDict,
+)  # EmailStr=邮箱格式校验 ConfigDict=Pydantic v2 配置
 from typing import Optional  # 可选字段标注
 from datetime import datetime  # 时间戳字段类型
-
 
 # ============================================================================
 # 用户基础模型
 # ============================================================================
+
 
 class UserBase(BaseModel):
     """用户基础信息 Schema，作为 UserCreate / UserResponse 的共享基类。"""
@@ -15,6 +19,9 @@ class UserBase(BaseModel):
     nickname: Optional[str] = None  # 昵称，可选
 
 
+# ============================================================================
+# 用户请求体模型
+# ============================================================================
 class UserCreate(UserBase):
     """POST /api/auth/register 的请求体，继承 UserBase 并追加密码字段。"""
 
@@ -31,10 +38,6 @@ class UserUpdate(BaseModel):
     role: Optional[str] = "user"  # 角色，默认保持 "user"
 
 
-# ============================================================================
-# 登录/注册
-# ============================================================================
-
 class LoginRequest(BaseModel):
     """POST /api/auth/login 的请求体。"""
 
@@ -45,7 +48,6 @@ class LoginRequest(BaseModel):
 # ============================================================================
 # 响应模型
 # ============================================================================
-
 class UserResponse(UserBase):
     """用户信息响应体，继承 UserBase 并追加数据库生成字段。"""
 

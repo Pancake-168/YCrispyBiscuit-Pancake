@@ -16,7 +16,7 @@ export default function TauriBar() {
   const [maximized, setMaximized] = useState(false);
   const appWindowRef = useRef<Window | null>(null);
 
-    const isHome = useIsHome();
+  const isHome = useIsHome();
 
   useEffect(() => {
     if (!isTauri()) return;

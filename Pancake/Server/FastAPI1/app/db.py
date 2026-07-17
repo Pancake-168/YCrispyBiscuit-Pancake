@@ -1,8 +1,5 @@
-from sqlalchemy import text
-
-# 用于执行原始 SQL 文本
-from app.core.database import engine
-# 异步 SQLAlchemy 引擎（已配置数据库连接）
+from sqlalchemy import text  # 用于执行原始 SQL 文本
+from app.core.database import engine  # 异步 SQLAlchemy 引擎（已配置数据库连接）
 
 
 async def connect_db():

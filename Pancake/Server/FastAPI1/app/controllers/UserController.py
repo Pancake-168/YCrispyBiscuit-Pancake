@@ -1,18 +1,7 @@
 from fastapi import APIRouter, Depends  # APIRouter=路由分组 Depends=依赖注入
-from app.schemas.UserSchema import (
-    AuthResponse,
-    LoginRequest,
-    UserCreate,
-    UserResponse,
-)  # 请求/响应模型
-from app.services.UserService import (
-    UserService,
-    get_user_service,
-)  # 用户服务 + 工厂函数
-from app.services.AuthService import (
-    get_jwt_service,
-    JWTService,
-)  # JWT 服务（签发 token）
+from app.schemas.UserSchema import AuthResponse, LoginRequest, UserCreate, UserResponse  # 请求/响应模型
+from app.services.UserService import UserService, get_user_service  # 用户服务 + 工厂函数
+from app.services.AuthService import get_jwt_service, JWTService  # JWT 服务（签发 token）
 from app.entities.UserEntity import UserEntity  # ORM 实体（类型标注用）
 
 router = APIRouter()  # 创建此模块的路由实例
@@ -32,12 +21,8 @@ def to_user_response(user: UserEntity) -> UserResponse:
 )
 async def register_user(
     user_create: UserCreate,  # 请求体 JSON → Pydantic 校验
-    service: UserService = Depends(
-        get_user_service
-    ),  # 注入用户服务（每个请求独立实例）
-    jwt_service: JWTService = Depends(
-        get_jwt_service
-    ),  # 注入 JWT 服务（用于签发 token）
+    service: UserService = Depends(get_user_service),  # 注入用户服务（每个请求独立实例）
+    jwt_service: JWTService = Depends(get_jwt_service),  # 注入 JWT 服务（用于签发 token）
 ):
     """注册新用户。
 
@@ -56,9 +41,7 @@ async def register_user(
     )
     # 基于新用户 ID 生成 JWT token（7 天有效）
     token = jwt_service.generate_jwt_token(str(user.id))
-    return AuthResponse(
-        user=to_user_response(user), token=token
-    )  # 返回用户信息 + token
+    return AuthResponse(user=to_user_response(user), token=token)  # 返回用户信息 + token
 
 
 @router.post(

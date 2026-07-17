@@ -57,7 +57,7 @@ socket_app = socketio.ASGIApp(sio, app)
     tags=["Root"],
 )
 async def root():
-    return {"msg": "FastAPI skeleton running", "debug": settings.debug}
+    return {"msg": "FastAPI Running!", "debug": settings.debug}
 
 
 if __name__ == "__main__":

@@ -86,8 +86,7 @@ class UserService:
         user = await self.mapper.find_by_username(username)
         # 用户不存在 或 密码不匹配 → 统一抛认证失败异常（避免泄露具体原因）
         if not user or not bcrypt.checkpw(
-            password.encode(),
-            user.password_hash.encode(),  # bcrypt 校验
+            password.encode(), user.password_hash.encode()  # bcrypt 校验
         ):
             raise AuthenticationError("用户名或密码错误")  # 401
         return user  # 认证成功，返回用户实体

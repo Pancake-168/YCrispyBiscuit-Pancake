@@ -1,9 +1,6 @@
 from pathlib import Path  # 路径处理和解析
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    create_async_engine,
-)  # 异步引擎 + 会话类型
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine  # 异步引擎 + 会话类型
 from sqlalchemy.orm import DeclarativeBase, sessionmaker  # ORM 声明式基类 + 会话工厂
 from app.core.config import get_settings, WRITABLE_DIR  # 配置单例 + 可写目录路径
 
@@ -37,17 +34,14 @@ async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False
 # 声明式 ORM 基类
 # ------------------------------------------------------------------
 
-
 class Base(DeclarativeBase):
     """所有 ORM 实体的基类。继承此类后 SQLAlchemy 自动映射表。"""
-
     pass
 
 
 # ------------------------------------------------------------------
 # 依赖注入：FastAPI Depends 使用
 # ------------------------------------------------------------------
-
 
 async def get_db():
     """为每个请求创建独立的数据库会话，请求结束后自动关闭。
