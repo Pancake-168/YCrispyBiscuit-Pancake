@@ -48,13 +48,10 @@ OUTPUT_FORMATS: Dict[str, str] = {
 # 元素是带点的扩展名（如 ".png"），前端 input_formats 字段会 lstrip(".") 去掉点后返回
 INPUT_EXTENSIONS = sorted(EXT_TO_FORMAT.keys())
 
-# 输出格式名称列表（按格式名去重，用于 output_formats 字段，与 FORMAT_DETAILS 的 key 对齐）
-# 步骤：
-#   1. OUTPUT_FORMATS.values() → {"PNG", "JPEG", "WEBP", ...}，天然去重（dict values）
-#   2. v.lower() → "png", "jpeg", ...
-#   3. set() 再保险一层去重
-#   4. sorted() 保证顺序稳定
-OUTPUT_FORMAT_NAMES = sorted(set(v.lower() for v in OUTPUT_FORMATS.values()))
+# 输出格式名称列表（保留所有扩展名变体，用于 output_formats 字段，与 FORMAT_DETAILS 的 key 对齐）
+# 使用 OUTPUT_FORMATS.keys() 而非 values()，确保 jpg 和 jpeg、tif 和 tiff 都作为独立选项出现
+# sorted() 保证顺序稳定
+OUTPUT_FORMAT_NAMES = sorted(k.lstrip(".") for k in OUTPUT_FORMATS.keys())
 
 
 # ============================================================================
@@ -141,9 +138,11 @@ class FormatDetail:
 FORMAT_DETAILS: Dict[str, FormatDetail] = {
     # FormatDetail(extensions, mime_type, supports_transparency, supports_animation, lossy_options, quality_range, supports_lossless)
     "png": FormatDetail([".png"], "image/png", True, False, False, None),
+    "jpg": FormatDetail([".jpg", ".jpeg"], "image/jpeg", False, False, True, (1, 100)),
     "jpeg": FormatDetail([".jpg", ".jpeg"], "image/jpeg", False, False, True, (1, 100)),
     "webp": FormatDetail([".webp"], "image/webp", True, True, True, (0, 100), supports_lossless=True),
     "bmp": FormatDetail([".bmp"], "image/bmp", False, False, False, None),
+    "tif": FormatDetail([".tiff", ".tif"], "image/tiff", True, False, False, None),
     "tiff": FormatDetail([".tiff", ".tif"], "image/tiff", True, False, False, None),
     "gif": FormatDetail([".gif"], "image/gif", True, True, False, None),
     "ico": FormatDetail([".ico"], "image/vnd.microsoft.icon", True, False, False, None),

@@ -10,6 +10,7 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'typ
   loadingText?: string;
   icon?: ReactNode;
   type?: 'button' | 'submit';
+  block?: boolean;
 }
 
 /**
@@ -26,11 +27,12 @@ export default function Button({
   className = '',
   disabled,
   onClick,
+  block = false,
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
-  const classNames = ['btn', variant, loading ? 'spinning' : '', className]
+  const classNames = ['btn', variant, loading ? 'spinning' : '', block ? 'block' : '', className]
     .filter(Boolean)
     .join(' ');
 

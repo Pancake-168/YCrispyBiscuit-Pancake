@@ -329,6 +329,11 @@ export default function DemoPage() {
             禁用低调按钮
           </Button>
         </Row>
+        <Row label="全宽">
+          <Button variant="subtle" block>
+            全宽列表项
+          </Button>
+        </Row>
       </Section>
 
       {/* ================================================ */}

@@ -66,6 +66,8 @@
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   z-index: 110;
+  max-height: var(--radix-select-content-available-height, 260px); /* 窗口小时限制高度 */
+  overflow-y: auto; /* 超出可滚动 */
 }
 
 .item {
