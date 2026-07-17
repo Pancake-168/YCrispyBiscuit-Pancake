@@ -10,6 +10,4 @@ router = APIRouter()
 
 # 所有 controller 路由统一挂载在 /api 前缀下
 router.include_router(HealthController.router, prefix="/api")
-router.include_router(UserController.router,prefix="/api")
-
-
+router.include_router(UserController.router, prefix="/api")

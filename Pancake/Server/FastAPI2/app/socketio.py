@@ -39,7 +39,6 @@ sio = socketio.AsyncServer(
 )
 
 
-
 # =============================================================================
 # 生命周期钩子
 # =============================================================================
@@ -92,6 +91,7 @@ async def disconnect(sid: str):
 # 客户端通过 socket.emit("事件名", 数据) 来调用。
 # 函数名不需要和事件名相同，但建议保持一致以便查找。
 
+
 @sio.on("echo")
 async def handle_echo(sid: str, data: dict):
     """
@@ -123,6 +123,7 @@ async def handle_echo(sid: str, data: dict):
         to=sid,
     )
 
+
 @sio.on("broadcast")
 async def handle_broadcast(sid: str, data: dict):
     """
@@ -150,7 +151,6 @@ async def handle_broadcast(sid: str, data: dict):
         room="lobby",  # 广播到 lobby 房间内的所有人
         skip_sid=sid,  # 排除发送者自己
     )
-
 
 
 @sio.on("ping_from_client")

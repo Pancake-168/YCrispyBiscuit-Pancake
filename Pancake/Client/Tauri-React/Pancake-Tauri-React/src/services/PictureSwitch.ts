@@ -17,7 +17,6 @@ export interface FormatDetail {
     extensions: string[];
     mime_type: string;
     supports_transparency: boolean;
-    supports_animation: boolean;
     lossy_options: boolean;
     quality_range: [number, number] | null;
     supports_lossless: boolean;

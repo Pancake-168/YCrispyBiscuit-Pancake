@@ -1,4 +1,8 @@
-from pydantic import BaseModel, EmailStr, ConfigDict  # EmailStr=邮箱格式校验 ConfigDict=Pydantic v2 配置
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    ConfigDict,
+)  # EmailStr=邮箱格式校验 ConfigDict=Pydantic v2 配置
 from typing import Optional  # 可选字段标注
 from datetime import datetime  # 时间戳字段类型
 
@@ -15,9 +19,6 @@ class UserBase(BaseModel):
     nickname: Optional[str] = None  # 昵称，可选
 
 
-
-
-
 # ============================================================================
 # 用户请求体模型
 # ============================================================================
@@ -25,6 +26,7 @@ class UserCreate(UserBase):
     """POST /api/auth/register 的请求体，继承 UserBase 并追加密码字段。"""
 
     password: str  # 明文密码（Service 层做 bcrypt 哈希）
+
 
 class UserUpdate(BaseModel):
     """PUT /api/auth/update 的请求体，所有字段可选，暂无函数调用。"""
@@ -35,16 +37,12 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None  # 新密码
     role: Optional[str] = "user"  # 角色，默认保持 "user"
 
+
 class LoginRequest(BaseModel):
     """POST /api/auth/login 的请求体。"""
 
     username: str  # 用户名
     password: str  # 明文密码
-
-
-
-
-
 
 
 # ============================================================================
@@ -59,6 +57,7 @@ class UserResponse(UserBase):
     created_at: datetime  # 注册时间
     updated_at: Optional[datetime] = None  # 最后更新时间（首次注册时为 None）
     role: str = "user"  # 用户角色
+
 
 class AuthResponse(BaseModel):
     """POST /api/auth/register 和 /api/auth/login 的响应体。"""

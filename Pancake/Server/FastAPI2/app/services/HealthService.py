@@ -12,20 +12,17 @@ class HealthService:
 
         logger = logging.getLogger("HealthService")
 
-
-        if(mapper):
-            logger.info("健康检查接收到mapper：",mapper)
+        if mapper:
+            logger.info("健康检查接收到mapper：", mapper)
             self.mapper = mapper
         else:
             logger.info("健康检查未接收到mapper，将采用默认mapper!")
-            self.mapper = HealthMapper() 
+            self.mapper = HealthMapper()
         # 允许注入自定义 mapper，默认使用 HealthMapper
 
     async def get_health(self) -> dict[str, str]:
         """返回服务健康状态数据。"""
         return await self.mapper.select_health_raw()  # 委托 mapper 获取健康数据
-
-
 
 
 def get_health_service() -> HealthService:
