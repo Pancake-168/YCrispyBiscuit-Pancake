@@ -4,6 +4,7 @@
   "description": "Scripts to manage FastAPI venv and run server via npm scripts (Windows)",
   "scripts": {
     "setup": "python -m venv .venv && .venv\\Scripts\\python.exe -m pip install --disable-pip-version-check -r requirements.txt",
+    "download:ffmpeg": "powershell -Command \"if (-not (Test-Path ffmpeg/bin/ffmpeg.exe)) { Write-Host 'Downloading ffmpeg...'; [System.Net.WebRequest]::DefaultWebProxy = New-Object System.Net.WebProxy('http://127.0.0.1:7897'); Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile ffmpeg-tmp.zip; Write-Host 'Extracting...'; Expand-Archive -Path ffmpeg-tmp.zip -DestinationPath . -Force; Remove-Item ffmpeg-tmp.zip; $dir = Get-ChildItem -Directory -Name 'ffmpeg-*' | Select-Object -First 1; if ($dir) { Rename-Item $dir ffmpeg }; Write-Host 'ffmpeg ready' } else { Write-Host 'ffmpeg already exists, skip' }\"",
     "dev": "set ENV_FILE=.env.development && .venv\\Scripts\\python.exe -m app.main",
     "prod": "set ENV_FILE=.env.production && .venv\\Scripts\\python.exe -m app.main",
     "build": ".venv\\Scripts\\python.exe -m pip --disable-pip-version-check wheel -w dist -r requirements.txt",
