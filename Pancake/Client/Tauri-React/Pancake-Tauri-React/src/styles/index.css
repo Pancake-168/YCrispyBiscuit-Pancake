@@ -21,6 +21,8 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.5;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ---- 滚动条 ---- */

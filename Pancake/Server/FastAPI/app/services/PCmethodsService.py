@@ -1,10 +1,11 @@
-"""PC 方法服务。从本地 JSON 配置读取工作流数据，支持打开 Windows 文件夹。"""
+"""PC 方法服务。从可写目录读取工作流配置，首次启动时从 exe 内部复制默认配置。"""
 
 import json  # 解析 JSON 配置文件
 import os  # os.startfile 打开 Windows 资源管理器
+import shutil  # 复制文件
 from typing import Any
 
-from app.core.config import JSON_DIR  # JSON 配置目录路径
+from app.core.config import JSON_DIR, WRITABLE_DIR  # JSON 配置目录 + 可写目录
 from app.exceptions.errors import NotFoundError  # 配置项未找到时抛出 404
 
 
@@ -16,11 +17,20 @@ def get_pcmethods_service() -> "PCmethodsService":
 class PCmethodsService:
     """提供 MMD 工作流配置读取和文件夹操作。"""
 
+    @property
+    def _json_path(self):
+        """可写目录下的配置文件路径，不存在时从 exe 内部复制默认配置。"""
+        writable_json_dir = WRITABLE_DIR / "json"
+        writable_json_dir.mkdir(parents=True, exist_ok=True)
+        target = writable_json_dir / "PCmethods.json"
+        if not target.exists():
+            shutil.copy2(JSON_DIR / "PCmethods.json", target)
+        return target
+
     def _load_pcmethods_data(self) -> list[dict[str, Any]]:
         """从 PCmethods.json 加载工作流配置数据。"""
-        json_path = JSON_DIR / "PCmethods.json"  # 拼接 JSON 文件路径
-        with open(json_path, "r", encoding="utf-8") as file:  # 以 UTF-8 编码打开
-            return json.load(file)  # 解析 JSON → list[dict]
+        with open(self._json_path, "r", encoding="utf-8") as file:
+            return json.load(file)
 
     async def get_mmd_workflow(self) -> dict[str, Any]:
         """查找并返回名为 'MMD工作流' 的配置条目。"""
