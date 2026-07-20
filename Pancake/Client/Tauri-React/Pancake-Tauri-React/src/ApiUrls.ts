@@ -21,4 +21,21 @@ export const API_URLS = {
   // 获取批量下载
   // get
   getBatchDownloadUrl: (taskId: string) => `${API_BASE}/api/picture/download/batch/${taskId}`,
+
+  /**
+   * PCmethods
+   */
+
+  // 获取 MMD 工作流路径列表
+  // get
+  getMMDWorkflow: () => `${API_BASE}/api/pcmethods/getmmd`,
+
+  // 打开所有 MMD 工作流文件夹
+  // post
+  openAllMMDFolders: () => `${API_BASE}/api/pcmethods/openmmd`,
+
+  // 打开单个 MMD 工作流文件夹
+  // post
+  openSingleMMDFolder: (folderName: string) =>
+    `${API_BASE}/api/pcmethods/openmmd/${encodeURIComponent(folderName)}`,
 };
