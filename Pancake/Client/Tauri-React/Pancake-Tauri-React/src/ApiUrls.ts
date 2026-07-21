@@ -38,4 +38,26 @@ export const API_URLS = {
   // post
   openSingleMMDFolder: (folderName: string) =>
     `${API_BASE}/api/pcmethods/openmmd/${encodeURIComponent(folderName)}`,
+
+  /**
+   * Audio
+   */
+
+  // 获取后端支持的音频格式列表
+  // get
+  getAudioFormats: () => `${API_BASE}/api/audio/formats`,
+
+  // 批量转换音频
+  // post
+  convertAudio: () => `${API_BASE}/api/audio/convert`,
+
+  // 获取单个音频文件下载
+  // get
+  getAudioSingleDownloadUrl: (taskId: string, index: string) =>
+    `${API_BASE}/api/audio/download/single/${taskId}/${index}`,
+
+  // 获取批量音频下载
+  // get
+  getAudioBatchDownloadUrl: (taskId: string) =>
+    `${API_BASE}/api/audio/download/batch/${taskId}`,
 };

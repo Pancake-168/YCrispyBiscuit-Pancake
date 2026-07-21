@@ -161,21 +161,21 @@ export default function DemoPage() {
   const dropdownItems: MenuItem[] = [
     {
       label: '编辑',
-      icon: <VscEdit size={14} />,
+      icon: <IconContainer size={14} src={<VscEdit size={14} />} />,
       shortcut: '⌘E',
       onClick: () => toast('点击了编辑', 'info'),
     },
     {
       label: '复制',
-      icon: <VscCopy size={14} />,
+      icon: <IconContainer size={14} src={<VscCopy size={14} />} />,
       shortcut: '⌘C',
       onClick: () => toast('已复制', 'success'),
     },
-    { label: '刷新', icon: <VscRefresh size={14} />, onClick: () => toast('已刷新', 'success') },
+    { label: '刷新', icon: <IconContainer size={14} src={<VscRefresh size={14} />} />, onClick: () => toast('已刷新', 'success') },
     { label: '', separator: true as const },
     {
       label: '删除',
-      icon: <VscTrash size={14} />,
+      icon: <IconContainer size={14} src={<VscTrash size={14} />} />,
       danger: true,
       onClick: () => toast('删除操作需确认', 'warn'),
     },
@@ -183,17 +183,17 @@ export default function DemoPage() {
 
   // ---- ContextMenu 菜单项 ----
   const contextMenuItems: MenuItem[] = [
-    { label: '查看详情', icon: <VscInfo size={14} />, onClick: () => toast('查看详情', 'info') },
+    { label: '查看详情', icon: <IconContainer size={14} src={<VscInfo size={14} />} />, onClick: () => toast('查看详情', 'info') },
     {
       label: '复制文本',
-      icon: <VscCopy size={14} />,
+      icon: <IconContainer size={14} src={<VscCopy size={14} />} />,
       shortcut: '⌘C',
       onClick: () => toast('已复制', 'success'),
     },
     { label: '', separator: true as const },
     {
       label: '删除',
-      icon: <VscTrash size={14} />,
+      icon: <IconContainer size={14} src={<VscTrash size={14} />} />,
       danger: true,
       onClick: () => toast('已删除', 'error'),
     },
@@ -204,7 +204,7 @@ export default function DemoPage() {
     {
       id: 'tab-1',
       label: '概览',
-      icon: <VscHome size={14} />,
+      icon: <IconContainer size={14} src={<VscHome size={14} />} />,
       content: (
         <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是概览标签页的内容。</p>
       ),
@@ -212,7 +212,7 @@ export default function DemoPage() {
     {
       id: 'tab-2',
       label: '设置',
-      icon: <VscSettingsGear size={14} />,
+      icon: <IconContainer size={14} src={<VscSettingsGear size={14} />} />,
       content: (
         <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是设置标签页的内容。</p>
       ),
@@ -220,7 +220,7 @@ export default function DemoPage() {
     {
       id: 'tab-3',
       label: '通知',
-      icon: <VscBell size={14} />,
+      icon: <IconContainer size={14} src={<VscBell size={14} />} />,
       content: (
         <p style={{ color: 'var(--text)', fontSize: 'var(--text-base)' }}>这是通知标签页的内容。</p>
       ),
@@ -297,16 +297,16 @@ export default function DemoPage() {
           <Button variant="danger">危险按钮</Button>
         </Row>
         <Row label="带图标">
-          <Button variant="primary" icon={<VscAdd size={14} />}>
+          <Button variant="primary" icon={<IconContainer size={14} src={<VscAdd size={14} />} />}>
             新建
           </Button>
-          <Button variant="secondary" icon={<VscSearch size={14} />}>
+          <Button variant="secondary" icon={<IconContainer size={14} src={<VscSearch size={14} />} />}>
             搜索
           </Button>
-          <Button variant="subtle" icon={<VscEdit size={14} />}>
+          <Button variant="subtle" icon={<IconContainer size={14} src={<VscEdit size={14} />} />}>
             编辑
           </Button>
-          <Button variant="danger" icon={<VscTrash size={14} />}>
+          <Button variant="danger" icon={<IconContainer size={14} src={<VscTrash size={14} />} />}>
             删除
           </Button>
         </Row>
@@ -574,26 +574,26 @@ export default function DemoPage() {
       >
         <Row label="上（默认）">
           <Tooltip content="这是上方弹出的提示文字">
-            <button className="btn subtle">悬停看提示（上）</button>
+            <Button variant="subtle">悬停看提示（上）</Button>
           </Tooltip>
         </Row>
         <Row label="四个方向">
           <Tooltip content="上方提示" side="top">
-            <button className="btn subtle">上</button>
+            <Button variant="subtle">上</Button>
           </Tooltip>
           <Tooltip content="右侧提示" side="right">
-            <button className="btn subtle">右</button>
+            <Button variant="subtle">右</Button>
           </Tooltip>
           <Tooltip content="下方提示" side="bottom">
-            <button className="btn subtle">下</button>
+            <Button variant="subtle">下</Button>
           </Tooltip>
           <Tooltip content="左侧提示" side="left">
-            <button className="btn subtle">左</button>
+            <Button variant="subtle">左</Button>
           </Tooltip>
         </Row>
         <Row label="长延迟">
           <Tooltip content="悬停 1 秒后才出现" delayDuration={1000}>
-            <button className="btn subtle">悬停 1s</button>
+            <Button variant="subtle">悬停 1s</Button>
           </Tooltip>
         </Row>
       </Section>
@@ -608,7 +608,7 @@ export default function DemoPage() {
       >
         <Row label="表单卡片">
           <Popover
-            trigger={<button className="btn secondary">打开筛选面板</button>}
+            trigger={<Button variant="secondary">打开筛选面板</Button>}
             side="bottom"
             align="start"
           >
@@ -643,7 +643,7 @@ export default function DemoPage() {
         </Row>
         <Row label="不同对齐">
           <Popover
-            trigger={<button className="btn subtle">开头对齐</button>}
+            trigger={<Button variant="subtle">开头对齐</Button>}
             side="bottom"
             align="start"
           >
@@ -658,7 +658,7 @@ export default function DemoPage() {
             </div>
           </Popover>
           <Popover
-            trigger={<button className="btn subtle">居中对齐</button>}
+            trigger={<Button variant="subtle">居中对齐</Button>}
             side="bottom"
             align="center"
           >
@@ -673,7 +673,7 @@ export default function DemoPage() {
             </div>
           </Popover>
           <Popover
-            trigger={<button className="btn subtle">末尾对齐</button>}
+            trigger={<Button variant="subtle">末尾对齐</Button>}
             side="bottom"
             align="end"
           >
@@ -700,13 +700,13 @@ export default function DemoPage() {
       >
         <Row label="完整菜单">
           <DropdownMenu
-            trigger={<button className="btn secondary">打开菜单</button>}
+            trigger={<Button variant="secondary">打开菜单</Button>}
             items={dropdownItems}
           />
         </Row>
         <Row label="纯文字菜单">
           <DropdownMenu
-            trigger={<button className="btn subtle">简单菜单</button>}
+            trigger={<Button variant="subtle">简单菜单</Button>}
             items={[
               { label: '选项一', onClick: () => toast('选项一', 'info') },
               { label: '选项二', onClick: () => toast('选项二', 'info') },
@@ -774,7 +774,7 @@ export default function DemoPage() {
       >
         <Row label="Trigger 触发">
           <Dialog
-            trigger={<button className="btn primary">打开弹窗（Trigger）</button>}
+            trigger={<Button variant="primary">打开弹窗（Trigger）</Button>}
             title="用户信息"
             description="请填写以下信息"
           >
@@ -811,7 +811,7 @@ export default function DemoPage() {
           </Dialog>
         </Row>
         <Row label="无 description">
-          <Dialog trigger={<button className="btn subtle">简洁弹窗</button>} title="简洁标题">
+          <Dialog trigger={<Button variant="subtle">简洁弹窗</Button>} title="简洁标题">
             <p style={{ color: 'var(--text)', fontSize: 'var(--text-sm)' }}>
               没有 description 的简洁弹窗。
             </p>
@@ -1001,7 +1001,7 @@ export default function DemoPage() {
               action={
                 <Button
                   variant="primary"
-                  icon={<VscAdd size={14} />}
+                  icon={<IconContainer size={14} src={<VscAdd size={14} />} />}
                   onClick={() => toast('去发现内容', 'info')}
                 >
                   去发现
@@ -1013,7 +1013,7 @@ export default function DemoPage() {
         <Row label="自定义图标">
           <div style={{ width: '100%', maxWidth: 400 }}>
             <EmptyState
-              icon={<VscSearch size={48} />}
+              icon={<IconContainer size={48} src={<VscSearch size={48} />} />}
               title="无搜索结果"
               description="换个关键词试试"
             />

@@ -20,6 +20,12 @@ export const Pancake_Tools: CarouselItem[] = [
     id: 'pancakeworkflow',
     image: `${BASE}1.png`,
     title: '松饼工作流',
-    subtitle: '哎哎给自己搞点小东西',
+    subtitle: '便捷工具',
+  },
+  {
+    id: 'weather',
+    image: `${BASE}2.png`,
+    title: '天气查询',
+    subtitle: '天天都需要你猜，你的变化有多快~',
   },
 ];
