@@ -12,6 +12,7 @@ import {
   EmptyState,
   Skeleton,
   toast,
+  Tooltip,
 } from '@/components/common';
 import {
   convertPictures,
@@ -398,6 +399,28 @@ export default function PictureSwitchPage() {
     colorMode,
   ]);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className={styles.page}>
       {/* ---- 上方：文件选择区 + 参数面板 ---- */}
@@ -421,7 +444,7 @@ export default function PictureSwitchPage() {
             />
           ) : (
             <div className={styles.dropZoneContent}>
-              <VscAdd size={20} />
+              <IconContainer size={20} src={<VscAdd size={20} />} />
               <span>点击或拖拽继续添加</span>
               <span className={styles.dropZoneCount}>已选: {files.length} 个</span>
             </div>
@@ -442,12 +465,12 @@ export default function PictureSwitchPage() {
         <div className={styles.panel}>
           {/* 目标格式 */}
           <div className={styles.paramRow}>
-            <label className={styles.paramLabel}>目标格式</label>
             <Select
               value={targetFormat}
               onChange={setTargetFormat}
               options={formatOptions}
               placeholder="选择格式"
+              label="目标格式"
             />
           </div>
 
@@ -469,12 +492,12 @@ export default function PictureSwitchPage() {
 
           {showSvgModeSelect && (
             <div className={styles.paramRow}>
-              <label className={styles.paramLabel}>SVG 输出模式</label>
               <Select
                 value={svgMode}
                 onChange={(value) => setSvgMode(value as 'embed' | 'vectorize')}
                 options={svgModeOptions}
                 placeholder="选择 SVG 模式"
+                label="SVG 输出模式"
               />
             </div>
           )}
@@ -501,35 +524,38 @@ export default function PictureSwitchPage() {
           {/* 质量滑块 */}
           {showQuality && !lossless && (
             <div className={styles.paramRow}>
-              <label className={styles.paramLabel}>
+              <span className={styles.paramLabel}>
                 质量: <span className={styles.qualityValue}>{quality}</span>
-              </label>
-              <input
-                type="range"
-                min={qualityRange?.[0] ?? 1}
-                max={qualityRange?.[1] ?? 100}
-                value={quality}
-                onChange={(e) => setQuality(Number(e.target.value))}
-                className={styles.qualitySlider}
-              />
+              </span>
+              <Tooltip content={`质量: ${quality}`}>
+                <input
+                  type="range"
+                  min={qualityRange?.[0] ?? 1}
+                  max={qualityRange?.[1] ?? 100}
+                  value={quality}
+                  onChange={(e) => setQuality(Number(e.target.value))}
+                  className={styles.qualitySlider}
+                  aria-label="图片质量"
+                />
+              </Tooltip>
             </div>
           )}
 
           {/* 缩放模式 */}
           <div className={styles.paramRow}>
-            <label className={styles.paramLabel}>缩放模式</label>
             <Select
               value={resizeMode}
               onChange={setResizeMode}
               options={resizeModeOptions}
               placeholder="不缩放"
+              label="缩放模式"
             />
           </div>
 
           {/* fit/fill 宽高 */}
           {showFitFields && (
             <div className={styles.paramRow}>
-              <label className={styles.paramLabel}>尺寸限制</label>
+              <span className={styles.paramLabel}>尺寸限制</span>
               <div className={styles.sizeRow}>
                 <Input
                   value={String(maxWidth)}
@@ -554,7 +580,7 @@ export default function PictureSwitchPage() {
           {/* exact 宽高 */}
           {showExactFields && (
             <div className={styles.paramRow}>
-              <label className={styles.paramLabel}>精确尺寸</label>
+              <span className={styles.paramLabel}>精确尺寸</span>
               <div className={styles.sizeRow}>
                 <Input
                   value={String(exactWidth)}
@@ -578,26 +604,29 @@ export default function PictureSwitchPage() {
 
           {/* 色彩模式 */}
           <div className={styles.paramRow}>
-            <label className={styles.paramLabel}>色彩模式</label>
             <Select
               value={colorMode}
               onChange={setColorMode}
               options={colorModeOptions}
               placeholder="自动"
+              label="色彩模式"
             />
           </div>
 
           {/* 填充色（仅目标格式不支持透明时显示） */}
           {targetDetail && !targetDetail.supports_transparency && (
             <div className={styles.paramRow}>
-              <label className={styles.paramLabel}>透明填充</label>
               <div className={styles.colorRow}>
-                <input
-                  type="color"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                  className={styles.colorInput}
-                />
+                <Tooltip content={`当前: ${backgroundColor}`}>
+                  <input
+                    type="color"
+                    value={backgroundColor}
+                    onChange={(e) => setBackgroundColor(e.target.value)}
+                    className={styles.colorInput}
+                    aria-label="透明填充色"
+                  />
+                </Tooltip>
+                <span className={styles.paramLabel}>透明填充</span>
                 <span className={styles.colorValue}>{backgroundColor}</span>
               </div>
             </div>
@@ -685,9 +714,9 @@ export default function PictureSwitchPage() {
                     className={`${styles.fileRow} ${r.status === 'error' ? styles.fileRowError : ''}`}
                   >
                     {r.status === 'success' ? (
-                      <VscCheck size={20} className={styles.resultIconSuccess} />
+                      <IconContainer size={20} src={<VscCheck size={20} />} className={styles.resultIconSuccess} />
                     ) : (
-                      <VscWarning size={20} className={styles.resultIconError} />
+                      <IconContainer size={20} src={<VscWarning size={20} />} className={styles.resultIconError} />
                     )}
                     <div className={styles.fileInfo}>
                       <span className={styles.fileName}>

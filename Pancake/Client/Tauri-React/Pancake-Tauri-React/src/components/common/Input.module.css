@@ -24,9 +24,74 @@
   line-height: 1.4;
   padding: 6px 10px;
   outline: none;
+  /* number 类型跟随当前主题色，避免 dark 模式下出现白色背景箭头 */
+  color-scheme: var(--color-scheme);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+}
+
+/* ---- number 输入框箭头主题化（Chrome/Edge） ---- */
+/* 隐藏原生箭头 */
+.field[type='number']::-webkit-outer-spin-button,
+.field[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.field[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* ---- number 自定义上下箭头容器 ---- */
+.numberWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.numberWrapper .field {
+  /* 右边留出箭头按钮的空间 */
+  padding-right: 28px;
+}
+
+.spinBtnGroup {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--glass-brd);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  overflow: hidden;
+}
+
+.spinBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: 8px;
+  line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.spinBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+:root[data-theme='light'] .spinBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .field:focus {

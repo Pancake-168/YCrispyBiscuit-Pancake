@@ -74,6 +74,8 @@
   /* ---- 输入控件 ---- */
   --input-bg: rgba(255, 255, 255, 0.04);
   --switch-track-bg: rgba(255, 255, 255, 0.12);
+  /* number 输入框主题适配 */
+  --color-scheme: dark;
 
   /* ---- 浮层/模态（不跟随主题） ---- */
   --dialog-overlay-bg: rgba(0, 0, 0, 0.45);
@@ -121,4 +123,6 @@
 
   --input-bg: rgba(0, 0, 0, 0.04);
   --switch-track-bg: rgba(0, 0, 0, 0.12);
+
+  --color-scheme: light;
 }
