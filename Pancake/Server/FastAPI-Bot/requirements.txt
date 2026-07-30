@@ -1,4 +1,3 @@
-# Web 框架
 fastapi
 uvicorn[standard]
 pydantic
@@ -6,22 +5,10 @@ pydantic-settings
 python-dotenv
 python-multipart
 httpx
-
-# 数据库 & ORM
 sqlmodel
 aiosqlite
-
-# 向量数据库
 chromadb
-
-# LLM & Embedding（OpenAI 兼容接口，对接硅基流动）
 openai
-
-# 日志
 structlog
-
-# 配置
 tomli-w
-
-# 代码质量
 ruff

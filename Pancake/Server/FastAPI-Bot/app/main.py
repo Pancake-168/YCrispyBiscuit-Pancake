@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from app.core.config import get_settings
 from app.core.lifespan import create_lifespan
@@ -41,6 +42,29 @@ register_exception_handlers(app)
 @app.get("/", summary="根路径", tags=["Root"])
 async def root():
     return {"msg": "MaiBot Running!", "debug": settings.debug}
+
+
+# ---- 测试接口 ----
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/chat", summary="对话测试", tags=["Test"])
+def chat_test(req: ChatRequest):
+    """单轮对话测试 — 验证硅基流动 API 连通性。"""
+    from app.src.core.engine import LLMEngine
+    from app.src.core.persona import PersonaManager
+
+    engine = LLMEngine()
+    persona_mgr = PersonaManager()
+    system_prompt = persona_mgr.render("persona")
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": req.message},
+    ]
+    reply = engine.chat(messages)
+    return {"reply": reply}
 
 
 if __name__ == "__main__":
