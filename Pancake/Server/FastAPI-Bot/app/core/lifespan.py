@@ -42,6 +42,8 @@ def create_lifespan():
 
         # 自动建表（开发阶段默认开启）
         try:
+            # 确保 SQLModel 模型已注册后再建表
+            import app.src.models.db_models  # noqa: F401
             create_db_and_tables()
             logger.info("数据库表已就绪")
         except Exception as exc:

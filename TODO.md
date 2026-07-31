@@ -6,61 +6,61 @@
 
 ## 一、项目骨架（1 天）
 
-- [ ] 创建项目目录结构（参考 Docs/QQ智能体机器人方案.md 第三节）
-- [ ] 配置 pyproject.toml：Python 3.12+、FastAPI、SQLModel、ChromaDB、openai、structlog 等依赖
-- [ ] 搭建 FastAPI 应用入口
-- [ ] 配置文件加载（TOML 格式）：bot.toml + model.toml
-- [ ] structlog 日志配置（文件 + 控制台双通道）
+- [x] 创建项目目录结构（从 Pancake FastAPI 复制改造）
+- [x] 配置 requirements.txt（FastAPI、SQLModel、ChromaDB、openai、structlog 等）
+- [x] 搭建 FastAPI 应用入口（main.py）
+- [ ] 配置文件加载（TOML 格式）：bot.toml + model.toml（当前用 .env + pydantic-settings）
+- [ ] structlog 日志配置（当前沿用原 Pancake 标准 logging 体系）
 
 
 ## 二、LLM 对话引擎（2 天）
 
-- [ ] 封装硅基流动 API 调用（OpenAI 兼容接口，base_url + api_key 统一配置）
-- [ ] 人设 Prompt 模板系统：从 prompts/persona.txt 加载，支持变量替换
-- [ ] 对话生成接口：输入消息列表 → 调用 LLM → 返回回复
-- [ ] 流式输出支持（SSE），为后续 Web 聊天界面做准备
-- [ ] Token 预算管理：控制每次请求的上下文总长度
+- [x] 封装硅基流动 API 调用（engine.py，OpenAI 兼容接口）
+- [x] 人设 Prompt 模板系统（persona.py + persona.txt）
+- [x] 对话生成接口（engine.chat()）
+- [ ] 流式输出支持（chat_stream() 已写，未接入接口）
+- [ ] Token 预算管理
 
 
 ## 三、基础对话交互（1 天）
 
-- [ ] 命令行交互模式：while True 读输入 → LLM 回复 → 打印
-- [ ] 最简 Web 聊天页面（一个输入框 + 对话列表，纯验证用）
+- [ ] 命令行交互模式（当前用 Swagger UI /curl 代替）
+- [ ] 最简 Web 聊天页面
 
 
 ## 四、短期记忆（1 天）
 
-- [ ] 消息窗口管理：每个会话维护最近 N 条消息的滑动窗口（默认 30 条）
-- [ ] 上下文拼接：每次调 LLM 前将窗口内消息拼入 prompt
-- [ ] 多会话隔离：按 session_id 区分不同对话窗口
+- [x] 消息窗口管理（short_term.py，deque 滑动窗口）
+- [x] 上下文拼接（/chat 中自动拼接）
+- [x] 多会话隔离（session_id + user_id 组合键）
 
 
 ## 五、数据库 & 向量库（4 天）
 
-- [ ] 用 SQLModel 建全部表模型：users、messages、user_profiles、memories、episodes、graph_nodes、graph_edges
-- [ ] ChromaDB 初始化：创建 memories collection，配置向量维度
-- [ ] Embedding 统一接口：封装硅基流动 Embedding API 调用
-- [ ] 消息持久化：每次对话自动写入 messages 表
+- [x] SQLModel 建全部表模型（db_models.py：7 张表）
+- [x] ChromaDB 初始化（vector_store.py，持久化到 data/chroma/）
+- [x] Embedding 统一接口（engine.embed()，走硅基流动）
+- [ ] 消息持久化（messages 表未自动写入）
 
 
 ## 六、长期记忆存储 & 检索（5 天）
 
-- [ ] 记忆写入：content → 调 Embedding API 生成向量 → 存入 ChromaDB + SQLite memories 表
-- [ ] 语义检索：当前消息 → embedding → ChromaDB 向量相似度搜索 top-K
-- [ ] 关键词检索：消息分词提取实体 → SQLite LIKE/全文搜索
-- [ ] 混合检索：语义结果 + 关键词结果加权合并排序
-- [ ] 检索结果注入 LLM prompt：检索到的记忆拼入上下文
-- [ ] 时间衰减：检索排序时对旧记忆降权
+- [x] 记忆写入（save_memory → SQLite + ChromaDB 双写）
+- [x] 语义检索（ChromaDB 向量相似度）
+- [x] 关键词检索（SQLite LIKE）
+- [x] 混合检索（语义 + 关键词合并去重）
+- [x] 检索结果注入 LLM prompt
+- [ ] 时间衰减（未实现）
 
 
 ## 七、人物画像系统（5 天）
 
-- [ ] 画像数据结构：{基本信息, 性格特点, 偏好, 重要事实} 的 JSON schema
-- [ ] 画像初始化：新用户首次对话时创建空画像
-- [ ] 画像提取：LLM 从对话中提取稳定的人物事实（prompt 模板: extract_facts.txt）
-- [ ] 画像更新：新事实与旧画像 LLM 增量合并，避免覆盖丢失
-- [ ] 画像注入：每次回复前检索当前用户画像，拼入 LLM prompt
-- [ ] 画像版本管理：记录每次更新的版本号和时间
+- [x] 画像数据结构
+- [x] 画像初始化（首次对话自动创建）
+- [x] 画像提取（extract_facts.txt + LLM 推理模型）
+- [x] 画像更新（profile.txt + 增量合并）
+- [x] 画像注入（每次对话拼入 system prompt）
+- [ ] 画像版本管理（DB 有 version 字段，接口未暴露）
 
 
 ## 八、自动写回（5 天）
