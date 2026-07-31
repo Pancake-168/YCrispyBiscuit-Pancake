@@ -33,5 +33,5 @@ export const Pancake_Tools: CarouselItem[] = [
     image: `${BASE}1.png`,
     title: '哔哩哔哩登录信息获取',
     subtitle: '天天都需要你猜，你的变化有多快~',
-  }
+  },
 ];

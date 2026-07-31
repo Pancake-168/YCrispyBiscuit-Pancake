@@ -171,7 +171,11 @@ export default function DemoPage() {
       shortcut: '⌘C',
       onClick: () => toast('已复制', 'success'),
     },
-    { label: '刷新', icon: <IconContainer size={14} src={<VscRefresh size={14} />} />, onClick: () => toast('已刷新', 'success') },
+    {
+      label: '刷新',
+      icon: <IconContainer size={14} src={<VscRefresh size={14} />} />,
+      onClick: () => toast('已刷新', 'success'),
+    },
     { label: '', separator: true as const },
     {
       label: '删除',
@@ -183,7 +187,11 @@ export default function DemoPage() {
 
   // ---- ContextMenu 菜单项 ----
   const contextMenuItems: MenuItem[] = [
-    { label: '查看详情', icon: <IconContainer size={14} src={<VscInfo size={14} />} />, onClick: () => toast('查看详情', 'info') },
+    {
+      label: '查看详情',
+      icon: <IconContainer size={14} src={<VscInfo size={14} />} />,
+      onClick: () => toast('查看详情', 'info'),
+    },
     {
       label: '复制文本',
       icon: <IconContainer size={14} src={<VscCopy size={14} />} />,
@@ -300,7 +308,10 @@ export default function DemoPage() {
           <Button variant="primary" icon={<IconContainer size={14} src={<VscAdd size={14} />} />}>
             新建
           </Button>
-          <Button variant="secondary" icon={<IconContainer size={14} src={<VscSearch size={14} />} />}>
+          <Button
+            variant="secondary"
+            icon={<IconContainer size={14} src={<VscSearch size={14} />} />}
+          >
             搜索
           </Button>
           <Button variant="subtle" icon={<IconContainer size={14} src={<VscEdit size={14} />} />}>
@@ -642,11 +653,7 @@ export default function DemoPage() {
           </Popover>
         </Row>
         <Row label="不同对齐">
-          <Popover
-            trigger={<Button variant="subtle">开头对齐</Button>}
-            side="bottom"
-            align="start"
-          >
+          <Popover trigger={<Button variant="subtle">开头对齐</Button>} side="bottom" align="start">
             <div
               style={{
                 padding: 'var(--spacing-lg)',
@@ -672,11 +679,7 @@ export default function DemoPage() {
               这是一个居中对齐的卡片
             </div>
           </Popover>
-          <Popover
-            trigger={<Button variant="subtle">末尾对齐</Button>}
-            side="bottom"
-            align="end"
-          >
+          <Popover trigger={<Button variant="subtle">末尾对齐</Button>} side="bottom" align="end">
             <div
               style={{
                 padding: 'var(--spacing-lg)',

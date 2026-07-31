@@ -399,28 +399,6 @@ export default function PictureSwitchPage() {
     colorMode,
   ]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <div className={styles.page}>
       {/* ---- 上方：文件选择区 + 参数面板 ---- */}
@@ -675,7 +653,11 @@ export default function PictureSwitchPage() {
                 <span>
                   文件列表 ({files.length} 个，共 {formatFileSize(totalOriginalSize)})
                 </span>
-                <Button variant="subtle" icon={<IconContainer size={14} src={<VscTrash size={14} />} />} onClick={clearFiles}>
+                <Button
+                  variant="subtle"
+                  icon={<IconContainer size={14} src={<VscTrash size={14} />} />}
+                  onClick={clearFiles}
+                >
                   清空
                 </Button>
               </div>
@@ -688,7 +670,12 @@ export default function PictureSwitchPage() {
                       {f.format} · {formatFileSize(f.size)}
                     </span>
                   </div>
-                  <Button variant="subtle" icon={<IconContainer size={14} src={<VscTrash size={14} />} />} onClick={() => removeFile(f.id)} title="移除" />
+                  <Button
+                    variant="subtle"
+                    icon={<IconContainer size={14} src={<VscTrash size={14} />} />}
+                    onClick={() => removeFile(f.id)}
+                    title="移除"
+                  />
                 </div>
               ))}
             </div>
@@ -703,7 +690,11 @@ export default function PictureSwitchPage() {
                 <div className={styles.fileListHeader}>
                   <span>转换结果</span>
                   {taskId && results.length > 1 && (
-                    <Button variant="subtle" icon={<IconContainer size={14} src={<VscCloudDownload size={14} />} />} onClick={handleDownloadBatch}>
+                    <Button
+                      variant="subtle"
+                      icon={<IconContainer size={14} src={<VscCloudDownload size={14} />} />}
+                      onClick={handleDownloadBatch}
+                    >
                       下载全部 (ZIP)
                     </Button>
                   )}
@@ -714,9 +705,17 @@ export default function PictureSwitchPage() {
                     className={`${styles.fileRow} ${r.status === 'error' ? styles.fileRowError : ''}`}
                   >
                     {r.status === 'success' ? (
-                      <IconContainer size={20} src={<VscCheck size={20} />} className={styles.resultIconSuccess} />
+                      <IconContainer
+                        size={20}
+                        src={<VscCheck size={20} />}
+                        className={styles.resultIconSuccess}
+                      />
                     ) : (
-                      <IconContainer size={20} src={<VscWarning size={20} />} className={styles.resultIconError} />
+                      <IconContainer
+                        size={20}
+                        src={<VscWarning size={20} />}
+                        className={styles.resultIconError}
+                      />
                     )}
                     <div className={styles.fileInfo}>
                       <span className={styles.fileName}>

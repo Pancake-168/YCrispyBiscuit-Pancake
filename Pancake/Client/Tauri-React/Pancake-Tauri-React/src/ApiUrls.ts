@@ -58,8 +58,7 @@ export const API_URLS = {
 
   // 获取批量音频下载
   // get
-  getAudioBatchDownloadUrl: (taskId: string) =>
-    `${API_BASE}/api/audio/download/batch/${taskId}`,
+  getAudioBatchDownloadUrl: (taskId: string) => `${API_BASE}/api/audio/download/batch/${taskId}`,
 
   /**
    * Weather

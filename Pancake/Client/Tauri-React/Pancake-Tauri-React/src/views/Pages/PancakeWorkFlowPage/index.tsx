@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createLogger } from '@/utils/logger';
-import { Button, IconContainer, ScrollArea, EmptyState, Skeleton, toast } from '@/components/common';
+import {
+  Button,
+  IconContainer,
+  ScrollArea,
+  EmptyState,
+  Skeleton,
+  toast,
+} from '@/components/common';
 import { VscFolder, VscFolderOpened, VscRefresh, VscFolderLibrary } from 'react-icons/vsc';
 import { getMMDWorkflow, openAllMMDFolders, openSingleMMDFolder } from '@/services/PCmethods';
 import type { PCmethodsWorkflow } from '@/services/PCmethods';
@@ -93,7 +100,11 @@ export default function PancakeWorkFlowPage() {
           title="暂无工作流"
           description="点击刷新按钮获取工作流配置"
           action={
-            <Button variant="primary" icon={<IconContainer size={14} src={<VscRefresh size={14} />} />} onClick={fetchWorkflows}>
+            <Button
+              variant="primary"
+              icon={<IconContainer size={14} src={<VscRefresh size={14} />} />}
+              onClick={fetchWorkflows}
+            >
               刷新
             </Button>
           }

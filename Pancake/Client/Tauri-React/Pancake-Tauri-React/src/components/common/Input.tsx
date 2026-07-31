@@ -41,7 +41,7 @@ export default function Input({
     (delta: number) => {
       const cur = Number(value);
       if (isNaN(cur)) return;
-      let next = ((cur * 10 + delta * numStep * 10) / 10); // 避免浮点精度问题
+      let next = (cur * 10 + delta * numStep * 10) / 10; // 避免浮点精度问题
       // 按 0 位小数四舍五入
       next = Math.round(next * 10) / 10;
       if (min !== undefined && next < Number(min)) return;

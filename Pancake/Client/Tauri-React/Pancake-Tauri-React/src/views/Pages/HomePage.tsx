@@ -43,8 +43,8 @@ export default function HomePage() {
       audios_witch: '/audios_witch',
       picture_switch: '/picture_switch',
       pancake_workflow: '/pancake_workflow',
-      weather:'/weather',
-      bilibili_login:'/bilibili_login'
+      weather: '/weather',
+      bilibili_login: '/bilibili_login',
     };
     return base.map((t) => ({
       ...t,
