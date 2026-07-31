@@ -5,6 +5,8 @@ from app.controllers import HealthController
 from app.controllers import UserController
 from app.controllers import PictureSwitchController
 from app.controllers import PCmethodsController
+from app.controllers import WeatherController
+
 
 # 顶层路由汇总，由 main.py include 到 FastAPI app 上
 router = APIRouter()
@@ -14,3 +16,4 @@ router.include_router(HealthController.router, prefix="/api")
 router.include_router(UserController.router, prefix="/api")
 router.include_router(PictureSwitchController.router, prefix="/api")
 router.include_router(PCmethodsController.router, prefix="/api")
+router.include_router(WeatherController.router, prefix="/api")

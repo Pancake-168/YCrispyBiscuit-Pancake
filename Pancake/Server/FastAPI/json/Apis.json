@@ -5,5 +5,10 @@
     {
         "name": "Weather",
         "url": "https://weather.cma.cn/api/weather/view?stationid="
+    },
+    {
+        "name": "WeatherList",
+        "url": "https://weather.cma.cn/api/map/weather/1?t="
     }
 ]
+

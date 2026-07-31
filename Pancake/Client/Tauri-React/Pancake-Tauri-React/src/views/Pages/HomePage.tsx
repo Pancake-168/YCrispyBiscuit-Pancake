@@ -36,13 +36,15 @@ export default function HomePage() {
 
   const tools = useMemo(() => {
     const base = !isTauri()
-      ? Pancake_Tools.filter((t) => t.id !== 'pancakeworkflow')
+      ? Pancake_Tools.filter((t) => t.id !== 'pancake_workflow')
       : Pancake_Tools;
     // 为每个工具注入点击跳转
     const routeMap: Record<string, string> = {
-      audioswitch: '/audioswitch',
-      pictureswitch: '/pictureswitch',
-      pancakeworkflow: '/pancakeworkflow',
+      audios_witch: '/audios_witch',
+      picture_switch: '/picture_switch',
+      pancake_workflow: '/pancake_workflow',
+      weather:'/weather',
+      bilibili_login:'/bilibili_login'
     };
     return base.map((t) => ({
       ...t,
