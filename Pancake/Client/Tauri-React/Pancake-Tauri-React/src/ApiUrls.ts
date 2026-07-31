@@ -60,4 +60,16 @@ export const API_URLS = {
   // get
   getAudioBatchDownloadUrl: (taskId: string) =>
     `${API_BASE}/api/audio/download/batch/${taskId}`,
+
+  /**
+   * Weather
+   */
+
+  // 获取天气支持的城市 id+名称 列表
+  // get
+  getWeatherList: () => `${API_BASE}/api/weather/list`,
+
+  // 获取单个城市天气
+  // get
+  getWeather: (id: string) => `${API_BASE}/api/weather?id=${encodeURIComponent(id)}`,
 };
