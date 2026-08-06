@@ -65,14 +65,8 @@ class BilibiliService:
         if not session:
             raise NotFoundError(f"Session {session_id} not found")
         nav = await self.get_nav_info(session_id)  # 获取完整 nav 数据
-        # 仅提取用户关心的字段
-        return {
-            "mid": nav.get("data", {}).get("mid"),  # 用户数字 ID
-            "uname": nav.get("data", {}).get("uname"),  # 用户名
-            "isLogin": nav.get("data", {}).get("isLogin"),  # 是否登录
-            "vip": nav.get("data", {}).get("vip"),  # 大会员信息
-            "wallet": nav.get("data", {}).get("wallet"),  # 钱包信息
-        }
+        # 直接返回 nav 的完整 data 子对象（全量透传、不包额外键），避免手挑字段遗漏个人信息（仅本机内部使用，不对外公开）
+        return nav.get("data", {})
 
     # ------------------------------------------------------------------
     # 存储值
@@ -101,6 +95,12 @@ class BilibiliService:
         result["nav_info"] = nav.get("data") if nav else None  # nav data 子对象
         result["page_tokens"] = page_tokens  # 页面 token 数据
 
+        # 若首页提取到真实 ac_time_value，用它覆盖顶层本地近似值，保证顶层也是真实值
+        if page_tokens and page_tokens.get("ac_time_value_from_html"):
+            real_ac = page_tokens["ac_time_value_from_html"]  # 首页 HTML 正则提取的真实值
+            result["ac_time_value"] = int(real_ac)  # 顶层数字版覆盖为真实值
+            result["ac_time_value_alt"] = str(real_ac)  # 顶层字符串版覆盖为真实值
+
         return result
 
     async def _fetch_fingerprint(self, session: BilibiliSession):
@@ -116,7 +116,7 @@ class BilibiliService:
     # ------------------------------------------------------------------
 
     async def get_ac_time_value(self, session_id: str) -> dict:
-        """获取 ac_time_value 及相关时间戳参数。"""
+        """获取 ac_time_value 及相关时间戳参数（尽量返回全部相关值）。"""
         session = self._sessions.get(session_id)
         if not session:
             raise NotFoundError(f"Session {session_id} not found")
@@ -128,8 +128,18 @@ class BilibiliService:
 
         # ac_time_value 是 B站客户端的防重放时间戳。
         # 在浏览器环境下由 JS（Math.floor(Date.now()/1000)）生成。
-        # 服务端无法执行 JS，因此用本地时间戳作为近似值。
+        # 服务端无法执行 JS，因此先用本地时间戳作为基础近似值。
         result["ac_time_value"] = int(time.time())
+
+        # 尝试从 B站首页提取真实下发的 ac_time_value（复用 fetch_page_tokens 已有的提取逻辑）
+        try:
+            page_tokens = await self._fetch_page_tokens(session)
+            real_ac = page_tokens.get("ac_time_value_from_html")  # 首页 HTML 正则提取的真实值
+            if real_ac:
+                result["ac_time_value_from_html"] = real_ac  # 保留原始真实值字符串
+                result["ac_time_value"] = int(real_ac)  # 有真实值则覆盖本地近似
+        except Exception:
+            pass  # 首页解析失败不阻塞，仅保留本地近似值
 
         # 尝试调 B站 feed API 以验证会话连通性
         try:
