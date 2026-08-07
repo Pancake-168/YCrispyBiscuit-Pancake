@@ -21,3 +21,4 @@ pillow-heif>=0.15
 cairosvg>=2.7
 pyavif
 numpy
+psutil
