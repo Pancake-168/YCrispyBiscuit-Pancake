@@ -1,6 +1,7 @@
 import { createLogger } from '@/utils/logger'; // 前端日志工具
 import { API_URLS } from '@/ApiUrls'; // 集中管理的 API 端点 URL
 import type { ApiResult } from '@/types/ApiResult'; // 统一 API 返回包装类型（ok/data/error）
+import { readHttpError } from '@/utils/http'; // 从非 2xx 响应中提取后端具体错误文案
 
 // ============================================================================
 // 类型定义 —— 与后端 AudioSwitchSchema.py 对齐
@@ -59,7 +60,7 @@ export async function getFormats(): Promise<ApiResult<FormatsResponse>> {
       const data = (await res.json()) as FormatsResponse; // 类型断言
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`; // HTTP 非 2xx → 记录状态码
+    error = await readHttpError(res); // 非 2xx → 取后端具体错误（如"不支持的目标格式"）
   } catch (e) {
     log.error('获取音频格式列表失败', e); // 网络异常等
     error = String(e);
@@ -89,7 +90,7 @@ export async function convertAudio(
       const data = (await res.json()) as ConvertResponse;
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('音频转换失败', e);
     error = String(e);

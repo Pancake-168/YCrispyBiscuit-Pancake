@@ -7,9 +7,9 @@ from app.core.config import get_settings
 from app.db import connect_db, disconnect_db
 from app.core.database import engine, Base
 
-# Import entities to register them with SQLAlchemy
-# from app.entities import calendar
-# from app.entities import user
+# 显式导入全部实体：Base.metadata.create_all 只会创建"已被导入"的表，
+# 不能依赖路由导入链的副作用，否则新增实体容易静默漏建
+from app.entities.UserEntity import UserEntity  # noqa: F401 仅注册表映射，不直接使用
 
 
 def create_lifespan():

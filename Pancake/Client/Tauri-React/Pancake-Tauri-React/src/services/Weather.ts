@@ -1,6 +1,7 @@
 import { createLogger } from '@/utils/logger';
 import { API_URLS } from '@/ApiUrls';
 import type { ApiResult } from '@/types/ApiResult';
+import { readHttpError } from '@/utils/http';
 
 // 城市列表项：[站点 id, 城市名称]
 export type WeatherCity = [string, string];
@@ -77,7 +78,7 @@ export async function getWeatherList(): Promise<ApiResult<WeatherListData>> {
       log.info('获取天气城市列表成功');
       return { ok: true, data: json.data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('获取天气城市列表失败', e);
     error = String(e);
@@ -101,7 +102,7 @@ export async function getWeather(id: string): Promise<ApiResult<WeatherPayload>>
       log.info('获取城市天气成功', id);
       return { ok: true, data: json.data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('获取城市天气失败', e);
     error = String(e);

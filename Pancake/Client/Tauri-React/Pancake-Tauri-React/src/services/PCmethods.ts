@@ -1,6 +1,7 @@
 import { createLogger } from '@/utils/logger';
 import { API_URLS } from '@/ApiUrls';
 import type { ApiResult } from '@/types/ApiResult';
+import { readHttpError } from '@/utils/http';
 
 export interface PCmethodsFolder {
   name: string;
@@ -24,7 +25,7 @@ export async function getMMDWorkflow(): Promise<ApiResult<PCmethodsWorkflow>> {
       const data = (await res.json()) as PCmethodsWorkflow;
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('获取MMD工作流失败', e);
     error = String(e);
@@ -44,7 +45,7 @@ export async function openAllMMDFolders(): Promise<ApiResult<{ message: string }
       const data = await res.json();
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('打开MMD工作流文件夹失败', e);
     error = String(e);
@@ -66,7 +67,7 @@ export async function openSingleMMDFolder(
       const data = await res.json();
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('打开单个MMD文件夹失败', e);
     error = String(e);

@@ -1,6 +1,7 @@
 import { createLogger } from '@/utils/logger';
 import { API_URLS } from '@/ApiUrls';
 import type { ApiResult } from '@/types/ApiResult';
+import { readHttpError } from '@/utils/http';
 
 export interface FormatsResponse {
   input_formats: string[];
@@ -32,7 +33,7 @@ export async function getFormats(): Promise<ApiResult<FormatsResponse>> {
       log.info('获取支持的格式列表成功', data);
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('获取支持的格式列表失败', e);
     error = String(e);
@@ -127,7 +128,7 @@ export async function convertPictures(
       log.info('转换图片成功', data);
       return { ok: true, data };
     }
-    error = `HTTP ${res.status}`;
+    error = await readHttpError(res);
   } catch (e) {
     log.error('转换图片失败', e);
     error = String(e);

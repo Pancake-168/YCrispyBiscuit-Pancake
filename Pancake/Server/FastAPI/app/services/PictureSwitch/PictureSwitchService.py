@@ -142,11 +142,21 @@ class PictureService:
     ) -> Dict[str, Any]:
         """流式批量转换：逐文件读取→线程池转换→释放，避免全量驻留内存。"""
 
-        # ---- 请求级校验 ----
+        # ---- 请求级校验（全部在 service 层抛出，controller 不参与） ----
         if not uploads:
             raise BadRequestError("请至少上传一个文件")
         if len(uploads) > MAX_FILES:
             raise BadRequestError(f"单次最多转换 {MAX_FILES} 个文件")
+
+        # ---- 枚举白名单校验（multipart Form 无法用 Literal 声明，这里手动校验） ----
+        if params.target_format.lower().lstrip(".") not in OUTPUT_FORMAT_NAMES:
+            raise BadRequestError(f"不支持的目标格式: {params.target_format}")
+        if params.resize_mode not in ("none", "fit", "fill", "exact"):
+            raise BadRequestError(f"不支持的缩放模式: {params.resize_mode}")
+        if params.color_mode not in ("auto", "RGB", "RGBA", "L", "P"):
+            raise BadRequestError(f"不支持的色彩模式: {params.color_mode}")
+        if params.svg_mode not in ("embed", "vectorize"):
+            raise BadRequestError(f"不支持的 SVG 输出模式: {params.svg_mode}")
 
         task_id = uuid.uuid4().hex[:12]  # 12 位随机 hex 任务 ID
         results = []  # 所有文件的转换结果
