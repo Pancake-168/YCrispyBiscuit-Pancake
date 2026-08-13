@@ -7,6 +7,7 @@ from app.controllers import PictureSwitchController
 from app.controllers import AudioSwitchController
 from app.controllers import PCmethodsController
 from app.controllers import WeatherController
+from app.controllers import BilibiliLoginController
 
 
 # 顶层路由汇总，由 main.py include 到 FastAPI app 上
@@ -19,3 +20,4 @@ router.include_router(PictureSwitchController.router, prefix="/api")
 router.include_router(AudioSwitchController.router, prefix="/api")
 router.include_router(PCmethodsController.router, prefix="/api")
 router.include_router(WeatherController.router, prefix="/api")
+router.include_router(BilibiliLoginController.router, prefix="/api")

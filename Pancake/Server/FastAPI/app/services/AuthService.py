@@ -87,9 +87,9 @@ class JWTService:
                 token, self.JWT_SECRET_KEY, algorithms=[self.JWT_ALGORITHM]
             )
         except jwt.ExpiredSignatureError:  # token 已过期
-            raise AuthenticationError("Token expired")
+            raise AuthenticationError("Token 已过期")
         except jwt.InvalidTokenError:  # token 格式无效或签名不匹配
-            raise AuthenticationError("Invalid token")
+            raise AuthenticationError("无效的 Token")
 
     def _validate_payload(self, payload: Dict) -> int:
         """对已解码的 payload 做业务级别的合法性检查，返回 user_id（int）。"""

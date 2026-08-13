@@ -71,4 +71,45 @@ export const API_URLS = {
   // 获取单个城市天气
   // get
   getWeather: (id: string) => `${API_BASE}/api/weather?id=${encodeURIComponent(id)}`,
+
+  /**
+   * Bilibili
+   */
+
+  // 获取B站扫码登录二维码
+  // get
+  getBilibiliLoginUrl: () => `${API_BASE}/api/bilibili/login/url`,
+
+  // 轮询扫码登录状态
+  // get
+  pollBilibiliLogin: (qrcodeKey: string) =>
+    `${API_BASE}/api/bilibili/login/poll?qrcode_key=${encodeURIComponent(qrcodeKey)}`,
+
+  // 通过 Cookie 直接登录
+  // post
+  loginBilibiliByCookie: () => `${API_BASE}/api/bilibili/login/cookie`,
+
+  // 获取B站用户信息
+  // get
+  getBilibiliUserInfo: (sessionId: string) =>
+    `${API_BASE}/api/bilibili/user?session_id=${encodeURIComponent(sessionId)}`,
+
+  // 获取全部B站存储值
+  // get
+  getBilibiliStoredValues: (sessionId: string) =>
+    `${API_BASE}/api/bilibili/stored-values?session_id=${encodeURIComponent(sessionId)}`,
+
+  // 获取 ac_time_value
+  // get
+  getBilibiliAcTimeValue: (sessionId: string) =>
+    `${API_BASE}/api/bilibili/ac-time-value?session_id=${encodeURIComponent(sessionId)}`,
+
+  // 列出所有活跃会话
+  // get
+  listBilibiliSessions: () => `${API_BASE}/api/bilibili/sessions`,
+
+  // 删除会话
+  // delete
+  deleteBilibiliSession: (sessionId: string) =>
+    `${API_BASE}/api/bilibili/session?session_id=${encodeURIComponent(sessionId)}`,
 };
