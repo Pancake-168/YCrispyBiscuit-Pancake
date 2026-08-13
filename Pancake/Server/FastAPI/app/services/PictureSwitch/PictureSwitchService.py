@@ -16,6 +16,7 @@ from dataclasses import dataclass
 
 
 from PIL import Image  # Pillow：图片打开、色彩转换、缩放、保存
+from PIL import ImageOps  # EXIF 方向转置（手机竖拍照片修正）
 from PIL.Image import Resampling  # 缩放重采样算法（LANCZOS）
 from app.exceptions.errors import (
     BadRequestError,
@@ -50,6 +51,7 @@ from app.utils.PictureSwitchUtils import (
     FORMAT_DETAILS,  # 格式详情字典 → 供 GET /formats 序列化
     INPUT_EXTENSIONS,  # 输入扩展名列表（带点）→ 供 GET /formats 返回
     OUTPUT_FORMAT_NAMES,  # 输出格式名列表（小写，去重）→ 供 GET /formats 返回，与 FORMAT_DETAILS key 对齐
+    FORMAT_TO_EXT,  # 格式名 → 小写标识反向映射（报告真实解码格式用）
 )
 from app.core.config import (
     WRITABLE_DIR,
@@ -61,6 +63,7 @@ from app.core.config import (
 # ============================================================================
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 单文件上限 100 MB，与前端 MAX_FILE_SIZE 保持一致
 MAX_FILES = 50  # 单次批量转换最多 50 个文件
+PIL_BATCH_SIZE = 2  # 每批并发提交到线程池的文件数（与 _PIL_EXECUTOR 的 max_workers 一致）
 TASK_CLEANUP_SECONDS = 600  # 任务完成后 600 秒（10 分钟）自动清理临时文件
 MAX_TASKS = 64  # 内存中最多保留 64 个任务的引用，超出按 LRU 淘汰最旧任务
 
@@ -150,54 +153,84 @@ class PictureService:
         task_dir = OUTPUT_DIR / task_id  # 任务独占临时目录
         task_dir.mkdir(parents=True, exist_ok=True)
 
+        loop = asyncio.get_running_loop()  # 获取当前事件循环（读取/批量转换共用）
+
+        # ---- 第一步：按批读取+转换（批满即提交，及时释放内容引用控制内存峰值） ----
+        batch: List[tuple] = []  # 当前待转换批次：(idx, filename, content)
         for idx, f in enumerate(uploads):  # 遍历上传文件，idx 从 0 开始
-            content = await f.read()  # 异步读取文件全部字节
             filename = getattr(f, "filename", None) or "unknown"  # 安全提取文件名
-            loop = asyncio.get_running_loop()  # 获取当前事件循环
             try:
-                result = await loop.run_in_executor(  # 提交到线程池，避免阻塞事件循环
-                    _PIL_EXECUTOR,  # 专用 PIL 线程池（max_workers=2）
-                    self._convert_one_sync,  # 同步转换函数
-                    idx,
-                    filename,
-                    content,
-                    params,
-                    task_dir,  # 按位置传参
-                )
-            except (
-                AppError
-            ) as e:  # 文件级校验/转换失败 → 转为 error 条目，不中断批量处理
-                result = {
-                    "index": idx,
-                    "original_name": filename,
-                    "converted_name": "",
-                    "original_format": "",
-                    "target_format": "",
-                    "original_size": 0,
-                    "converted_size": 0,
-                    "original_resolution": "",
-                    "converted_resolution": "",
-                    "size_ratio": 0.0,
-                    "status": "error",
-                    "error": e.detail,
-                }
-            except Exception as e:  # 非预期错误兜底
-                result = {
-                    "index": idx,
-                    "original_name": filename,
-                    "converted_name": "",
-                    "original_format": "",
-                    "target_format": "",
-                    "original_size": 0,
-                    "converted_size": 0,
-                    "original_resolution": "",
-                    "converted_resolution": "",
-                    "size_ratio": 0.0,
-                    "status": "error",
-                    "error": f"转换失败: {str(e)}",
-                }
+                content = await f.read()  # 异步读取文件全部字节
+            except Exception as e:  # 读取失败（如客户端断开）→ 该文件记为 error，继续处理其余文件
+                results.append(self._error_result(idx, filename, e))
+                continue
+            batch.append((idx, filename, content))
+            if len(batch) >= PIL_BATCH_SIZE:  # 批满 → 立即并发转换
+                await self._convert_batch(batch, params, task_dir, results, stored, loop)
+                batch.clear()  # 清空批次，content 引用随之释放，控制内存峰值
+
+        if batch:  # 处理不足一批的剩余文件
+            await self._convert_batch(batch, params, task_dir, results, stored, loop)
+
+        await self._task_store.register_async(task_id, task_dir, stored)
+
+        return {
+            "task_id": task_id,
+            "total": len(results),
+            "results": results,
+        }
+
+    def _error_result(self, index: int, filename: str, exc: BaseException) -> Dict[str, Any]:
+        """把异常转换为 results 数组中的 error 条目（AppError 用业务文案，其余用通用文案）。"""
+        if isinstance(exc, AppError):  # 业务异常：直接使用其 detail 文案
+            message = exc.detail
+        else:  # 非预期异常：包装成通用错误文案
+            message = f"转换失败: {str(exc)}"
+        return {
+            "index": index,
+            "original_name": filename,
+            "converted_name": "",
+            "original_format": "",
+            "target_format": "",
+            "original_size": 0,
+            "converted_size": 0,
+            "original_resolution": "",
+            "converted_resolution": "",
+            "size_ratio": 0.0,
+            "status": "error",
+            "error": message,
+        }
+
+    async def _convert_batch(
+        self,
+        batch: List[tuple],
+        params: ConversionParams,
+        task_dir: Path,
+        results: List[Dict[str, Any]],
+        stored: List[StoredFile],
+        loop,
+    ) -> None:
+        """并发提交一批文件到线程池转换，结果/异常统一收集进 results 与 stored。"""
+        futures = [
+            loop.run_in_executor(  # 提交到线程池，避免阻塞事件循环
+                _PIL_EXECUTOR,  # 专用 PIL 线程池（max_workers=2）
+                self._convert_one_sync,  # 同步转换函数
+                idx,
+                filename,
+                content,
+                params,
+                task_dir,  # 按位置传参
+            )
+            for idx, filename, content in batch
+        ]
+        # return_exceptions=True：单文件失败以异常对象返回，不中断整批
+        outcomes = await asyncio.gather(*futures, return_exceptions=True)
+        for (idx, filename, _content), outcome in zip(batch, outcomes):
+            if isinstance(outcome, BaseException):  # 转换抛异常 → 转为 error 条目
+                result = self._error_result(idx, filename, outcome)
+            else:
+                result = outcome  # 正常返回的结果字典
             results.append(result)  # 收集结果（成功或失败都收集）
-            del content  # 显式释放字节引用，帮助 GC
             if result["status"] == "success":  # 仅成功文件加入 stored
                 stored.append(
                     StoredFile(
@@ -207,14 +240,6 @@ class PictureService:
                         converted_resolution=result["converted_resolution"],
                     )
                 )
-
-        self._task_store.register(task_id, task_dir, stored)
-
-        return {
-            "task_id": task_id,
-            "total": len(results),
-            "results": results,
-        }
 
     # ==========================================================================
     # 单文件转换
@@ -244,13 +269,10 @@ class PictureService:
         if not is_supported_input(filename):  # 检查 Path.suffix 是否在 EXT_TO_FORMAT 中
             raise BadRequestError(f"不支持的图片格式: {filename}")
 
-        # ---- 魔数检测（绕过扩展名伪造） ----
+        # ---- 魔数检测（优先识别真实格式，无魔数的格式回退扩展名推断） ----
         detected = detect_format_by_magic(data, filename)  # 魔数优先，失败回退扩展名
         if detected is None:
             raise BadRequestError(f"无法识别图片格式: {filename}")
-
-        ext = Path(filename).suffix.lower()  # 提取含点扩展名并小写（如 ".jpg"）
-        original_format = ext.lstrip(".")  # 去点得格式标识（如 "jpg"）
 
         # ---- 打开图片 ----
         try:
@@ -259,6 +281,19 @@ class PictureService:
             )  # 根据检测到的格式选打开方式
         except Exception as e:
             raise BadRequestError(f"文件损坏或无法打开: {filename}") from e
+
+        # ---- EXIF Orientation 转正 ----
+        # 手机/相机照片把旋转方向存在 EXIF 里，Pillow 打开时不自动应用；
+        # 若不在此时转正，后面 strip_metadata 清掉 EXIF 后输出图片会“横躺”
+        if detected in ("JPEG", "TIFF"):
+            img = ImageOps.exif_transpose(img)  # 按 EXIF 方向转置；无方向信息时原样返回
+
+        # original_format 以实际解码格式为准（Pillow 识别结果），而不是文件扩展名；
+        # 伪装扩展名的文件（如 JPEG 内容命名 .png）也能报告正确格式
+        actual_format = getattr(img, "format", None) or detected  # AVIF 等无 format 属性时用魔数结果
+        original_format = FORMAT_TO_EXT.get(
+            actual_format, str(actual_format).lower()
+        )  # 格式名 → 小写标识（如 "JPEG" → "jpeg"）
 
         original_size = len(data)
         original_resolution = f"{img.width}×{img.height}"
@@ -281,14 +316,16 @@ class PictureService:
         if target_mode != img.mode:  # 模式不同才转换
             img = apply_color_mode(img, target_mode, params.background_color)
 
-        # ---- GIF 动画：取首帧 ----
-        if detected == "GIF" and getattr(
-            img, "is_animated", False
-        ):  # is_animated 表示多帧
+        # ---- 动画输入（GIF 动画 / APNG 等多帧图片）：仅保留首帧 ----
+        warning_message: Optional[str] = None  # 成功时的用户可见提示（默认无）
+        if getattr(img, "is_animated", False):  # is_animated=True 表示多帧
             import logging
 
+            warning_message = (
+                f"该文件包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧已丢弃"
+            )  # 提示写入响应，前端在结果行中展示给用户
             logging.getLogger("app.PictureService").warning(
-                f"GIF 动画 '{filename}' 包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧将被丢弃"
+                f"多帧图片 '{filename}' 包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧将被丢弃"
             )
             img.seek(0)  # 确保帧指针在首帧
 
@@ -330,15 +367,25 @@ class PictureService:
                     img, params.quality, params.background_color
                 )
         else:
-            save_kwargs = get_save_kwargs(  # 格式特定的保存参数
-                params.target_format, params.quality, params.lossless
+            save_kwargs = get_save_kwargs(  # 格式特定的保存参数（传入尺寸用于选择编码参数）
+                params.target_format, params.quality, params.lossless, img.size
             )
             save_format = "JPEG" if target_pillow_fmt == "JPEG" else target_pillow_fmt
-            # 色彩模式兼容性：确保写入前模式与格式兼容
+            # PBM/PGM 在 Pillow 中没有独立的注册格式名，统一归口到 PPM 插件保存；
+            # PPM 插件按图像 mode 自动写文件头："1"→P4（PBM）、"L"→P5（PGM）、"RGB"→P6（PPM）
+            if save_format in ("PBM", "PGM"):
+                save_format = "PPM"
+            # 色彩模式兜底：确保写入前模式与格式严格兼容
             if save_format == "JPEG" and img.mode not in ("RGB", "L"):
                 img = img.convert("RGB")  # JPEG 只接受 RGB/L
             elif save_format == "GIF" and img.mode != "P":
                 img = img.convert("P")  # GIF 只接受调色板 P
+            elif target_pillow_fmt == "PBM" and img.mode != "1":
+                img = img.convert("1")  # PBM 只接受 1 位模式
+            elif target_pillow_fmt == "PGM" and img.mode != "L":
+                img = img.convert("L")  # PGM 只接受灰度模式
+            elif target_pillow_fmt == "PPM" and img.mode != "RGB":
+                img = img.convert("RGB")  # PPM 规范只含 P3/P6，统一转 RGB
             buf = io.BytesIO()
             img.save(buf, format=save_format, **save_kwargs)  # Pillow 编码写入内存
             converted_data = buf.getvalue()
@@ -348,12 +395,18 @@ class PictureService:
         converted_name = change_extension(filename, target_ext)  # 如 "a.jpg"→"a.webp"
         out_path = task_dir / converted_name
         counter = 1
-        while out_path.exists():  # 处理重名：追加 _1, _2...
-            stem = Path(filename).stem
-            converted_name = f"{stem}_{counter}{target_ext}"
-            out_path = task_dir / converted_name
-            counter += 1
-        out_path.write_bytes(converted_data)  # 写入磁盘
+        # 重名处理：用 "xb" 独占创建，FileExistsError 时追加 _1, _2...
+        # 相比先 exists 再写，独占创建在批量并发转换下也不会互相覆盖
+        while True:
+            try:
+                with open(out_path, "xb") as fh:  # x=独占创建，b=二进制
+                    fh.write(converted_data)  # 写入磁盘
+                break  # 写盘成功，退出重名循环
+            except FileExistsError:
+                stem = Path(filename).stem
+                converted_name = f"{stem}_{counter}{target_ext}"
+                out_path = task_dir / converted_name
+                counter += 1
 
         converted_size = len(converted_data)
         converted_resolution = f"{img.width}×{img.height}"
@@ -374,6 +427,7 @@ class PictureService:
             "size_ratio": size_ratio,
             "status": "success",
             "error": None,
+            "warning": warning_message,
         }
 
     # ==========================================================================

@@ -64,6 +64,7 @@ class ConvertResultItem(BaseModel):
     size_ratio: float = 0.0  # 压缩比 = converted_size / original_size（0.5=缩小一半）
     status: Literal["success", "error"]  # 转换状态：只有这两种值
     error: Optional[str] = None  # 失败时的错误描述字符串（成功时为 null）
+    warning: Optional[str] = None  # 成功时的提示信息（如“多帧图片仅保留首帧”），无提示时为 null
 
 
 class ConvertResponse(BaseModel):

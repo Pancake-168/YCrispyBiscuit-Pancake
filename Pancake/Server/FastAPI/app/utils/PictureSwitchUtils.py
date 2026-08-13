@@ -4,6 +4,8 @@
 纯函数，无副作用，不依赖 FastAPI 或数据库。
 """
 
+import math  # 向上取整（fill 模式保证至少填满边界）
+
 from typing import Optional, Tuple, Dict, Any, List
 from pathlib import Path
 
@@ -48,6 +50,12 @@ EXT_TO_FORMAT: Dict[str, str] = {
     ".pbm": "PBM",
     ".tga": "TGA",
 }
+
+# 格式名 → 小写扩展名标识（不带点）的反向映射，用于报告图片的真实解码格式
+# 例："JPEG" → "jpeg"；jpg/jpeg 同值，后写的覆盖先写，取其中一个即可
+FORMAT_TO_EXT: Dict[str, str] = {}
+for _ext, _fmt in EXT_TO_FORMAT.items():
+    FORMAT_TO_EXT[_fmt] = _ext.lstrip(".")
 
 
 # 输出格式（排除 HEIF——HEIF 仅读取）
@@ -353,7 +361,8 @@ def _fill_into(orig_w: int, orig_h: int, bound_w: int, bound_h: int) -> Tuple[in
     ratio = max(bound_w / orig_w, bound_h / orig_h)  # 取较大比例 → 保证填满
     if ratio <= 0:
         return orig_w, orig_h  # 防御：非法参数时保持原尺寸
-    return max(1, round(orig_w * ratio)), max(1, round(orig_h * ratio))  # 等比缩放
+    # 向上取整：保证缩放后至少达到边界尺寸，后续居中裁切才能得到精确的目标宽高
+    return max(1, math.ceil(orig_w * ratio)), max(1, math.ceil(orig_h * ratio))  # 等比缩放
 
 
 # ============================================================================
@@ -382,9 +391,14 @@ def resolve_color_mode(
     palette_only = {"GIF"}
     # PGM 只能用灰度模式（单通道）
     gray_only = {"PGM"}
+    # PBM 只能用 1 位模式（黑白点阵）
+    bit_only = {"PBM"}
 
     if requested_mode != "auto":
         # ---- 用户明确指定了色彩模式 ----
+        # 多通道/灰度/调色板模式都无法写入位图专用格式 → 统一降级为 1
+        if requested_mode in ("RGBA", "RGB", "L", "P") and target_format in bit_only:
+            return "1"
         # 逐级检查兼容性：RGBA 无法写入不支持透明的格式 → 降级为 RGB
         if requested_mode == "RGBA" and target_format in no_alpha_formats:
             return "RGB"  # 格式不支持透明，降级
@@ -398,6 +412,9 @@ def resolve_color_mode(
 
     # ---- auto 模式：后端自动选择 ----
     # 优先级：格式专用模式 > 格式能力限制 > 保留原图模式
+
+    if target_format in bit_only:
+        return "1"  # PBM 统一走 1 位模式
 
     if target_format in palette_only:
         return "P"  # GIF 统一走调色板模式
@@ -479,6 +496,7 @@ def get_save_kwargs(
     ] = None,  # 质量参数（None=使用 Pillow 默认值；前端 quality 滑块的值）
     lossless: bool = False,  # 无损模式（仅 WebP 有效，前端 lossless 开关）
     optimize: bool = True,  # 是否启用 Pillow 的 optimize 优化（减小文件体积）
+    img_size: Optional[Tuple[int, int]] = None,  # 图片尺寸 (宽, 高)，用于按像素总量选择编码参数
 ) -> Dict[str, Any]:
     """
     根据目标格式返回 Pillow Image.save() 的关键字参数。
@@ -524,7 +542,9 @@ def get_save_kwargs(
             kwargs["quality"] = max(
                 0, min(100, quality)
             )  # WebP 接受 quality=0（极端压缩）
-        kwargs["method"] = 6  # 编码方法 0（最快）~6（最慢/压缩率最高）。选 6 优先体积
+        # method 6 压缩率最高但编码极慢；按像素总量降档，大图改用 4 避免单文件编码数分钟
+        pixel_count = img_size[0] * img_size[1] if img_size else 0  # 宽×高得像素总数
+        kwargs["method"] = 6 if pixel_count <= 4_000_000 else 4  # ≤400 万像素用 6，否则 4
 
     elif fmt == "AVIF":
         if quality is not None:

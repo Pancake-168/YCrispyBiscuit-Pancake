@@ -270,6 +270,11 @@
   color: var(--color-error);
 }
 
+.fileMetaWarn {
+  font-size: var(--text-xs);
+  color: var(--color-warn);
+}
+
 .fileRemove {
   display: flex;
   align-items: center;

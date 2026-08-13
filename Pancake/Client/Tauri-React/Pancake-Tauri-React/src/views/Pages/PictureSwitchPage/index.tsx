@@ -722,11 +722,17 @@ export default function PictureSwitchPage() {
                         {r.original_name} → {r.converted_name}
                       </span>
                       {r.status === 'success' ? (
-                        <span className={styles.fileMeta}>
-                          {formatFileSize(r.original_size)} → {formatFileSize(r.converted_size)} ·{' '}
-                          {r.original_resolution} → {r.converted_resolution} ·{' '}
-                          {(r.size_ratio * 100).toFixed(1)}%
-                        </span>
+                        <>
+                          <span className={styles.fileMeta}>
+                            {formatFileSize(r.original_size)} → {formatFileSize(r.converted_size)} ·{' '}
+                            {r.original_resolution} → {r.converted_resolution} ·{' '}
+                            {(r.size_ratio * 100).toFixed(1)}%
+                          </span>
+                          {/* 后端返回的用户可见提示（如多帧图片仅保留首帧） */}
+                          {r.warning && (
+                            <span className={styles.fileMetaWarn}>{r.warning}</span>
+                          )}
+                        </>
                       ) : (
                         <span className={styles.fileMetaError}>{r.error}</span>
                       )}

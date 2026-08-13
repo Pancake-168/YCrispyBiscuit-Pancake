@@ -31,8 +31,10 @@ from app.services.PictureSwitch.PictureSwitchService import (
 )
 
 from app.utils.PictureSwitchUtils import (
-    EXT_TO_MIME,
-)  # 扩展名→MIME 映射（下载时设置 Content-Type）
+    EXT_TO_MIME,  # 扩展名→MIME 映射（下载时设置 Content-Type）
+    OUTPUT_FORMAT_NAMES,  # 输出格式白名单（前端 target_format 的合法取值）
+)
+from app.exceptions.errors import BadRequestError  # 参数校验异常（400）
 
 
 router = APIRouter()  # 创建路由实例，由 app/api/router.py include
@@ -72,7 +74,9 @@ async def convert_picture(
     files: List[UploadFile] = File(..., description="待转换图片（最多 50 个）"),
     # UploadFile 是 FastAPI 的异步文件包装器：有 filename 属性、read()/seek() 等方法
     target_format: str = Form(..., description="目标格式，如 webp / jpeg / png"),
-    quality: Optional[int] = Form(None, ge=1, le=100, description="有损格式质量 1-100"),
+    quality: Optional[int] = Form(
+        None, ge=0, le=100, description="有损格式质量 0-100（WebP/AVIF 支持 0）"
+    ),
     # quality=None 表示使用 Pillow 默认值；前端仅在 lossy_options=true 且未启无损时发送
     lossless: bool = Form(False, description="WebP 无损模式"),
     # 前端仅在 lossless 开关打开时才发送 lossless=true；关闭时不发送→默认 False
@@ -104,6 +108,17 @@ async def convert_picture(
     参数发送条件：quality/lossless/max_width/max_height/width/height 是条件发送的，
     不满足条件时不 append 到 FormData → 后端收到 None 或默认值。
     """
+    # ---- 枚举白名单校验 ----
+    # multipart Form 无法像 Pydantic 字段那样用 Literal 声明，这里手动校验并给出友好错误
+    if target_format.lower().lstrip(".") not in OUTPUT_FORMAT_NAMES:
+        raise BadRequestError(f"不支持的目标格式: {target_format}")
+    if resize_mode not in ("none", "fit", "fill", "exact"):
+        raise BadRequestError(f"不支持的缩放模式: {resize_mode}")
+    if color_mode not in ("auto", "RGB", "RGBA", "L", "P"):
+        raise BadRequestError(f"不支持的色彩模式: {color_mode}")
+    if svg_mode not in ("embed", "vectorize"):
+        raise BadRequestError(f"不支持的 SVG 输出模式: {svg_mode}")
+
     # ---- 构建参数 dataclass ----
     # 将 Form 字段值打包为 ConversionParams，传给服务层
     params = ConversionParams(

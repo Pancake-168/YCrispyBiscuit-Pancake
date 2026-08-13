@@ -44,27 +44,37 @@ class PictureTaskStore:
     # 注册
     # ------------------------------------------------------------------
 
-    def register(self, task_id: str, task_dir: Path, stored: list[StoredFile]) -> None:
-        """注册一个转换任务，存储文件引用并触发 LRU 和清理。"""
-        self._tasks[task_id] = stored  # 存入任务字典
+    async def register_async(
+        self, task_id: str, task_dir: Path, stored: list[StoredFile]
+    ) -> None:
+        """异步注册一个转换任务：LRU 淘汰和 zip 打包放线程池，避免阻塞事件循环。"""
+        self._tasks[task_id] = stored  # 存入任务字典（纯内存操作，直接执行）
 
-        # LRU 淘汰：超出容量时删除最早的条目及其临时目录
+        loop = asyncio.get_running_loop()  # 当前事件循环（调用方处于异步上下文）
+
+        # LRU 淘汰：超出容量时删除最早的条目及其临时目录（磁盘删除放线程池）
         while len(self._tasks) > self.max_tasks:
             oldest_id, _ = self._tasks.popitem(last=False)  # 从 OrderedDict 头部弹出
             oldest_dir = self.output_dir / oldest_id  # 拼接旧任务目录路径
             if oldest_dir.exists():
-                shutil.rmtree(oldest_dir, ignore_errors=True)  # 递归删除
+                # ignore_errors=True 作为 rmtree 的位置参数，删除失败不阻断注册
+                await loop.run_in_executor(None, shutil.rmtree, oldest_dir, True)
 
-        # 多个输出文件时打包 batch.zip
+        # 多个输出文件时打包 batch.zip（磁盘 IO 放线程池，避免阻塞事件循环）
         if len(stored) > 1:
             zip_path = task_dir / "batch.zip"  # zip 文件路径
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-                for sf in stored:
-                    zf.write(
-                        sf.path, sf.converted_name
-                    )  # 写入 zip（文件在 zip 内的名字为 converted_name）
+            await loop.run_in_executor(None, self._write_zip, zip_path, stored)
 
         self.schedule_cleanup(task_id, task_dir)  # 启动定时清理
+
+    @staticmethod
+    def _write_zip(zip_path: Path, stored: list[StoredFile]) -> None:
+        """同步打包 zip（供线程池调用）。zip 内文件名使用 converted_name。"""
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+            for sf in stored:
+                zf.write(
+                    sf.path, sf.converted_name
+                )  # 写入 zip（文件在 zip 内的名字为 converted_name）
 
     # ------------------------------------------------------------------
     # 查询
@@ -80,8 +90,9 @@ class PictureTaskStore:
     def get_filename(self, task_id: str, index: int) -> str:
         """根据 task_id 和序号返回原始文件名。"""
         stored = self._tasks.get(task_id, [])
+        # 同时校验上下界：负 index 会命中 Python 负索引取到最后一个文件，必须拒绝
         return (
-            stored[index].converted_name if index < len(stored) else "converted"
+            stored[index].converted_name if 0 <= index < len(stored) else "converted"
         )  # 兜底
 
     def get_zip_path(self, task_id: str) -> Optional[Path]:

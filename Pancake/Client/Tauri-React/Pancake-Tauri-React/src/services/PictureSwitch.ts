@@ -81,6 +81,8 @@ export interface ConvertResultItem {
   size_ratio: number;
   status: 'success' | 'error';
   error: string | null;
+  // 成功时的提示信息（如多帧图片仅保留首帧），无提示时为 null
+  warning?: string | null;
 }
 
 export interface ConvertResponse {

@@ -1,12 +1,15 @@
 """图片输入/输出模块。提供各格式的开图、解码功能。"""
 
 import io  # BytesIO 内存流
+import logging  # 日志（SVG 尺寸解析失败提示）
 import os  # 临时文件操作
 import tempfile  # 创建临时文件
 
 from PIL import Image  # Pillow Image
 
 from app.exceptions.errors import ConfigurationError  # 缺少依赖或文件异常时抛出
+
+logger = logging.getLogger("app.PictureSwitch.ImageIO")  # 模块日志器
 
 
 # ============================================================================
@@ -50,7 +53,8 @@ def open_image(data: bytes, detected_format: str, filename: str) -> Image.Image:
                 root = ElementTree.fromstring(data)  # 解析 SVG XML
                 vb = root.get("viewBox")  # viewBox="min-x min-y width height"
                 if vb:
-                    parts = vb.split()  # 按空格分割
+                    # SVG 规范允许逗号与空白混合分隔（如 "0,0,100,100"），统一转空格再 split
+                    parts = vb.replace(",", " ").split()  # 逗号归一化后按空格分割
                     if len(parts) == 4:  # 标准 viewBox 必须是 4 个值
                         nat_w, nat_h = float(parts[2]), float(parts[3])  # 取宽高
                 else:
@@ -60,7 +64,8 @@ def open_image(data: bytes, detected_format: str, filename: str) -> Image.Image:
                 if nat_w > 4096 or nat_h > 4096:  # 超大图限制渲染宽度
                     svg_kwargs["output_width"] = 4096
             except (ValueError, TypeError):  # 只捕获数值转换异常
-                pass  # XML 解析或数值转换失败 → 用默认参数渲染
+                # 尺寸解析失败（如 width="100%"）→ 不阻断渲染，但记日志，避免 4096 限制失效不可见
+                logger.warning("SVG 尺寸解析失败，4096 像素限制未生效: %s", filename)
             png_data = cairosvg.svg2png(bytestring=data, **svg_kwargs)  # SVG → PNG 字节
             return Image.open(io.BytesIO(png_data))  # PNG 字节 → Pillow Image
         except ImportError:

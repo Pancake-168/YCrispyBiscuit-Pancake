@@ -7,6 +7,14 @@ import math  # 角度计算（轮廓点极角排序）
 import numpy as np  # 像素数组操作
 from PIL import Image  # Pillow Image
 
+from app.exceptions.errors import BadRequestError  # 参数越界异常（400）
+
+
+# 矢量化复杂度防线：算法每颜色做一次全图 mask 比较 + BFS 轮廓提取，
+# 复杂度为 O(颜色数 × 像素数)，超出限制的输入直接拒绝并给出明确提示
+MAX_VECTORIZE_PIXELS = 2_000_000  # 输入像素总量上限（约 1414×1414）
+MAX_VECTORIZE_COLORS = 256  # 量化后实际颜色数上限
+
 
 # ============================================================================
 # SVG 矢量化输出
@@ -40,13 +48,20 @@ def save_as_svg(
             rgba_img = img.convert("RGBA")  # 先转 RGBA
             bg.paste(rgba_img, mask=rgba_img.split()[3])
         else:
-            bg.paste(img)  # P 模式有透明索引，直接 paste
+            # P 模式带透明索引：先转 RGBA 再用 alpha 遮罩合成，
+            # 不依赖 Pillow 对调色板透明索引的隐式处理，保证透明像素被背景色填充
+            rgba_img = img.convert("RGBA")
+            bg.paste(rgba_img, mask=rgba_img.split()[3])
         img = bg  # 替换为无透明的 RGB 图
     elif img.mode != "RGB":
         img = img.convert("RGB")  # 其他模式统一转 RGB
 
     arr = np.array(img)  # (h, w, 3) uint8 数组
     h, w = arr.shape[:2]  # 提取高度和宽度
+
+    # ---- 复杂度防线 1：像素总量超限直接拒绝（避免全图比较耗时失控） ----
+    if w * h > MAX_VECTORIZE_PIXELS:
+        raise BadRequestError(f"图片过大（{w}×{h}），无法矢量化 SVG")
 
     # ---- 颜色量化 ----
     # quality 0–100 → levels 3–16，桶大小 = 256 // levels
@@ -56,6 +71,11 @@ def save_as_svg(
     bucket = 256 // levels  # 量化桶大小
     q_arr = (arr // bucket) * (256 // (levels - 1))  # 整除归并
     q_arr = np.clip(q_arr, 0, 255).astype(np.uint8)  # 钳位防溢出
+
+    # ---- 复杂度防线 2：实际量化颜色数超限直接拒绝（每颜色一次全图 mask） ----
+    unique_colors = np.unique(q_arr.reshape(-1, 3), axis=0)  # 实际出现的量化颜色
+    if len(unique_colors) > MAX_VECTORIZE_COLORS:
+        raise BadRequestError(f"图片颜色过多（{len(unique_colors)} 种），无法矢量化 SVG")
 
     paths: list[str] = []  # 收集所有 SVG <path> 元素
     seen_colors: set[tuple] = set()  # 已处理的量化色调（去重）
