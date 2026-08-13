@@ -48,4 +48,3 @@ class BilibiliAcTimeValueResponse(BaseModel):
     """GET /api/bilibili/ac-time-value 的响应体（全量透传）。"""
 
     model_config = ConfigDict(extra="allow")
-

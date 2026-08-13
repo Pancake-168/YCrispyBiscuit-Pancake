@@ -334,6 +334,11 @@ class AudioService:
             "-y",  # 输出文件已存在时直接覆盖
             "-i",
             str(input_path),  # 输入文件
+            # 只取第一条音频流：带内嵌封面的 FLAC（mjpeg 视频流）会被 ffmpeg
+            # 默认映射进输出，而 m4a/mp3/ogg 等音频容器不支持视频流，
+            # 导致写容器头失败、整次转换失败（音频流被连累写不进去）
+            "-map",
+            "0:a:0",
             *AUDIO_ENCODE_ARGS.get(target_format, []),  # 有损格式的编码器参数
             str(tmp_output),  # 输出到唯一临时名
         ]

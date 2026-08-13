@@ -37,7 +37,10 @@ async def fetch_fingerprint(session: BilibiliSession) -> dict:
     失败全部静默 — 指纹不是登录必需的，拿不到不影响核心功能；
     每个端点的响应（JSON 或原始文本）都放进返回字典，照单全收。
     """
-    headers = {"User-Agent": BILIBILI_USER_AGENT, "Referer": "https://www.bilibili.com/"}
+    headers = {
+        "User-Agent": BILIBILI_USER_AGENT,
+        "Referer": "https://www.bilibili.com/",
+    }
     collected: dict = {}  # 收集所有端点的完整响应
 
     # 端点1：finger/spi → 获取 buvid3/buvid4 等指纹 cookies
@@ -53,7 +56,8 @@ async def fetch_fingerprint(session: BilibiliSession) -> dict:
     # 端点2：gaia 网关 → 补充身份 cookies（当前接口可能已变更，能拿多少拿多少）
     try:
         resp = await session.client.get(
-            "https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi", headers=headers
+            "https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi",
+            headers=headers,
         )
         session.absorb_response_cookies(resp)
         collected["gaia_gateway_status"] = resp.status_code  # 记录 HTTP 状态
@@ -105,7 +109,9 @@ async def fetch_page_tokens(session: BilibiliSession) -> dict:
     # 通用提取：匹配所有 window.XXX = 赋值点，逐个尝试解析赋值内容
     for match in re.finditer(r"window\.(\w+)\s*=", html):
         name = match.group(1)  # 变量名（如 __RENDER_DATA__、__INITIAL_STATE__）
-        raw = html[match.end() : match.end() + 5000].strip()  # 取赋值号后的原文（截断上限）
+        raw = html[
+            match.end() : match.end() + 5000
+        ].strip()  # 取赋值号后的原文（截断上限）
         try:
             # raw_decode 精确解析一个 JSON 值（对象/数组/字符串/数字均可）
             value, _ = json.JSONDecoder().raw_decode(raw)
@@ -116,4 +122,3 @@ async def fetch_page_tokens(session: BilibiliSession) -> dict:
     tokens["cookies_after_homepage"] = dict(session.cookies)  # 首页后的全量 cookies
     tokens["html_length"] = len(html)  # 页面长度（便于判断页面结构是否变化）
     return tokens
-

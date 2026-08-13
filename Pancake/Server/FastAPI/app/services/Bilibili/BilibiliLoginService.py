@@ -5,7 +5,9 @@ import uuid  # 生成唯一 session_id
 
 import httpx  # 异步 HTTP 客户端
 
-from app.exceptions.errors import ExternalServiceError  # 外部服务异常（B站 API 返回错误时抛出）
+from app.exceptions.errors import (
+    ExternalServiceError,
+)  # 外部服务异常（B站 API 返回错误时抛出）
 from app.services.Bilibili.BilibiliPageService import (
     fetch_fingerprint,  # 设备指纹抓取
     fetch_nav_info,  # 导航信息
@@ -38,7 +40,10 @@ class BilibiliLoginService:
         qr_data = data.get("data") or {}
         key = qr_data.get("qrcode_key")  # 二维码唯一标识
         qr_content = qr_data.get("url", "")  # 二维码承载的 URL（B站登录页）
-        self._qrcode_store[key] = {"status": "pending", "session": None}  # 记录为待扫码状态
+        self._qrcode_store[key] = {
+            "status": "pending",
+            "session": None,
+        }  # 记录为待扫码状态
         return {
             "qrcode_key": key,
             "url": qr_content,
@@ -106,7 +111,9 @@ class BilibiliLoginService:
     # 内部
     # ------------------------------------------------------------------
 
-    async def _build_session_from_qr(self, response, login_data: dict) -> BilibiliSession:
+    async def _build_session_from_qr(
+        self, response, login_data: dict
+    ) -> BilibiliSession:
         """从扫码登录的 HTTP 响应和 data.data 构建 BilibiliSession。"""
         session = BilibiliSession()
         session.absorb_response_cookies(response)  # 从轮询响应头提取 Set-Cookie

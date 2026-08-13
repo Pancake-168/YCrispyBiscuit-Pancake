@@ -44,6 +44,18 @@ export default function BilibiliLoginPage() {
     };
   }, []);
 
+  /** 拉取用户信息（nav 完整响应） */
+  const loadUserInfo = useCallback(async (sid: string) => {
+    const result = await getUserInfo(sid);
+    if (result.ok) {
+      setUserInfo(result.data);
+      log.info('获取B站用户信息成功');
+    } else {
+      log.error('获取B站用户信息失败', result.error);
+      toast(result.error ?? '获取用户信息失败', 'error');
+    }
+  }, []);
+
   /** 获取登录二维码并开始轮询 */
   const handleGetQr = useCallback(async () => {
     setLoginStatus('loading');
@@ -87,17 +99,15 @@ export default function BilibiliLoginPage() {
       pollTimerRef.current = window.setTimeout(tick, 2000); // 2 秒后继续轮询
     };
     void tick();
-  }, []);
+  }, [loadUserInfo]);
 
-  /** 拉取用户信息（nav 完整响应） */
-  const loadUserInfo = useCallback(async (sid: string) => {
-    const result = await getUserInfo(sid);
+  /** 刷新活跃会话列表 */
+  const refreshSessions = useCallback(async () => {
+    const result = await listSessions();
     if (result.ok) {
-      setUserInfo(result.data);
-      log.info('获取B站用户信息成功');
+      setSessions((result.data.sessions as string[]) ?? []);
     } else {
-      log.error('获取B站用户信息失败', result.error);
-      toast(result.error ?? '获取用户信息失败', 'error');
+      log.error('列出会话失败', result.error);
     }
   }, []);
 
@@ -121,17 +131,7 @@ export default function BilibiliLoginPage() {
     toast('Cookie 登录成功', 'success');
     void loadUserInfo(sid);
     void refreshSessions();
-  }, [cookieInput, loadUserInfo]);
-
-  /** 刷新活跃会话列表 */
-  const refreshSessions = useCallback(async () => {
-    const result = await listSessions();
-    if (result.ok) {
-      setSessions((result.data.sessions as string[]) ?? []);
-    } else {
-      log.error('列出会话失败', result.error);
-    }
-  }, []);
+  }, [cookieInput, loadUserInfo, refreshSessions]);
 
   /** 拉取全量存储值 */
   const handleGetStoredValues = useCallback(async () => {
@@ -178,9 +178,17 @@ export default function BilibiliLoginPage() {
   }, [sessionId, refreshSessions]);
 
   // ---- 页面加载时列出已有会话 ----
+  // setState 放在 Promise 回调里（与项目内 AudioSwitchPage 等页面的约定一致），
+  // 避免在 effect 体内同步 setState 触发级联渲染
   useEffect(() => {
-    void refreshSessions();
-  }, [refreshSessions]);
+    listSessions().then((result) => {
+      if (result.ok) {
+        setSessions((result.data.sessions as string[]) ?? []);
+      } else {
+        log.error('列出会话失败', result.error);
+      }
+    });
+  }, []);
 
   // ---- 扫码状态对应的提示文字 ----
   const statusText =
@@ -202,133 +210,133 @@ export default function BilibiliLoginPage() {
       <div className={styles.mainRow}>
         {/* ---- 登录方式（Tabs 切换：扫码 / Cookie） ---- */}
         <div className={styles.loginCard}>
-        <Tabs
-          tabs={[
-            {
-              id: 'qr',
-              label: '扫码登录',
-              content: (
-                <div className={styles.loginContent}>
-                  {qrcodeImage ? (
-                    <IconContainer size={300} src={qrcodeImage} alt="B站登录二维码" />
+          <Tabs
+            tabs={[
+              {
+                id: 'qr',
+                label: '扫码登录',
+                content: (
+                  <div className={styles.loginContent}>
+                    {qrcodeImage ? (
+                      <IconContainer size={300} src={qrcodeImage} alt="B站登录二维码" />
+                    ) : (
+                      <EmptyState
+                        title="获取二维码后扫码登录"
+                        description="点击下方按钮获取 B 站登录二维码"
+                      />
+                    )}
+                    {statusText && <span className={styles.statusText}>{statusText}</span>}
+                    <Button
+                      variant="primary"
+                      loading={loginStatus === 'loading'}
+                      onClick={handleGetQr}
+                      style={{ width: 200 }}
+                    >
+                      {qrcodeImage ? '重新获取二维码' : '获取二维码'}
+                    </Button>
+                  </div>
+                ),
+              },
+              {
+                id: 'cookie',
+                label: 'Cookie 登录',
+                content: (
+                  <div className={styles.loginContent}>
+                    <Textarea
+                      value={cookieInput}
+                      onChange={setCookieInput}
+                      placeholder="粘贴浏览器里的完整 Cookie 字符串（SESSDATA=xxx; bili_jct=xxx; ...）"
+                      rows={6}
+                      label="Cookie"
+                      className={styles.cookieTextarea}
+                    />
+                    <Button
+                      variant="primary"
+                      loading={cookieLoading}
+                      onClick={handleCookieLogin}
+                      style={{ width: 200 }}
+                    >
+                      使用 Cookie 登录
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
+
+        {/* ---- 右侧：会话信息 + 全量数据 ---- */}
+        <div className={styles.dataArea}>
+          {/* 会话操作栏 */}
+          <div className={styles.sessionBar}>
+            <span className={styles.sessionLabel}>当前会话: {sessionId || '无'}</span>
+            <div className={styles.sessionActions}>
+              <Button variant="secondary" disabled={!sessionId} onClick={handleGetStoredValues}>
+                获取存储值
+              </Button>
+              <Button variant="secondary" disabled={!sessionId} onClick={handleGetAcTimeValue}>
+                获取 ac_time_value
+              </Button>
+              <Button variant="danger" disabled={!sessionId} onClick={handleDeleteSession}>
+                删除会话
+              </Button>
+            </div>
+          </div>
+
+          {/* 会话列表（点击切换当前会话） */}
+          {sessions.length > 0 && (
+            <div className={styles.sessionList}>
+              {sessions.map((sid) => (
+                <span
+                  key={sid}
+                  className={sid === sessionId ? styles.sessionChipActive : styles.sessionChip}
+                  onClick={() => setSessionId(sid)}
+                >
+                  {sid}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* 全量数据 JSON 展示（三个 tab 合并切换，照单全收） */}
+          <div className={styles.jsonTabsWrap}>
+            <Tabs
+              defaultTab="stored"
+              tabs={[
+                {
+                  id: 'user',
+                  label: '用户信息',
+                  content: userInfo ? (
+                    <JsonSection title="用户信息 (nav 完整响应)" data={userInfo} />
+                  ) : (
+                    <EmptyState title="暂无用户信息" description="登录后自动获取" />
+                  ),
+                },
+                {
+                  id: 'stored',
+                  label: '存储值',
+                  content: storedValues ? (
+                    <JsonSection title="存储值 (stored-values 全量聚合)" data={storedValues} />
+                  ) : (
+                    <EmptyState title="暂无存储值" description="点击上方「获取存储值」按钮获取" />
+                  ),
+                },
+                {
+                  id: 'ac',
+                  label: 'ac_time_value',
+                  content: acTimeValue ? (
+                    <JsonSection title="ac_time_value (含页面变量)" data={acTimeValue} />
                   ) : (
                     <EmptyState
-                      title="获取二维码后扫码登录"
-                      description="点击下方按钮获取 B 站登录二维码"
+                      title="暂无 ac_time_value"
+                      description="点击上方「获取 ac_time_value」按钮获取"
                     />
-                  )}
-                  {statusText && <span className={styles.statusText}>{statusText}</span>}
-                  <Button
-                    variant="primary"
-                    loading={loginStatus === 'loading'}
-                    onClick={handleGetQr}
-                    style={{ width: 200 }}
-                  >
-                    {qrcodeImage ? '重新获取二维码' : '获取二维码'}
-                  </Button>
-                </div>
-              ),
-            },
-            {
-              id: 'cookie',
-              label: 'Cookie 登录',
-              content: (
-                <div className={styles.loginContent}>
-                  <Textarea
-                    value={cookieInput}
-                    onChange={setCookieInput}
-                    placeholder="粘贴浏览器里的完整 Cookie 字符串（SESSDATA=xxx; bili_jct=xxx; ...）"
-                    rows={6}
-                    label="Cookie"
-                    className={styles.cookieTextarea}
-                  />
-                  <Button
-                    variant="primary"
-                    loading={cookieLoading}
-                    onClick={handleCookieLogin}
-                    style={{ width: 200 }}
-                  >
-                    使用 Cookie 登录
-                  </Button>
-                </div>
-              ),
-            },
-          ]}
-        />
-      </div>
-
-      {/* ---- 右侧：会话信息 + 全量数据 ---- */}
-      <div className={styles.dataArea}>
-        {/* 会话操作栏 */}
-        <div className={styles.sessionBar}>
-          <span className={styles.sessionLabel}>当前会话: {sessionId || '无'}</span>
-          <div className={styles.sessionActions}>
-            <Button variant="secondary" disabled={!sessionId} onClick={handleGetStoredValues}>
-              获取存储值
-            </Button>
-            <Button variant="secondary" disabled={!sessionId} onClick={handleGetAcTimeValue}>
-              获取 ac_time_value
-            </Button>
-            <Button variant="danger" disabled={!sessionId} onClick={handleDeleteSession}>
-              删除会话
-            </Button>
+                  ),
+                },
+              ]}
+            />
           </div>
         </div>
-
-        {/* 会话列表（点击切换当前会话） */}
-        {sessions.length > 0 && (
-          <div className={styles.sessionList}>
-            {sessions.map((sid) => (
-              <span
-                key={sid}
-                className={sid === sessionId ? styles.sessionChipActive : styles.sessionChip}
-                onClick={() => setSessionId(sid)}
-              >
-                {sid}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* 全量数据 JSON 展示（三个 tab 合并切换，照单全收） */}
-        <div className={styles.jsonTabsWrap}>
-          <Tabs
-          defaultTab="stored"
-          tabs={[
-            {
-              id: 'user',
-              label: '用户信息',
-              content: userInfo ? (
-                <JsonSection title="用户信息 (nav 完整响应)" data={userInfo} />
-              ) : (
-                <EmptyState title="暂无用户信息" description="登录后自动获取" />
-              ),
-            },
-            {
-              id: 'stored',
-              label: '存储值',
-              content: storedValues ? (
-                <JsonSection title="存储值 (stored-values 全量聚合)" data={storedValues} />
-              ) : (
-                <EmptyState title="暂无存储值" description="点击上方「获取存储值」按钮获取" />
-              ),
-            },
-            {
-              id: 'ac',
-              label: 'ac_time_value',
-              content: acTimeValue ? (
-                <JsonSection title="ac_time_value (含页面变量)" data={acTimeValue} />
-              ) : (
-                <EmptyState
-                  title="暂无 ac_time_value"
-                  description="点击上方「获取 ac_time_value」按钮获取"
-                />
-              ),
-            },
-          ]}
-        />
-        </div>
-      </div>
       </div>
     </div>
   );

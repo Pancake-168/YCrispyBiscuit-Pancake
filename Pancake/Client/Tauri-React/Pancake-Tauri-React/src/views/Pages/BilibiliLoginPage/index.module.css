@@ -112,7 +112,9 @@
   border: 1px solid var(--glass-brd);
   border-radius: var(--radius-full);
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .sessionChip:hover {
