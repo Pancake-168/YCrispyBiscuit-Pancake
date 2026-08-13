@@ -18,7 +18,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+# devtools feature：release 构建下启用 DevTools 支持（F12 打开控制台），
+# 参考 RegionAI-Platform-V3/Admin 的做法，不加该 feature 时仅设置 .devtools(true) 不生效
+tauri = { version = "2", features = ["devtools"] }
 tauri-plugin-opener = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"

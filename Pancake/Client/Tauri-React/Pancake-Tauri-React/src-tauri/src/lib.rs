@@ -188,6 +188,9 @@ pub fn run() {
             .title("Pancake")
             .inner_size(1000.0, 600.0)
             .min_inner_size(800.0, 500.0)
+            // Tauri 在 release 构建下默认禁用 DevTools，
+            // 显式开启保证打包后的软件也能用 F12 打开开发者工具
+            .devtools(true)
             .decorations(false);
 
             #[cfg(not(debug_assertions))]

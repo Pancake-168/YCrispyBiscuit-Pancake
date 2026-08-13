@@ -108,6 +108,8 @@ def _probe_metadata(path: str) -> dict:
             # json.loads 原生接受 bytes（自动检测 UTF-8/UTF-16/UTF-32），直接传 bytes 最稳
             check=True,  # 非零退出码抛 CalledProcessError
             timeout=FFPROBE_TIMEOUT_SECONDS,  # 防挂起
+            # Windows 下不弹出黑色控制台窗口，避免每次探测都闪一下终端
+            creationflags=subprocess.CREATE_NO_WINDOW,
         )
         info = json.loads(result.stdout)  # 解析 JSON 输出（bytes 直接传入）
         fmt = info.get("format", {})
@@ -353,6 +355,8 @@ class AudioService:
                 encoding="utf-8",
                 errors="replace",
                 timeout=FFMPEG_TIMEOUT_SECONDS,  # 防挂起
+                # Windows 下不弹出黑色控制台窗口，避免转换时闪终端干扰用户
+                creationflags=subprocess.CREATE_NO_WINDOW,
             )
         except subprocess.CalledProcessError as e:
             input_path.unlink(missing_ok=True)  # 清理临时输入
