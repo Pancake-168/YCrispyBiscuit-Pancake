@@ -58,6 +58,26 @@ def create_lifespan():
         else:
             logger.info("已禁用自动建表，请手动维护数据库结构")
 
+        # 检查 ffmpeg/ffprobe 可用性（音频转换依赖）：缺失不阻断启动，仅记录状态
+        app.state.ffmpeg_ready = False
+        try:
+            from app.services.AudioSwitch.AudioSwitchService import (
+                FFMPEG,
+                FFPROBE,
+            )  # 惰性导入，避免模块加载期依赖
+
+            app.state.ffmpeg_ready = bool(
+                FFMPEG and FFPROBE
+            )  # 两个二进制都找到才算就绪
+            if app.state.ffmpeg_ready:
+                logger.info("ffmpeg/ffprobe 已就绪，音频转换可用")
+            else:
+                logger.error(
+                    "ffmpeg/ffprobe 未找到，音频转换不可用，请运行 npm run download:ffmpeg"
+                )
+        except Exception as exc:
+            logger.exception("ffmpeg 可用性检查失败: %s", exc)
+
         try:
             yield
         finally:

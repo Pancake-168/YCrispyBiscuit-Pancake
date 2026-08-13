@@ -75,7 +75,9 @@ def save_as_svg(
     # ---- 复杂度防线 2：实际量化颜色数超限直接拒绝（每颜色一次全图 mask） ----
     unique_colors = np.unique(q_arr.reshape(-1, 3), axis=0)  # 实际出现的量化颜色
     if len(unique_colors) > MAX_VECTORIZE_COLORS:
-        raise BadRequestError(f"图片颜色过多（{len(unique_colors)} 种），无法矢量化 SVG")
+        raise BadRequestError(
+            f"图片颜色过多（{len(unique_colors)} 种），无法矢量化 SVG"
+        )
 
     paths: list[str] = []  # 收集所有 SVG <path> 元素
     seen_colors: set[tuple] = set()  # 已处理的量化色调（去重）

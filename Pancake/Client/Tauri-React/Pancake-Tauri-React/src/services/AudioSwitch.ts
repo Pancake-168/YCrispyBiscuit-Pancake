@@ -31,6 +31,7 @@ export interface ConvertResultItem {
   sample_rate: number; // 采样率（Hz），如 44100
   status: 'success' | 'error'; // 转换结果状态
   error: string | null; // 失败时的人类可读错误描述
+  warning?: string | null; // 成功时的提示信息（如有损转无损不恢复音质），无提示为 null
 }
 
 export interface ConvertResponse {

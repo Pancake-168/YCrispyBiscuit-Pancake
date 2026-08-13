@@ -10,12 +10,14 @@
 import httpx
 
 # ================= 配置区：改成你的后端地址和接口 =================
-BASE_URL = "https://apiv2.zheshu.tech"          # 后端地址（改成你实际的）
-url = f"{BASE_URL}/api/auth/login"             # 接口路径（改成你实际的）
+BASE_URL = "https://apiv2.zheshu.tech"  # 后端地址（改成你实际的）
+url = f"{BASE_URL}/api/auth/login"  # 接口路径（改成你实际的）
 
 
 # ================= 通用请求函数（带 try/except） =================
-def request_api(method: str, url: str, json_data=None, form_data=None, params=None, headers=None) -> dict:
+def request_api(
+    method: str, url: str, json_data=None, form_data=None, params=None, headers=None
+) -> dict:
     """通用接口调用：
     method    请求方式，如 "GET" / "POST"
     url       接口完整地址
@@ -33,9 +35,9 @@ def request_api(method: str, url: str, json_data=None, form_data=None, params=No
             data=form_data,
             params=params,
             headers=headers,
-            timeout=10,                    # 超时 10 秒，防止卡死
+            timeout=10,  # 超时 10 秒，防止卡死
         )
-        resp.raise_for_status()            # 状态码不是 2xx 会抛异常
+        resp.raise_for_status()  # 状态码不是 2xx 会抛异常
         return {"ok": True, "data": resp.json()}
     except httpx.TimeoutException:
         return {"ok": False, "error": "请求超时"}
@@ -55,7 +57,10 @@ def get_example():
 
 def post_example():
     """示例：POST 请求，带请求体"""
-    return request_api("POST", url, json_data={"username": "ycb20260129", "password": "@Gyf20021109"})
+    return request_api(
+        "POST", url, json_data={"username": "ycb20260129", "password": "@Gyf20021109"}
+    )
+
 
 def login():
     # 登录接口：
@@ -68,6 +73,7 @@ def login():
         form_data={"username": "ycb20260129", "password": "@Gyf20021109"},
     )
 
+
 # ================= 入口 =================
 if __name__ == "__main__":
     result = post_example()
@@ -76,7 +82,3 @@ if __name__ == "__main__":
         print(result["data"])
     else:
         print("调用失败：", result["error"])
-
-
-
-

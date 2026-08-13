@@ -729,9 +729,7 @@ export default function PictureSwitchPage() {
                             {(r.size_ratio * 100).toFixed(1)}%
                           </span>
                           {/* 后端返回的用户可见提示（如多帧图片仅保留首帧） */}
-                          {r.warning && (
-                            <span className={styles.fileMetaWarn}>{r.warning}</span>
-                          )}
+                          {r.warning && <span className={styles.fileMetaWarn}>{r.warning}</span>}
                         </>
                       ) : (
                         <span className={styles.fileMetaError}>{r.error}</span>

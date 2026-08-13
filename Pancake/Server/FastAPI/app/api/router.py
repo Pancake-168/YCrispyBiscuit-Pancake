@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from app.controllers import HealthController
 from app.controllers import UserController
 from app.controllers import PictureSwitchController
+from app.controllers import AudioSwitchController
 from app.controllers import PCmethodsController
 from app.controllers import WeatherController
 
@@ -15,5 +16,6 @@ router = APIRouter()
 router.include_router(HealthController.router, prefix="/api")
 router.include_router(UserController.router, prefix="/api")
 router.include_router(PictureSwitchController.router, prefix="/api")
+router.include_router(AudioSwitchController.router, prefix="/api")
 router.include_router(PCmethodsController.router, prefix="/api")
 router.include_router(WeatherController.router, prefix="/api")

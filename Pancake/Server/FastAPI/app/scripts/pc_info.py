@@ -1,11 +1,13 @@
-import os
-import sys
 import asyncio
 import platform
+
+"""
+import os
+import sys
 import socket
 import psutil
 from datetime import datetime
-
+"""
 
 
 async def SystemInfo() -> None:
@@ -14,7 +16,7 @@ async def SystemInfo() -> None:
     print("发行版本：", platform.release())
     print("版本号：", platform.version())
     print("架构：", platform.machine())
-    print("处理器：",platform.processor())
+    print("处理器：", platform.processor())
     print("主机名：", platform.node())
 
 

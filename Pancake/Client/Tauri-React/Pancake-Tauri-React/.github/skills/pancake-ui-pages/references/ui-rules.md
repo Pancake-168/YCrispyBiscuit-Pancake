@@ -26,8 +26,8 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 /* 背景 */
 --bg: #0b0d11;
 --bg-elev: #11141a;
---glass: rgba(255,255,255,0.05);
---glass-brd: rgba(255,255,255,0.08);
+--glass: rgba(255, 255, 255, 0.05);
+--glass-brd: rgba(255, 255, 255, 0.08);
 
 /* 文字 */
 --text: #e6e9ef;
@@ -49,12 +49,12 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 --color-error-rgb: 240, 113, 120;
 
 /* 边框 */
---border: rgba(255,255,255,0.08);
+--border: rgba(255, 255, 255, 0.08);
 
 /* 阴影 */
---shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
---shadow-md: 0 6px 20px rgba(0,0,0,0.3);
---shadow-lg: 0 12px 32px rgba(0,0,0,0.4);
+--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+--shadow-md: 0 6px 20px rgba(0, 0, 0, 0.3);
+--shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
 
 /* 间距 --spacing-xs(4px) → --spacing-2xl(24px) 六级 */
 /* 圆角 --radius-sm(6px) → --radius-full(9999px) 五级 */
@@ -69,8 +69,8 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 --transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 
 /* 输入控件 */
---input-bg: rgba(255,255,255,0.04);
---switch-track-bg: rgba(255,255,255,0.12);
+--input-bg: rgba(255, 255, 255, 0.04);
+--switch-track-bg: rgba(255, 255, 255, 0.12);
 
 /* 字体 */
 --font-sans: system-ui, ...;
@@ -86,8 +86,8 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 :root[data-theme='light'] {
   --bg: #ffffff;
   --bg-elev: #ffffff;
-  --glass: rgba(0,0,0,0.02);
-  --glass-brd: rgba(0,0,0,0.08);
+  --glass: rgba(0, 0, 0, 0.02);
+  --glass-brd: rgba(0, 0, 0, 0.08);
 
   --text: #0c1117;
   --muted: #5a6678;
@@ -98,12 +98,12 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 
   /* --color-system/job/agent/tool/success/warn/error 均作对应调整 */
   --color-error-rgb: 217, 79, 86;
-  --border: rgba(0,0,0,0.08);
+  --border: rgba(0, 0, 0, 0.08);
 
   /* --shadow-sm/md/lg 减弱（透明度和偏移降低） */
 
-  --input-bg: rgba(0,0,0,0.04);
-  --switch-track-bg: rgba(0,0,0,0.12);
+  --input-bg: rgba(0, 0, 0, 0.04);
+  --switch-track-bg: rgba(0, 0, 0, 0.12);
 }
 ```
 

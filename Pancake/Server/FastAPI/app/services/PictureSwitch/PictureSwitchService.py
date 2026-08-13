@@ -63,7 +63,9 @@ from app.core.config import (
 # ============================================================================
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 单文件上限 100 MB，与前端 MAX_FILE_SIZE 保持一致
 MAX_FILES = 50  # 单次批量转换最多 50 个文件
-PIL_BATCH_SIZE = 2  # 每批并发提交到线程池的文件数（与 _PIL_EXECUTOR 的 max_workers 一致）
+PIL_BATCH_SIZE = (
+    2  # 每批并发提交到线程池的文件数（与 _PIL_EXECUTOR 的 max_workers 一致）
+)
 TASK_CLEANUP_SECONDS = 600  # 任务完成后 600 秒（10 分钟）自动清理临时文件
 MAX_TASKS = 64  # 内存中最多保留 64 个任务的引用，超出按 LRU 淘汰最旧任务
 
@@ -161,12 +163,16 @@ class PictureService:
             filename = getattr(f, "filename", None) or "unknown"  # 安全提取文件名
             try:
                 content = await f.read()  # 异步读取文件全部字节
-            except Exception as e:  # 读取失败（如客户端断开）→ 该文件记为 error，继续处理其余文件
+            except (
+                Exception
+            ) as e:  # 读取失败（如客户端断开）→ 该文件记为 error，继续处理其余文件
                 results.append(self._error_result(idx, filename, e))
                 continue
             batch.append((idx, filename, content))
             if len(batch) >= PIL_BATCH_SIZE:  # 批满 → 立即并发转换
-                await self._convert_batch(batch, params, task_dir, results, stored, loop)
+                await self._convert_batch(
+                    batch, params, task_dir, results, stored, loop
+                )
                 batch.clear()  # 清空批次，content 引用随之释放，控制内存峰值
 
         if batch:  # 处理不足一批的剩余文件
@@ -180,7 +186,9 @@ class PictureService:
             "results": results,
         }
 
-    def _error_result(self, index: int, filename: str, exc: BaseException) -> Dict[str, Any]:
+    def _error_result(
+        self, index: int, filename: str, exc: BaseException
+    ) -> Dict[str, Any]:
         """把异常转换为 results 数组中的 error 条目（AppError 用业务文案，其余用通用文案）。"""
         if isinstance(exc, AppError):  # 业务异常：直接使用其 detail 文案
             message = exc.detail
@@ -290,7 +298,9 @@ class PictureService:
 
         # original_format 以实际解码格式为准（Pillow 识别结果），而不是文件扩展名；
         # 伪装扩展名的文件（如 JPEG 内容命名 .png）也能报告正确格式
-        actual_format = getattr(img, "format", None) or detected  # AVIF 等无 format 属性时用魔数结果
+        actual_format = (
+            getattr(img, "format", None) or detected
+        )  # AVIF 等无 format 属性时用魔数结果
         original_format = FORMAT_TO_EXT.get(
             actual_format, str(actual_format).lower()
         )  # 格式名 → 小写标识（如 "JPEG" → "jpeg"）
@@ -321,9 +331,7 @@ class PictureService:
         if getattr(img, "is_animated", False):  # is_animated=True 表示多帧
             import logging
 
-            warning_message = (
-                f"该文件包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧已丢弃"
-            )  # 提示写入响应，前端在结果行中展示给用户
+            warning_message = f"该文件包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧已丢弃"  # 提示写入响应，前端在结果行中展示给用户
             logging.getLogger("app.PictureService").warning(
                 f"多帧图片 '{filename}' 包含 {getattr(img, 'n_frames', '?')} 帧，转换后仅保留首帧，其余帧将被丢弃"
             )
@@ -367,8 +375,10 @@ class PictureService:
                     img, params.quality, params.background_color
                 )
         else:
-            save_kwargs = get_save_kwargs(  # 格式特定的保存参数（传入尺寸用于选择编码参数）
-                params.target_format, params.quality, params.lossless, img.size
+            save_kwargs = (
+                get_save_kwargs(  # 格式特定的保存参数（传入尺寸用于选择编码参数）
+                    params.target_format, params.quality, params.lossless, img.size
+                )
             )
             save_format = "JPEG" if target_pillow_fmt == "JPEG" else target_pillow_fmt
             # PBM/PGM 在 Pillow 中没有独立的注册格式名，统一归口到 PPM 插件保存；

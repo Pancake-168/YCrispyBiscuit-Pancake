@@ -362,7 +362,9 @@ def _fill_into(orig_w: int, orig_h: int, bound_w: int, bound_h: int) -> Tuple[in
     if ratio <= 0:
         return orig_w, orig_h  # 防御：非法参数时保持原尺寸
     # 向上取整：保证缩放后至少达到边界尺寸，后续居中裁切才能得到精确的目标宽高
-    return max(1, math.ceil(orig_w * ratio)), max(1, math.ceil(orig_h * ratio))  # 等比缩放
+    return max(1, math.ceil(orig_w * ratio)), max(
+        1, math.ceil(orig_h * ratio)
+    )  # 等比缩放
 
 
 # ============================================================================
@@ -496,7 +498,9 @@ def get_save_kwargs(
     ] = None,  # 质量参数（None=使用 Pillow 默认值；前端 quality 滑块的值）
     lossless: bool = False,  # 无损模式（仅 WebP 有效，前端 lossless 开关）
     optimize: bool = True,  # 是否启用 Pillow 的 optimize 优化（减小文件体积）
-    img_size: Optional[Tuple[int, int]] = None,  # 图片尺寸 (宽, 高)，用于按像素总量选择编码参数
+    img_size: Optional[
+        Tuple[int, int]
+    ] = None,  # 图片尺寸 (宽, 高)，用于按像素总量选择编码参数
 ) -> Dict[str, Any]:
     """
     根据目标格式返回 Pillow Image.save() 的关键字参数。
@@ -544,7 +548,9 @@ def get_save_kwargs(
             )  # WebP 接受 quality=0（极端压缩）
         # method 6 压缩率最高但编码极慢；按像素总量降档，大图改用 4 避免单文件编码数分钟
         pixel_count = img_size[0] * img_size[1] if img_size else 0  # 宽×高得像素总数
-        kwargs["method"] = 6 if pixel_count <= 4_000_000 else 4  # ≤400 万像素用 6，否则 4
+        kwargs["method"] = (
+            6 if pixel_count <= 4_000_000 else 4
+        )  # ≤400 万像素用 6，否则 4
 
     elif fmt == "AVIF":
         if quality is not None:

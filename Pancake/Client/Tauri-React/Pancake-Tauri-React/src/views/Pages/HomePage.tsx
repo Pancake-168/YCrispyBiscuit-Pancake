@@ -40,7 +40,7 @@ export default function HomePage() {
       : Pancake_Tools;
     // 为每个工具注入点击跳转
     const routeMap: Record<string, string> = {
-      audios_witch: '/audios_witch',
+      audio_switch: '/audio_switch',
       picture_switch: '/picture_switch',
       pancake_workflow: '/pancake_workflow',
       weather: '/weather',
