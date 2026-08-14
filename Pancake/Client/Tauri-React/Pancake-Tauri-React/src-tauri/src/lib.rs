@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::process::{Child, Command};
 use std::sync::Mutex;
 use chrono::Local;
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 struct BackendProcess(Mutex<Option<Child>>);
 
@@ -161,6 +161,92 @@ fn write_log(app_handle: tauri::AppHandle, entry: LogEntry) -> Result<(), String
         .map_err(|e| e.to_string())
 }
 
+// ============================================================================
+// 下载拦截系统
+// ============================================================================
+
+/// 确定下载目录，与日志目录同策略：
+///   开发 → Server/FastAPI/temp/downloads/（temp/ 已被 gitignore 忽略）
+///   打包 → <安装目录>/data/downloads/
+fn get_download_dir(app_handle: &tauri::AppHandle) -> PathBuf {
+    if cfg!(debug_assertions) {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../../../Server/FastAPI/temp")
+            .join("downloads")
+    } else {
+        app_handle
+            .path()
+            .resource_dir()
+            .expect("failed to resolve resource dir")
+            .join("data")
+            .join("downloads")
+    }
+}
+
+/// 从候选名称中清洗出合法文件名：
+/// 逐字符剔除路径分隔符、Windows 非法字符与控制字符，防止路径逃逸
+fn sanitize_filename(raw: &str) -> String {
+    let cleaned: String = raw
+        .chars()
+        .filter(|c| !matches!(c, '/' | '\\' | ':' | '*' | '?' | '"' | '<' | '>' | '|') && !c.is_control())
+        .collect();
+    // 去首尾空白，并去掉开头的点（避免变成隐藏文件形态）
+    cleaned.trim().trim_start_matches('.').to_string()
+}
+
+/// 为下载挑选落盘文件名：
+/// 优先 WebView2 建议名（含 Content-Disposition / blob 命名），
+/// 其次 URL 路径末段，最后用时间戳兜底
+fn pick_download_filename(url: &url::Url, destination: &PathBuf) -> String {
+    // 候选 1：WebView2 根据响应头/页面提示给出的建议文件名
+    if let Some(name) = destination.file_name().and_then(|n| n.to_str()) {
+        let cleaned = sanitize_filename(name);
+        if !cleaned.is_empty() {
+            return cleaned;
+        }
+    }
+    // 候选 2：URL 路径的最后一段
+    if let Some(name) = url.path_segments().and_then(|mut segs| segs.next_back()) {
+        let cleaned = sanitize_filename(name);
+        if !cleaned.is_empty() {
+            return cleaned;
+        }
+    }
+    // 兜底：时间戳文件名，避免覆盖已有文件
+    format!("download-{}", Local::now().format("%Y%m%d-%H%M%S"))
+}
+
+/// 下载事件载荷：下载开始时通知前端文件名
+#[derive(Clone, serde::Serialize)]
+struct DownloadStartedPayload {
+    url: String,
+    filename: String,
+}
+
+/// 下载事件载荷：下载结束时通知前端真实落盘路径与成败
+#[derive(Clone, serde::Serialize)]
+struct DownloadFinishedPayload {
+    url: String,
+    path: Option<String>,
+    success: bool,
+}
+
+/// 把下载诊断信息写入应用日志（pancake.app.log）与控制台，用于定位下载失败原因
+fn log_download(app_handle: &tauri::AppHandle, msg: &str) {
+    let dir = get_log_dir(app_handle);
+    std::fs::create_dir_all(&dir).ok();
+    // 追加写日志文件，失败不影响下载流程
+    if let Ok(mut f) = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(dir.join("pancake.app.log"))
+    {
+        let _ = writeln!(f, "[download] {}", msg);
+    }
+    // 同时打到控制台，方便开发模式即时查看
+    eprintln!("[download] {}", msg);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -191,7 +277,69 @@ pub fn run() {
             // Tauri 在 release 构建下默认禁用 DevTools，
             // 显式开启保证打包后的软件也能用 F12 打开开发者工具
             .devtools(true)
-            .decorations(false);
+            .decorations(false)
+            // 下载拦截：覆盖 webview 内所有 frame（含 iframe）发起的下载，
+            // Requested 时把落盘路径改写为应用指定下载目录，返回 true 让 wry
+            // 执行 SetHandled(true) 禁用 WebView2 默认下载条，并同步通知前端
+            .on_download(|webview, event| match event {
+                tauri::webview::DownloadEvent::Requested { url, destination } => {
+                    // 计算下载目录并确保其存在
+                    let dir = get_download_dir(&webview.app_handle());
+                    std::fs::create_dir_all(&dir).ok();
+                    // canonicalize 消去路径中的 .. 成分：wry 的 dunce::simplified 只处理 \\?\ 前缀，
+                    // 带 .. 的字面路径会原样传给 WebView2 的 SetResultFilePath，先规范化为无歧义绝对路径
+                    let canonical_dir = std::fs::canonicalize(&dir).unwrap_or(dir);
+                    // 挑选文件名并拼出完整落盘路径
+                    let filename = pick_download_filename(&url, destination);
+                    let full_path = canonical_dir.join(&filename);
+                    // 记录诊断信息：请求 URL、WebView2 建议路径、最终改写路径
+                    log_download(
+                        &webview.app_handle(),
+                        &format!(
+                            "requested url={} suggested={} final={}",
+                            url,
+                            destination.display(),
+                            full_path.display()
+                        ),
+                    );
+                    // 通知前端：下载已开始（含文件名，前端以 Toast 展示）。
+                    // 事件发送失败不影响下载本身，忽略返回结果
+                    let _ = webview.app_handle().emit(
+                        "pancake-download-started",
+                        DownloadStartedPayload {
+                            url: url.to_string(),
+                            filename: filename.clone(),
+                        },
+                    );
+                    // 改写目标路径为指定目录
+                    *destination = full_path;
+                    // 返回 true：允许下载并采用改写后的路径
+                    true
+                }
+                tauri::webview::DownloadEvent::Finished { url, path, success } => {
+                    // 记录诊断信息：下载结果与真实路径
+                    log_download(
+                        &webview.app_handle(),
+                        &format!(
+                            "finished url={} success={} path={:?}",
+                            url, success, path
+                        ),
+                    );
+                    // 事件发送失败不影响下载本身，忽略返回结果
+                    let _ = webview.app_handle().emit(
+                        "pancake-download-finished",
+                        DownloadFinishedPayload {
+                            url: url.to_string(),
+                            path: path.map(|p| p.to_string_lossy().to_string()),
+                            success,
+                        },
+                    );
+                    // Finished 阶段返回值不参与拦截判断，恒 true
+                    true
+                }
+                // DownloadEvent 标记为 non_exhaustive：未知的未来变体直接放行
+                _ => true
+            });
 
             #[cfg(not(debug_assertions))]
             {

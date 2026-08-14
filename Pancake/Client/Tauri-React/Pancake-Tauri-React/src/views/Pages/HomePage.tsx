@@ -45,6 +45,7 @@ export default function HomePage() {
       pancake_workflow: '/pancake_workflow',
       weather: '/weather',
       bilibili_login: '/bilibili_login',
+      web_embed: '/web_embed',
     };
     return base.map((t) => ({
       ...t,

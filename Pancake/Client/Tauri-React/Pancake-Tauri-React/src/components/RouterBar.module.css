@@ -1,0 +1,28 @@
+/* 内嵌页地址区：默认隐藏，桌面宽度起显示在导航栏右侧 */
+.navAddress {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-sm);
+  /* 靠右：把自身推到导航栏剩余空间的右端 */
+  margin-left: auto;
+}
+
+/* 桌面断点：显示地址区，与页面内工具栏互斥（页面内工具栏同宽度下隐藏） */
+@media (min-width: 768px) {
+  .navAddress {
+    display: flex;
+  }
+}
+
+/* “页面地址”四个字：与导航链接同风格，不换行 */
+.navLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* 地址输入框容器：固定宽度，避免挤占导航栏左侧空间 */
+.navInput {
+  width: 280px;
+}

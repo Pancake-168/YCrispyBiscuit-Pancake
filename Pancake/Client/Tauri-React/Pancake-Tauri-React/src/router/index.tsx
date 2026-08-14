@@ -6,6 +6,7 @@ import PictureSwitchPage from '@/views/Pages/PictureSwitchPage/index';
 import PancakeWorkFlowPage from '@/views/Pages/PancakeWorkFlowPage';
 import BilibiliLoginPage from '@/views/Pages/BilibiliLoginPage';
 import WeatherPage from '@/views/Pages/WeatherPage';
+import WebEmbedPage from '@/views/Pages/WebEmbedPage';
 import NotFound from '@/views/Pages/404NotFound';
 import { isTauri } from '@/utils/isTauri';
 
@@ -18,6 +19,7 @@ export default function AppRouter() {
       {isTauri() && <Route path="/pancake_workflow" element={<PancakeWorkFlowPage />} />}
       <Route path="/bilibili_login" element={<BilibiliLoginPage />} />
       <Route path="/weather" element={<WeatherPage />} />
+      <Route path="/web_embed" element={<WebEmbedPage />} />
 
       <Route path="*" element={<NotFound />} />
       <Route path="/demo" element={<DemoPage />} />

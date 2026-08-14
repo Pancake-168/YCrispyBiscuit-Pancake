@@ -34,4 +34,10 @@ export const Pancake_Tools: CarouselItem[] = [
     title: '哔哩哔哩登录信息获取',
     subtitle: '天天都需要你猜，你的变化有多快~',
   },
+  {
+    id: 'web_embed',
+    image: `${BASE}2.png`,
+    title: 'AI 助手',
+    subtitle: '内嵌本地 AI 对话',
+  },
 ];
