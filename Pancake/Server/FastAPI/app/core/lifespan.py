@@ -6,6 +6,11 @@ from app.core.logging import setup_logging
 from app.core.config import get_settings
 from app.db import connect_db, disconnect_db
 from app.core.database import engine, Base
+from app.dsh_proxy import (
+    start_dsh_proxy_server,
+    wait_dsh_proxy_started,
+    stop_dsh_proxy_server,
+)
 
 # 显式导入全部实体：Base.metadata.create_all 只会创建"已被导入"的表，
 # 不能依赖路由导入链的副作用，否则新增实体容易静默漏建
@@ -78,9 +83,34 @@ def create_lifespan():
         except Exception as exc:
             logger.exception("ffmpeg 可用性检查失败: %s", exc)
 
+        # DeepSeek Harness 内嵌代理：启动失败不阻断 Pancake 主服务
+        dsh_proxy_server = None
+        dsh_proxy_thread = None
+        if settings.dsh_proxy_enabled:
+            try:
+                dsh_proxy_server, dsh_proxy_thread = start_dsh_proxy_server()
+                await wait_dsh_proxy_started(dsh_proxy_server)
+                logger.info(
+                    "DeepSeek Harness 内嵌代理已启动: http://%s:%s",
+                    settings.dsh_proxy_host,
+                    settings.dsh_proxy_port,
+                )
+            except Exception as exc:
+                logger.exception("DeepSeek Harness 内嵌代理启动失败: %s", exc)
+                dsh_proxy_server = None
+                dsh_proxy_thread = None
+
         try:
             yield
         finally:
+            # 关闭 DeepSeek Harness 内嵌代理
+            if dsh_proxy_server is not None and dsh_proxy_thread is not None:
+                try:
+                    await stop_dsh_proxy_server(dsh_proxy_server, dsh_proxy_thread)
+                    logger.info("DeepSeek Harness 内嵌代理已关闭")
+                except Exception as exc:
+                    logger.exception("DeepSeek Harness 内嵌代理关闭失败: %s", exc)
+
             # 优雅关闭：只有在已连接情况下尝试断开；失败也不阻断关闭
             if getattr(app.state, "db_connected", False):
                 try:

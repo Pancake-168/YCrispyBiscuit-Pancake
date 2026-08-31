@@ -81,6 +81,13 @@ class Settings(BaseSettings):
     docs_url: str = "/docs"
     redoc_url: str = "/redoc"
 
+    # DeepSeek Harness 内嵌代理
+    # 上游是 deepseek-harness 的本地 Web 服务；代理端口供 Tauri iframe 访问
+    dsh_proxy_enabled: bool = True
+    dsh_proxy_host: str = "127.0.0.1"
+    dsh_proxy_port: int = 3081
+    dsh_upstream_url: str = "http://127.0.0.1:3080"
+
     # 不在代码内绑定具体 env 文件，由启动脚本通过 ENV_FILE+python-dotenv 控制
     model_config = SettingsConfigDict(
         env_prefix="",
