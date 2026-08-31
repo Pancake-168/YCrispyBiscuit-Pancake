@@ -43,6 +43,7 @@ HOP_BY_HOP_HEADERS = {
 DSH_AUTH_COOKIE_PREFIX = "dsh-auth-"
 PROXY_COOKIE_PREFIX = "__dsh_p_"
 
+
 # 与响应对象兼容的多值头映射：
 # Starlette Response 只接受 Mapping，但 Set-Cookie 允许同名的多个响应头，
 # 这里用自定义 Mapping 保留多个 Set-Cookie，而不是把多个值合并成一个。
@@ -77,7 +78,7 @@ def _translate_request_cookie(cookie_header: str) -> str:
         if "=" in segment:
             name, value = segment.split("=", 1)
             if name.startswith(PROXY_COOKIE_PREFIX):
-                name = name[len(PROXY_COOKIE_PREFIX):]
+                name = name[len(PROXY_COOKIE_PREFIX) :]
             translated.append(f"{name}={value}")
         else:
             translated.append(segment)
@@ -97,7 +98,9 @@ def _rewrite_set_cookie(value: str) -> str:
     first = parts[0]
     if "=" in first:
         name, pair_value = first.split("=", 1)
-        if name.startswith(DSH_AUTH_COOKIE_PREFIX) and not name.startswith(PROXY_COOKIE_PREFIX):
+        if name.startswith(DSH_AUTH_COOKIE_PREFIX) and not name.startswith(
+            PROXY_COOKIE_PREFIX
+        ):
             first = f"{PROXY_COOKIE_PREFIX}{name}={pair_value}"
             parts[0] = first
     rewritten: list[str] = []
@@ -125,7 +128,11 @@ def _request_headers(headers: Mapping[str, str]) -> dict[str, str]:
     forwarded: dict[str, str] = {}
     for key, value in headers.items():
         lowered = key.lower()
-        if lowered in HOP_BY_HOP_HEADERS or lowered.startswith("proxy-") or lowered in ("host", "origin"):
+        if (
+            lowered in HOP_BY_HOP_HEADERS
+            or lowered.startswith("proxy-")
+            or lowered in ("host", "origin")
+        ):
             continue
         if lowered == "cookie":
             value = _translate_request_cookie(value)
@@ -171,7 +178,9 @@ def create_dsh_proxy_app() -> FastAPI:
         client = httpx.AsyncClient(timeout=None, trust_env=False)
         try:
             # stream=True 保留 SSE/下载等流式响应，不把整个响应体读进内存
-            req = client.build_request(request.method, url, headers=headers, content=body)
+            req = client.build_request(
+                request.method, url, headers=headers, content=body
+            )
             upstream_response = await client.send(req, stream=True)
         except Exception as exc:
             logger.warning("dsh proxy upstream request failed: %s", exc)
@@ -194,7 +203,9 @@ def create_dsh_proxy_app() -> FastAPI:
             headers=response_headers,
         )
 
-    @app.api_route("/", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"])
+    @app.api_route(
+        "/", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
+    )
     async def proxy_root(request: Request) -> Response:
         return await proxy_http(request)
 
@@ -233,6 +244,7 @@ def create_dsh_proxy_app() -> FastAPI:
                 ping_interval=None,
                 proxy=None,
             ) as upstream:
+
                 async def upstream_to_client() -> None:
                     """把上游 WebSocket 消息转发给浏览器。"""
                     try:
@@ -264,7 +276,9 @@ def create_dsh_proxy_app() -> FastAPI:
                     asyncio.create_task(upstream_to_client()),
                     asyncio.create_task(client_to_upstream()),
                 ]
-                done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                done, pending = await asyncio.wait(
+                    tasks, return_when=asyncio.FIRST_COMPLETED
+                )
                 for task in pending:
                     task.cancel()
                 for task in done:

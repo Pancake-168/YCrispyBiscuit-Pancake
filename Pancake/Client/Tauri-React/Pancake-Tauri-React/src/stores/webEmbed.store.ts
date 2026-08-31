@@ -15,9 +15,7 @@ export const DEFAULT_URL = DSH_PROXY_BASE;
 const normalizeEmbedUrl = (raw: string): string => {
   const trimmed = raw.trim();
   if (!trimmed) return DEFAULT_URL;
-  const withProtocol = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed)
-    ? trimmed
-    : `http://${trimmed}`;
+  const withProtocol = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
   // 用户若直接粘贴 deepseek-harness 原生 3080 地址，保持路径与查询参数不变，仅替换为本地代理
   if (withProtocol.startsWith(DSH_UPSTREAM_BASE)) {
     return DSH_PROXY_BASE + withProtocol.slice(DSH_UPSTREAM_BASE.length);
