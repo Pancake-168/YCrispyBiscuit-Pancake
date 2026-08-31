@@ -307,6 +307,9 @@ def start_dsh_proxy_server():
         port=settings.dsh_proxy_port,
         log_level="warning",
         access_log=False,
+        # noconsole 打包后 sys.stderr 为 None，uvicorn 默认日志配置会崩；
+        # 这里与 run.py 一样禁用 uvicorn 自身日志配置
+        log_config=None,
     )
     server = uvicorn.Server(config)
     thread = threading.Thread(target=server.run, name="dsh-proxy", daemon=True)

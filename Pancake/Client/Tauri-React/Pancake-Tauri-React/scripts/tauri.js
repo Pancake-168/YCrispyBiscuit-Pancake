@@ -35,7 +35,7 @@ fs.writeFileSync(configPath, resolved);
 process.env.__TAURI_BUILD = 'true';
 
 const tauriCmd = mode === 'build' ? 'build' : 'dev';
-const child = spawn('npx', ['tauri', tauriCmd], {
+const child = spawn('pnpm', ['exec', 'tauri', tauriCmd], {
   stdio: 'inherit',
   shell: true,
   cwd: rootDir,

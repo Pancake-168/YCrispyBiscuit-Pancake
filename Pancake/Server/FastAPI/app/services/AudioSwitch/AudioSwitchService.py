@@ -84,7 +84,7 @@ def _ensure_ffmpeg() -> None:
     """惰性依赖检查：真正要转换时才发现缺失，而不是 import 即崩溃。"""
     if not FFMPEG or not FFPROBE:  # 任一缺失说明未下载或下载不完整
         raise ConfigurationError(
-            "ffmpeg/ffprobe 未找到，请运行 npm run download:ffmpeg"
+            "ffmpeg/ffprobe 未找到，请运行 pnpm run download:ffmpeg"
         )
 
 

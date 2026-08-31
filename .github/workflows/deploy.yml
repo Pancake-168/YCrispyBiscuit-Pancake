@@ -10,16 +10,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
+          cache-dependency-path: Pancake/Client/Tauri-React/Pancake-Tauri-React/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         working-directory: Pancake/Client/Tauri-React/Pancake-Tauri-React
 
       - name: Build
-        run: WEB_BUILD=true npx vite build
+        run: WEB_BUILD=true pnpm exec vite build
         working-directory: Pancake/Client/Tauri-React/Pancake-Tauri-React
 
       - name: Deploy

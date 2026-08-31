@@ -78,7 +78,7 @@ def create_lifespan():
                 logger.info("ffmpeg/ffprobe 已就绪，音频转换可用")
             else:
                 logger.error(
-                    "ffmpeg/ffprobe 未找到，音频转换不可用，请运行 npm run download:ffmpeg"
+                    "ffmpeg/ffprobe 未找到，音频转换不可用，请运行 pnpm run download:ffmpeg"
                 )
         except Exception as exc:
             logger.exception("ffmpeg 可用性检查失败: %s", exc)
