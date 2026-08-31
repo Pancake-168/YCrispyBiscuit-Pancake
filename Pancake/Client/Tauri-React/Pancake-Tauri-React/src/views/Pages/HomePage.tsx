@@ -148,7 +148,25 @@ export default function HomePage() {
 
       {/* ====== 次屏 ====== */}
       <div className={styles.homePageTop2} ref={secondScreenRef}>
-        {/* 后续补充功能模块介绍 */}
+        {/* 功能墙：把转轮中的全部工具平铺展示，点击效果与转轮一致 */}
+        <div className={styles.featureWall}>
+          {tools.map((tool) => (
+            <div key={tool.id} className={styles.featureCard} onClick={tool.onClick}>
+              <IconContainer
+                size={sizes.iconSize}
+                shape="rounded"
+                src={tool.image}
+                alt={tool.title}
+              />
+              <div className={styles.featureCardText}>
+                <span className={styles.featureCardTitle}>{tool.title}</span>
+                {tool.subtitle && (
+                  <span className={styles.featureCardSubtitle}>{tool.subtitle}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
