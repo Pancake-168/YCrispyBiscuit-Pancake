@@ -1,14 +1,18 @@
-import { useId, useCallback, type InputHTMLAttributes } from 'react';
+import { useId, useCallback, type InputHTMLAttributes, type Ref } from 'react';
 import * as RadixLabel from '@radix-ui/react-label';
 import styles from './Input.module.css';
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> {
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'onChange' | 'type' | 'ref'
+> {
   value: string;
   onChange: (v: string) => void;
   label?: string;
   helper?: string;
   error?: string;
   type?: 'text' | 'password' | 'number';
+  inputRef?: Ref<HTMLInputElement>;
 }
 
 /**
@@ -29,6 +33,7 @@ export default function Input({
   min,
   max,
   step,
+  inputRef,
   ...rest
 }: InputProps) {
   const generatedId = useId();
@@ -57,6 +62,7 @@ export default function Input({
   const inputEl = (
     <input
       id={inputId}
+      ref={inputRef}
       type={type}
       className={`${styles.field} ${error ? styles.hasError : ''}`}
       value={value}

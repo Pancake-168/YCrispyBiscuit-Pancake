@@ -1,0 +1,83 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: text;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+}
+
+.input input {
+  /* 给左右两侧的图标留出空间 */
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  z-index: 1;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.chevron {
+  position: absolute;
+  right: 10px;
+  z-index: 1;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.content {
+  width: var(--radix-popover-trigger-width, 240px);
+  background: var(--bg-elev);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-md);
+  z-index: 110;
+  overflow: hidden;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+}
+
+.option {
+  justify-content: flex-start;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.option:hover {
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--text);
+}
+
+.empty {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}

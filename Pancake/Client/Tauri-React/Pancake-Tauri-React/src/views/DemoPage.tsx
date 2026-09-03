@@ -5,12 +5,19 @@ import {
   AlertDialog,
   AspectRatio,
   Avatar,
+  Breadcrumb,
   Button,
+  Calendar,
+  Cascader,
   Checkbox,
   Collapsible,
+  Combobox,
+  CommandPalette,
   Confirm,
   ContextMenu,
+  DatePicker,
   Dialog,
+  Drawer,
   DropdownMenu,
   EmptyState,
   HoverCard,
@@ -22,17 +29,22 @@ import {
   Popover,
   Progress,
   RadioGroup,
+  Rating,
   ScrollArea,
+  SegmentedControl,
   Select,
   Separator,
   Skeleton,
   Slider,
   Slot,
+  Stepper,
   Switch,
   Tabs,
   Textarea,
   Toggle,
+  Toolbar,
   Tooltip,
+  TreeSelect,
   VisuallyHidden,
   toast,
 } from '@/components/common';
@@ -177,6 +189,30 @@ export default function DemoPage() {
   // Toggle
   const [togglePressed, setTogglePressed] = useState(false);
 
+  // SegmentedControl
+  const [segmentValue, setSegmentValue] = useState('list');
+
+  // Rating
+  const [ratingValue, setRatingValue] = useState(3);
+
+  // Combobox
+  const [comboboxValue, setComboboxValue] = useState('apple');
+
+  // CommandPalette
+  const [commandOpen, setCommandOpen] = useState(false);
+
+  // Stepper
+  const [stepperCurrent, setStepperCurrent] = useState(0);
+
+  // DatePicker / Calendar
+  const [dateValue, setDateValue] = useState<Date | undefined>(undefined);
+
+  // TreeSelect
+  const [treeValue, setTreeValue] = useState('frontend-react');
+
+  // Cascader
+  const [cascaderValue, setCascaderValue] = useState<string[]>([]);
+
   // ---- Select 选项 ----
   const fruitOptions = [
     { value: 'apple', label: '苹果' },
@@ -315,7 +351,7 @@ export default function DemoPage() {
             fontSize: 'var(--text-sm)',
           }}
         >
-          共 34 个基础组件，一一展示常规用法
+          共 46 个基础组件，一一展示常规用法
         </p>
       </div>
 
@@ -1116,7 +1152,11 @@ export default function DemoPage() {
               type="multiple"
               items={[
                 { value: 'multi-1', trigger: '第一项', content: <span>可以同时展开多项。</span> },
-                { value: 'multi-2', trigger: '第二项', content: <span>这一项也保持独立开关。</span> },
+                {
+                  value: 'multi-2',
+                  trigger: '第二项',
+                  content: <span>这一项也保持独立开关。</span>,
+                },
               ]}
             />
           </div>
@@ -1223,11 +1263,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §22 Checkbox                                       */}
       {/* ================================================ */}
-      <Section
-        id="checkbox"
-        title="§22 Checkbox"
-        description="复选框，支持受控勾选与禁用态。"
-      >
+      <Section id="checkbox" title="§22 Checkbox" description="复选框，支持受控勾选与禁用态。">
         <Row label="受控">
           <Checkbox
             checked={checkboxChecked}
@@ -1244,16 +1280,16 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §23 Collapsible                                    */}
       {/* ================================================ */}
-      <Section
-        id="collapsible"
-        title="§23 Collapsible"
-        description="可展开/收起的折叠内容区。"
-      >
+      <Section id="collapsible" title="§23 Collapsible" description="可展开/收起的折叠内容区。">
         <Row label="展开详情">
           <div style={{ width: '100%', maxWidth: 420 }}>
             <Collapsible trigger="查看高级设置">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
-                <Checkbox checked={checkboxChecked} onChange={setCheckboxChecked} label="启用实验功能" />
+                <Checkbox
+                  checked={checkboxChecked}
+                  onChange={setCheckboxChecked}
+                  label="启用实验功能"
+                />
                 <Button variant="subtle" onClick={() => toast('设置已保存', 'success')}>
                   保存设置
                 </Button>
@@ -1266,11 +1302,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §24 HoverCard                                      */}
       {/* ================================================ */}
-      <Section
-        id="hoverCard"
-        title="§24 HoverCard"
-        description="鼠标悬停后弹出的信息卡片。"
-      >
+      <Section id="hoverCard" title="§24 HoverCard" description="鼠标悬停后弹出的信息卡片。">
         <Row label="悬停查看">
           <HoverCard trigger={<Button variant="subtle">悬停查看用户</Button>}>
             <div
@@ -1297,11 +1329,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §25 Label                                         */}
       {/* ================================================ */}
-      <Section
-        id="label"
-        title="§25 Label"
-        description="表单标签，点击可聚焦关联控件。"
-      >
+      <Section id="label" title="§25 Label" description="表单标签，点击可聚焦关联控件。">
         <Row label="Label + Input">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
             <Label htmlFor="demo-label-input">昵称</Label>
@@ -1319,11 +1347,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §26 Menubar                                        */}
       {/* ================================================ */}
-      <Section
-        id="menubar"
-        title="§26 Menubar"
-        description="桌面风格顶部菜单栏。"
-      >
+      <Section id="menubar" title="§26 Menubar" description="桌面风格顶部菜单栏。">
         <Row label="菜单栏">
           <Menubar
             menus={[
@@ -1345,7 +1369,11 @@ export default function DemoPage() {
               },
               {
                 label: '帮助',
-                content: <div style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>帮助面板内容</div>,
+                content: (
+                  <div style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
+                    帮助面板内容
+                  </div>
+                ),
               },
             ]}
           />
@@ -1367,7 +1395,9 @@ export default function DemoPage() {
               {
                 label: '工具',
                 content: (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                  <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}
+                  >
                     <Button variant="subtle" onClick={() => toast('音频转码', 'info')}>
                       音频转码
                     </Button>
@@ -1386,11 +1416,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §28 Progress                                       */}
       {/* ================================================ */}
-      <Section
-        id="progress"
-        title="§28 Progress"
-        description="进度条，展示任务完成度。"
-      >
+      <Section id="progress" title="§28 Progress" description="进度条，展示任务完成度。">
         <Row label="普通进度">
           <div style={{ width: '100%', maxWidth: 320 }}>
             <Progress value={65} />
@@ -1406,11 +1432,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §29 RadioGroup                                     */}
       {/* ================================================ */}
-      <Section
-        id="radioGroup"
-        title="§29 RadioGroup"
-        description="单选组，键盘方向键可切换选项。"
-      >
+      <Section id="radioGroup" title="§29 RadioGroup" description="单选组，键盘方向键可切换选项。">
         <Row label="单选">
           <RadioGroup
             value={radioValue}
@@ -1428,11 +1450,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §30 Separator                                      */}
       {/* ================================================ */}
-      <Section
-        id="separator"
-        title="§30 Separator"
-        description="横向或纵向视觉分隔线。"
-      >
+      <Section id="separator" title="§30 Separator" description="横向或纵向视觉分隔线。">
         <Row label="横向">
           <div style={{ width: 200 }}>
             <Separator />
@@ -1448,11 +1466,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §31 Slider                                         */}
       {/* ================================================ */}
-      <Section
-        id="slider"
-        title="§31 Slider"
-        description="滑块，适合音量、亮度、数值范围等场景。"
-      >
+      <Section id="slider" title="§31 Slider" description="滑块，适合音量、亮度、数值范围等场景。">
         <Row label="受控滑块">
           <div style={{ width: '100%', maxWidth: 320 }}>
             <Slider
@@ -1472,11 +1486,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §32 Slot                                           */}
       {/* ================================================ */}
-      <Section
-        id="slot"
-        title="§32 Slot"
-        description="把父级 props 合并到子元素上的透传封装。"
-      >
+      <Section id="slot" title="§32 Slot" description="把父级 props 合并到子元素上的透传封装。">
         <Row label="Slot 包裹按钮">
           <Slot onClick={() => toast('Slot 事件已合并', 'info')}>
             <Button variant="secondary">点击测试 Slot</Button>
@@ -1487,11 +1497,7 @@ export default function DemoPage() {
       {/* ================================================ */}
       {/* §33 Toggle                                         */}
       {/* ================================================ */}
-      <Section
-        id="toggle"
-        title="§33 Toggle"
-        description="按压态按钮，适合图标开关。"
-      >
+      <Section id="toggle" title="§33 Toggle" description="按压态按钮，适合图标开关。">
         <Row label="按压开关">
           <Toggle pressed={togglePressed} onPressedChange={setTogglePressed} aria-label="切换通知">
             <VscBell size={16} />
@@ -1520,6 +1526,312 @@ export default function DemoPage() {
             下面内容只对读屏器可见：
           </span>
           <VisuallyHidden>这是一段屏幕阅读器可访问但页面不可见的文本。</VisuallyHidden>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §35 Drawer                                        */}
+      {/* ================================================ */}
+      <Section
+        id="drawer"
+        title="§35 Drawer"
+        description="从屏幕边缘滑出的抽屉面板，基于 Radix Dialog。"
+      >
+        <Row label="右侧抽屉">
+          <Drawer
+            trigger={<Button variant="secondary">打开设置抽屉</Button>}
+            title="设置"
+            side="right"
+          >
+            <p style={{ margin: 0, color: 'var(--text)' }}>这里可以放设置表单、详情内容等。</p>
+          </Drawer>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §36 SegmentedControl                              */}
+      {/* ================================================ */}
+      <Section
+        id="segmentedControl"
+        title="§36 SegmentedControl"
+        description="分段选择器，基于 Radix RadioGroup。"
+      >
+        <Row label="视图切换">
+          <SegmentedControl
+            value={segmentValue}
+            onChange={setSegmentValue}
+            options={[
+              { value: 'list', label: '列表' },
+              { value: 'grid', label: '网格' },
+              { value: 'detail', label: '详情' },
+            ]}
+          />
+        </Row>
+        <Row label="当前值">
+          <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>{segmentValue}</span>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §37 Rating                                        */}
+      {/* ================================================ */}
+      <Section id="rating" title="§37 Rating" description="星级评分，支持键盘方向键。">
+        <Row label="评分">
+          <Rating value={ratingValue} onChange={setRatingValue} />
+        </Row>
+        <Row label="当前分数">
+          <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
+            {ratingValue} / 5
+          </span>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §38 Breadcrumb                                    */}
+      {/* ================================================ */}
+      <Section id="breadcrumb" title="§38 Breadcrumb" description="面包屑导航，最后一项为当前页。">
+        <Row label="导航路径">
+          <Breadcrumb
+            items={[
+              { label: '首页', onClick: () => toast('返回首页', 'info') },
+              { label: '工具', onClick: () => toast('进入工具', 'info') },
+              { label: '图片转换' },
+            ]}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §39 Combobox                                      */}
+      {/* ================================================ */}
+      <Section
+        id="combobox"
+        title="§39 Combobox"
+        description="可输入过滤的下拉选择，基于 Radix Popover。"
+      >
+        <Row label="水果选择">
+          <div style={{ width: 240 }}>
+            <Combobox
+              value={comboboxValue}
+              onChange={setComboboxValue}
+              options={fruitOptions.filter((item) => !item.disabled)}
+              placeholder="输入或选择水果"
+            />
+          </div>
+        </Row>
+        <Row label="当前值">
+          <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>{comboboxValue}</span>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §40 CommandPalette                                */}
+      {/* ================================================ */}
+      <Section
+        id="commandPalette"
+        title="§40 CommandPalette"
+        description="命令面板，支持过滤与键盘操作。"
+      >
+        <Row label="打开命令面板">
+          <Button variant="secondary" onClick={() => setCommandOpen(true)}>
+            打开命令面板
+          </Button>
+          <CommandPalette
+            open={commandOpen}
+            onOpenChange={setCommandOpen}
+            items={[
+              {
+                id: 'home',
+                label: '回到首页',
+                keywords: 'home',
+                onSelect: () => toast('回到首页', 'info'),
+              },
+              {
+                id: 'audio',
+                label: '音频转码',
+                keywords: 'audio',
+                onSelect: () => toast('打开音频转码', 'info'),
+              },
+              {
+                id: 'picture',
+                label: '图片转码',
+                keywords: 'picture',
+                onSelect: () => toast('打开图片转码', 'info'),
+              },
+            ]}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §41 Stepper                                       */}
+      {/* ================================================ */}
+      <Section id="stepper" title="§41 Stepper" description="步骤条，支持已到达步骤点击回退。">
+        <Row label="步骤进度">
+          <div style={{ width: '100%', maxWidth: 520 }}>
+            <Stepper
+              current={stepperCurrent}
+              onChange={setStepperCurrent}
+              steps={[
+                { title: '填写信息', description: '基本资料' },
+                { title: '确认内容', description: '二次确认' },
+                { title: '完成', description: '提交成功' },
+              ]}
+            />
+          </div>
+        </Row>
+        <Row label="操作">
+          <Button
+            variant="secondary"
+            disabled={stepperCurrent <= 0}
+            onClick={() => setStepperCurrent((prev) => Math.max(0, prev - 1))}
+          >
+            上一步
+          </Button>
+          <Button
+            variant="primary"
+            disabled={stepperCurrent >= 2}
+            onClick={() => setStepperCurrent((prev) => Math.min(2, prev + 1))}
+          >
+            下一步
+          </Button>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §42 Toolbar                                       */}
+      {/* ================================================ */}
+      <Section
+        id="toolbar"
+        title="§42 Toolbar"
+        description="工具条容器，内部放已封装的按钮/开关/分隔线。"
+      >
+        <Row label="工具栏">
+          <Toolbar>
+            <Button variant="subtle" onClick={() => toast('新建', 'info')}>
+              新建
+            </Button>
+            <Separator orientation="vertical" />
+            <Toggle pressed={togglePressed} onPressedChange={setTogglePressed} aria-label="粗体">
+              <VscBell size={14} />
+            </Toggle>
+            <Toggle pressed={false} onPressedChange={() => {}} aria-label="斜体">
+              <VscSearch size={14} />
+            </Toggle>
+            <Separator orientation="vertical" />
+            <Button variant="subtle" onClick={() => toast('已保存', 'success')}>
+              保存
+            </Button>
+          </Toolbar>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §43 Calendar                                      */}
+      {/* ================================================ */}
+      <Section
+        id="calendar"
+        title="§43 Calendar"
+        description="日历面板，可直接嵌入页面或配合 DatePicker。"
+      >
+        <Row label="选择日期">
+          <Calendar value={dateValue} onChange={setDateValue} />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §44 DatePicker                                    */}
+      {/* ================================================ */}
+      <Section
+        id="datePicker"
+        title="§44 DatePicker"
+        description="日期选择，基于 Radix Popover + Calendar。"
+      >
+        <Row label="日期选择">
+          <DatePicker value={dateValue} onChange={setDateValue} placeholder="请选择日期" />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §45 TreeSelect                                    */}
+      {/* ================================================ */}
+      <Section
+        id="treeSelect"
+        title="§45 TreeSelect"
+        description="树形选择，支持展开/折叠与叶子选择。"
+      >
+        <Row label="选择节点">
+          <div style={{ width: 260 }}>
+            <TreeSelect
+              value={treeValue}
+              onChange={setTreeValue}
+              options={[
+                {
+                  value: 'frontend',
+                  label: '前端',
+                  children: [
+                    {
+                      value: 'frontend-react',
+                      label: 'React',
+                      children: [
+                        { value: 'frontend-react-hooks', label: 'Hooks' },
+                        { value: 'frontend-react-router', label: 'Router' },
+                      ],
+                    },
+                    { value: 'frontend-vue', label: 'Vue' },
+                  ],
+                },
+                {
+                  value: 'backend',
+                  label: '后端',
+                  children: [
+                    { value: 'backend-python', label: 'Python' },
+                    { value: 'backend-rust', label: 'Rust' },
+                  ],
+                },
+              ]}
+            />
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §46 Cascader                                      */}
+      {/* ================================================ */}
+      <Section id="cascader" title="§46 Cascader" description="级联选择，按多列路径逐级选择。">
+        <Row label="选择地区">
+          <div style={{ width: 260 }}>
+            <Cascader
+              value={cascaderValue}
+              onChange={setCascaderValue}
+              options={[
+                {
+                  value: 'china',
+                  label: '中国',
+                  children: [
+                    {
+                      value: 'guangdong',
+                      label: '广东',
+                      children: [
+                        { value: 'guangzhou', label: '广州' },
+                        { value: 'shenzhen', label: '深圳' },
+                      ],
+                    },
+                    {
+                      value: 'zhejiang',
+                      label: '浙江',
+                      children: [{ value: 'hangzhou', label: '杭州' }],
+                    },
+                  ],
+                },
+                {
+                  value: 'japan',
+                  label: '日本',
+                  children: [{ value: 'tokyo', label: '东京' }],
+                },
+              ]}
+            />
+          </div>
         </Row>
       </Section>
     </div>

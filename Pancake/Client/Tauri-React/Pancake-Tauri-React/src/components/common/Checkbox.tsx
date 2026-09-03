@@ -15,12 +15,7 @@ interface CheckboxProps {
  * Checkbox — 复选框。
  * Radix Checkbox 做骨架，支持键盘空格切换与受控状态。
  */
-export default function Checkbox({
-  checked,
-  onChange,
-  label,
-  disabled = false,
-}: CheckboxProps) {
+export default function Checkbox({ checked, onChange, label, disabled = false }: CheckboxProps) {
   const generatedId = useId();
 
   return (

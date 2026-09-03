@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.trigger {
+  justify-content: flex-start;
+  width: 200px;
+  gap: var(--spacing-sm);
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.text {
+  color: var(--text);
+}
+
+.placeholder {
+  color: var(--muted);
+}
+
+.content {
+  z-index: 110;
+  background: var(--bg-elev);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-lg);
+}

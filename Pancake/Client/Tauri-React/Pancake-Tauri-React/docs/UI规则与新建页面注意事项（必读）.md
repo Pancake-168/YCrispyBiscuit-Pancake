@@ -107,14 +107,14 @@
 
 #### 固定深色的 Token（仅在 `:root`，亮色不覆盖）
 
-| Token                 | 值                       | 用途                     |
-| --------------------- | ------------------------ | ------------------------ |
-| `--tooltip-bg`        | `rgba(32,32,32,0.92)`    | Tooltip 背景（永远深色） |
-| `--tooltip-text`      | `rgba(255,255,255,0.93)` | Tooltip 文字             |
-| `--tooltip-border`    | `rgba(255,255,255,0.12)` | Tooltip 边框             |
-| `--blur-overlay`      | `4px`                    | Dialog 遮罩层模糊        |
-| `--blur-panel`        | `10px`                   | 面板/卡片模糊            |
-| `--blur-tooltip`      | `12px`                   | Tooltip 模糊             |
+| Token              | 值                       | 用途                     |
+| ------------------ | ------------------------ | ------------------------ |
+| `--tooltip-bg`     | `rgba(32,32,32,0.92)`    | Tooltip 背景（永远深色） |
+| `--tooltip-text`   | `rgba(255,255,255,0.93)` | Tooltip 文字             |
+| `--tooltip-border` | `rgba(255,255,255,0.12)` | Tooltip 边框             |
+| `--blur-overlay`   | `4px`                    | Dialog 遮罩层模糊        |
+| `--blur-panel`     | `10px`                   | 面板/卡片模糊            |
+| `--blur-tooltip`   | `12px`                   | Tooltip 模糊             |
 
 #### 自定义字体
 
@@ -163,7 +163,7 @@
 
 行为规则：
 
-- hover：`translateY(-1px)` + 增强阴影（不缩放）
+- hover：`translateY(-1px)` + 颜色/背景/边框变化；禁止外阴影、外发光
 - active：回弹 `translateY(0)`
 - disabled：`opacity: 0.5` + 禁止点击
 
@@ -177,19 +177,62 @@
 
 ### 第三层：组件规范
 
-项目共有 **17 个通用组件**，统一从 `src/components/common/index.ts` 导出：
+项目共有 **46 个通用组件**，统一从 `src/components/common/index.ts` 导出：
 
-| #   | 组件          | 用途                          | #   | 组件        | 用途                |
-| --- | ------------- | ----------------------------- | --- | ----------- | ------------------- |
-| §1  | Button        | 按钮（loading/disabled 封装） | §10 | ContextMenu | 右键菜单            |
-| §2  | IconContainer | 统一图片/图标容器             | §11 | Dialog      | 通用弹窗            |
-| §3  | Input         | 单行文本输入                  | §12 | Confirm     | Dialog 子集确认弹窗 |
-| §4  | Textarea      | 多行文本输入                  | §13 | Toast       | 全局通知通道        |
-| §5  | Select        | 下拉选择器                    | §14 | Tabs        | 标签页切换          |
-| §6  | Switch        | 开关                          | §15 | ScrollArea  | 统一样式滚动区域    |
-| §7  | Tooltip       | 悬停提示                      | §16 | EmptyState  | 空状态占位          |
-| §8  | Popover       | 弹出卡片                      | §17 | Skeleton    | 骨架屏              |
-| §9  | DropdownMenu  | 下拉菜单                      |     |             |                     |
+**基础组件（§1-§17）**
+
+1. Button
+2. IconContainer
+3. Input
+4. Textarea
+5. Select
+6. Switch
+7. Tooltip
+8. Popover
+9. DropdownMenu
+10. ContextMenu
+11. Dialog
+12. Confirm
+13. Toast
+14. Tabs
+15. ScrollArea
+16. EmptyState
+17. Skeleton
+
+**Radix 封装组件（§18-§34）**
+
+18. Accordion
+19. AlertDialog
+20. AspectRatio
+21. Avatar
+22. Checkbox
+23. Collapsible
+24. HoverCard
+25. Label
+26. Menubar
+27. NavigationMenu
+28. Progress
+29. RadioGroup
+30. Separator
+31. Slider
+32. Slot
+33. Toggle
+34. VisuallyHidden
+
+**扩展控件（§35-§46）**
+
+35. Drawer
+36. SegmentedControl
+37. Rating
+38. Breadcrumb
+39. Combobox
+40. CommandPalette
+41. Stepper
+42. Toolbar
+43. Calendar
+44. DatePicker
+45. TreeSelect
+46. Cascader
 
 详细规范见 [基础组件规范.md](基础组件规范.md)，完整用法示例见 [DemoPage.tsx](../src/views/DemoPage.tsx)。
 
@@ -201,6 +244,12 @@
 4. 复杂交互组件用 **Radix UI 原生部件**做骨架，样式用自己的 CSS
 5. 新组件放 `src/components/common/`，统一从 `index.ts` 导出
 
+#### 永久 UI 规则（必须遵守）
+
+1. **禁原生组件**：凡是能用 common 封装或 Radix 原语替代的原生控件，禁止直接写 `<button>`、`<label>`、`<input>`、`<select>`、`<textarea>`。只有 `Button`、`Input`、`Textarea` 这类底层控件封装本身才允许保留对应的原生标签。
+2. **border + 外发光禁止并存**：当元素已有 `border` 时，禁止再叠加外发光、泛光、模糊外边框、外 `box-shadow`。需要层次时靠 `border` + 背景 + 间距表达；`box-shadow` 只允许内阴影（`inset`）。
+3. **弹窗/浮层必须主题适配**：light 下不允许像 dark 一样昏暗。弹窗、浮层、面板在 light/dark 下必须有明确可辨的区分度与对比度。
+
 #### 模糊值使用层次
 
 | 场景                                                | Token            | 值   |
@@ -211,7 +260,8 @@
 
 #### 按钮 hover 规则
 
-- 统一 `translateY(-1px)` + 增强阴影
+- 统一 `translateY(-1px)` + 颜色/背景/边框变化
+- 禁止外阴影、外发光
 - **不缩放**（不用 `scale`）
 
 ### 主题切换机制
@@ -266,7 +316,7 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 
 1. 新建页面**不需要自己写外层布局容器**。`MainPage` 已经提供 `.app-content` 作为滚动区，非首页还自动渲染 `RouterBar` 导航栏。页面组件直接写自己的内容即可。
 2. **先看两个关键参考文件**：
-   - [DemoPage.tsx](../src/views/DemoPage.tsx) — 所有 17 个通用组件的完整用法示例，是写新页面最重要的参考
+   - [DemoPage.tsx](../src/views/DemoPage.tsx) — 所有 46 个通用组件的完整用法示例，是写新页面最重要的参考
    - [基础组件规范.md](基础组件规范.md) — 每个组件的 props 接口和样式要求
 
 ### 二、样式规则（最重要）
@@ -278,7 +328,7 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 
 ### 三、组件复用
 
-7. 先查 `src/components/common/index.ts` 是否已有可用组件。17 个通用组件（Button、Input、Dialog、Toast、Select、Switch、Tooltip、Popover、DropdownMenu、ContextMenu、Confirm、Tabs、ScrollArea、EmptyState、Skeleton、Textarea、IconContainer）应直接复用。
+7. 先查 `src/components/common/index.ts` 是否已有可用组件。目前已有 46 个 common 组件，直接复用，不要重复造轮子。
 8. 全局样式类 `.glass`、`.btn.*`、`.pill.*`、`.icon-btn` 在简单场景直接使用，不需要额外 CSS。
 9. 新通用组件放 `src/components/common/`，从 `index.ts` 统一导出。页面私有组件放页面目录内。
 

@@ -1,0 +1,45 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  color: var(--glass-brd);
+  transition:
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.star {
+  width: 18px;
+  height: 18px;
+}
+
+.item:hover {
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+.active .star {
+  color: var(--accent);
+}
+
+.item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
