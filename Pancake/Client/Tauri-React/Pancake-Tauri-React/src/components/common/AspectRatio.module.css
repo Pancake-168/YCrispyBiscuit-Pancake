@@ -1,0 +1,8 @@
+.root {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-elev);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-md);
+}

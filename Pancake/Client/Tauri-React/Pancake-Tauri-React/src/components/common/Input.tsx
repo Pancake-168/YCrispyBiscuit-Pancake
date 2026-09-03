@@ -1,4 +1,5 @@
 import { useId, useCallback, type InputHTMLAttributes } from 'react';
+import * as RadixLabel from '@radix-ui/react-label';
 import styles from './Input.module.css';
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> {
@@ -103,9 +104,10 @@ export default function Input({
   return (
     <div className={`${styles.wrapper} ${className}`}>
       {label && (
-        <label className={styles.label} htmlFor={inputId}>
+        // 使用 Radix Label 替代原生 label，保证可访问性行为一致
+        <RadixLabel.Root className={styles.label} htmlFor={inputId}>
           {label}
-        </label>
+        </RadixLabel.Root>
       )}
       {fieldArea}
       {error ? (

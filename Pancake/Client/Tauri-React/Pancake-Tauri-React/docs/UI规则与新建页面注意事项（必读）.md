@@ -25,10 +25,10 @@
 --text: #e6e9ef;
 --muted: #9aa3b2;
 
-/* 强调色 */
---accent: #e2b04a;
---accent-2: #f0c060;
---accent-rgb: 226, 176, 74;
+/* 强调色（琥珀金） */
+  --accent: #fbbf24;
+  --accent-2: #fcd34d;
+--accent-rgb: 251, 191, 36;
 
 /* 功能域色 */
 --color-system: #82aaff;
@@ -81,21 +81,22 @@
 
 ```css
 :root[data-theme='light'] {
-  --bg: #ffffff;
+  --bg: #f7f8fa;
   --bg-elev: #ffffff;
-  --glass: rgba(0,0,0,0.02);
-  --glass-brd: rgba(0,0,0,0.08);
+  --glass: #ffffff;
+  --glass-brd: rgba(0,0,0,0.14);
 
-  --text: #0c1117;
-  --muted: #5a6678;
+  --text: #10151c;
+  --muted: #5b6472;
 
-  --accent: #c78c2e;
-  --accent-2: #d4a040;
-  --accent-rgb: 199, 140, 46;
+  --accent: #fbbf24;
+  --accent-2: #fcd34d;
+  --accent-rgb: 217, 119, 6;
 
   --color-system/job/agent/tool/success/warn/error 均作了对应调整;
   --color-error-rgb: 217, 79, 86;
-  --border: rgba(0,0,0,0.08);
+  --border: rgba(0,0,0,0.12);
+  --dialog-overlay-bg: rgba(15,23,42,0.18);
 
   --shadow-sm/md/lg 减弱（透明度和偏移降低）;
 
@@ -104,11 +105,10 @@
 }
 ```
 
-#### 不跟随主题的 Token（仅在 `:root`，亮色不覆盖）
+#### 固定深色的 Token（仅在 `:root`，亮色不覆盖）
 
 | Token                 | 值                       | 用途                     |
 | --------------------- | ------------------------ | ------------------------ |
-| `--dialog-overlay-bg` | `rgba(0,0,0,0.45)`       | Dialog 遮罩层            |
 | `--tooltip-bg`        | `rgba(32,32,32,0.92)`    | Tooltip 背景（永远深色） |
 | `--tooltip-text`      | `rgba(255,255,255,0.93)` | Tooltip 文字             |
 | `--tooltip-border`    | `rgba(255,255,255,0.12)` | Tooltip 边框             |

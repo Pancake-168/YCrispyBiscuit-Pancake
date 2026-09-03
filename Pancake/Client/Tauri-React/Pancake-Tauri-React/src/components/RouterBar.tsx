@@ -14,6 +14,7 @@ export default function RouterBar() {
   return (
     <nav className="app-nav">
       <Link to="/">首页</Link>
+      <Link to="/demo">demo</Link>
       {/* 内嵌页专属地址输入：位于导航栏右侧，仅桌面宽度显示（窄屏回落到页面内工具栏） */}
       {pathname === '/web_embed' && (
         <div className={styles.navAddress}>

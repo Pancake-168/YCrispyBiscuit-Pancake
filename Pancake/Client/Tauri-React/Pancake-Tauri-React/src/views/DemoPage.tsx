@@ -1,23 +1,40 @@
 import { useState } from 'react';
 import { createLogger } from '@/utils/logger';
 import {
+  Accordion,
+  AlertDialog,
+  AspectRatio,
+  Avatar,
   Button,
-  IconContainer,
-  Input,
-  Textarea,
-  Select,
-  Switch,
-  Tooltip,
-  Popover,
-  DropdownMenu,
+  Checkbox,
+  Collapsible,
+  Confirm,
   ContextMenu,
   Dialog,
-  Confirm,
-  toast,
-  Tabs,
-  ScrollArea,
+  DropdownMenu,
   EmptyState,
+  HoverCard,
+  IconContainer,
+  Input,
+  Label,
+  Menubar,
+  NavigationMenu,
+  Popover,
+  Progress,
+  RadioGroup,
+  ScrollArea,
+  Select,
+  Separator,
   Skeleton,
+  Slider,
+  Slot,
+  Switch,
+  Tabs,
+  Textarea,
+  Toggle,
+  Tooltip,
+  VisuallyHidden,
+  toast,
 } from '@/components/common';
 import type { MenuItem } from '@/components/common';
 import {
@@ -147,6 +164,18 @@ export default function DemoPage() {
 
   // Tabs
   const [activeTabLog, setActiveTabLog] = useState('tab-1');
+
+  // Checkbox
+  const [checkboxChecked, setCheckboxChecked] = useState(false);
+
+  // RadioGroup
+  const [radioValue, setRadioValue] = useState('option-1');
+
+  // Slider
+  const [sliderValue, setSliderValue] = useState([40]);
+
+  // Toggle
+  const [togglePressed, setTogglePressed] = useState(false);
 
   // ---- Select 选项 ----
   const fruitOptions = [
@@ -286,7 +315,7 @@ export default function DemoPage() {
             fontSize: 'var(--text-sm)',
           }}
         >
-          共 17 个基础组件，一一展示常规用法
+          共 34 个基础组件，一一展示常规用法
         </p>
       </div>
 
@@ -1046,6 +1075,451 @@ export default function DemoPage() {
         <Row label="矩形">
           <Skeleton variant="rect" width={200} height={120} />
           <Skeleton variant="rect" width="100%" height={40} />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §18 Accordion                                      */}
+      {/* ================================================ */}
+      <Section
+        id="accordion"
+        title="§18 Accordion"
+        description="手风琴折叠面板，支持单项与多项展开。"
+      >
+        <Row label="单项手风琴">
+          <div style={{ width: '100%', maxWidth: 420 }}>
+            <Accordion
+              items={[
+                {
+                  value: 'acc-1',
+                  trigger: '基础说明',
+                  content: <span>这里是 Accordion 第一项内容。</span>,
+                },
+                {
+                  value: 'acc-2',
+                  trigger: '使用场景',
+                  content: <span>适合设置分组、FAQ、折叠详情等场景。</span>,
+                },
+                {
+                  value: 'acc-3',
+                  trigger: '禁用项',
+                  disabled: true,
+                  content: <span>这一项当前不可展开。</span>,
+                },
+              ]}
+            />
+          </div>
+        </Row>
+        <Row label="多项手风琴">
+          <div style={{ width: '100%', maxWidth: 420 }}>
+            <Accordion
+              type="multiple"
+              items={[
+                { value: 'multi-1', trigger: '第一项', content: <span>可以同时展开多项。</span> },
+                { value: 'multi-2', trigger: '第二项', content: <span>这一项也保持独立开关。</span> },
+              ]}
+            />
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §19 AlertDialog                                    */}
+      {/* ================================================ */}
+      <Section
+        id="alertDialog"
+        title="§19 AlertDialog"
+        description="AlertDialog — 需要明确确认的关键操作弹窗。"
+      >
+        <Row label="危险确认">
+          <AlertDialog
+            trigger={<Button variant="danger">永久删除</Button>}
+            title="永久删除文件？"
+            description="此操作不可撤销。"
+            cancelLabel="再想想"
+            actionLabel="永久删除"
+            onAction={() => toast('文件已永久删除', 'error')}
+          >
+            <span>删除后无法恢复，请确认是否继续。</span>
+          </AlertDialog>
+        </Row>
+        <Row label="普通确认">
+          <AlertDialog
+            trigger={<Button variant="secondary">退出登录</Button>}
+            title="退出登录"
+            description="退出后需要重新验证身份。"
+            onAction={() => toast('已退出登录', 'success')}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §20 AspectRatio                                    */}
+      {/* ================================================ */}
+      <Section
+        id="aspectRatio"
+        title="§20 AspectRatio"
+        description="固定宽高比容器，适合图片、视频等媒体内容。"
+      >
+        <Row label="16:9">
+          <div style={{ width: 260 }}>
+            <AspectRatio ratio={16 / 9}>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'var(--glass)',
+                  color: 'var(--muted)',
+                  fontSize: 'var(--text-sm)',
+                }}
+              >
+                16:9
+              </div>
+            </AspectRatio>
+          </div>
+        </Row>
+        <Row label="1:1">
+          <div style={{ width: 120 }}>
+            <AspectRatio ratio={1}>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'var(--glass)',
+                  color: 'var(--muted)',
+                  fontSize: 'var(--text-sm)',
+                }}
+              >
+                1:1
+              </div>
+            </AspectRatio>
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §21 Avatar                                         */}
+      {/* ================================================ */}
+      <Section
+        id="avatar"
+        title="§21 Avatar"
+        description="头像容器，图片加载失败时自动显示 fallback。"
+      >
+        <Row label="图片头像">
+          <Avatar src="https://github.com/fluidicon.png" alt="GitHub" size={48} />
+          <Avatar src="https://github.com/fluidicon.png" alt="GitHub" size={32} />
+        </Row>
+        <Row label="加载失败 fallback">
+          <Avatar src="/nonexistent.png" alt="不存在的头像" size={48} />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §22 Checkbox                                       */}
+      {/* ================================================ */}
+      <Section
+        id="checkbox"
+        title="§22 Checkbox"
+        description="复选框，支持受控勾选与禁用态。"
+      >
+        <Row label="受控">
+          <Checkbox
+            checked={checkboxChecked}
+            onChange={setCheckboxChecked}
+            label={checkboxChecked ? '已勾选' : '未勾选'}
+          />
+        </Row>
+        <Row label="禁用">
+          <Checkbox checked={false} onChange={() => {}} label="不可操作" disabled />
+          <Checkbox checked={true} onChange={() => {}} disabled />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §23 Collapsible                                    */}
+      {/* ================================================ */}
+      <Section
+        id="collapsible"
+        title="§23 Collapsible"
+        description="可展开/收起的折叠内容区。"
+      >
+        <Row label="展开详情">
+          <div style={{ width: '100%', maxWidth: 420 }}>
+            <Collapsible trigger="查看高级设置">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+                <Checkbox checked={checkboxChecked} onChange={setCheckboxChecked} label="启用实验功能" />
+                <Button variant="subtle" onClick={() => toast('设置已保存', 'success')}>
+                  保存设置
+                </Button>
+              </div>
+            </Collapsible>
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §24 HoverCard                                      */}
+      {/* ================================================ */}
+      <Section
+        id="hoverCard"
+        title="§24 HoverCard"
+        description="鼠标悬停后弹出的信息卡片。"
+      >
+        <Row label="悬停查看">
+          <HoverCard trigger={<Button variant="subtle">悬停查看用户</Button>}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-md)',
+                padding: 'var(--spacing-lg)',
+                minWidth: 220,
+              }}
+            >
+              <Avatar src="https://github.com/fluidicon.png" alt="GitHub" size={40} />
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ color: 'var(--text)', fontWeight: 600 }}>Pancake</span>
+                <span style={{ color: 'var(--muted)', fontSize: 'var(--text-xs)' }}>
+                  悬停卡片示例
+                </span>
+              </div>
+            </div>
+          </HoverCard>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §25 Label                                         */}
+      {/* ================================================ */}
+      <Section
+        id="label"
+        title="§25 Label"
+        description="表单标签，点击可聚焦关联控件。"
+      >
+        <Row label="Label + Input">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-xs)' }}>
+            <Label htmlFor="demo-label-input">昵称</Label>
+            <Input
+              id="demo-label-input"
+              value={inputValue}
+              onChange={setInputValue}
+              placeholder="请输入昵称"
+              style={{ width: 220 }}
+            />
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §26 Menubar                                        */}
+      {/* ================================================ */}
+      <Section
+        id="menubar"
+        title="§26 Menubar"
+        description="桌面风格顶部菜单栏。"
+      >
+        <Row label="菜单栏">
+          <Menubar
+            menus={[
+              {
+                label: '文件',
+                items: [
+                  { label: '新建', onClick: () => toast('新建文件', 'info') },
+                  { label: '打开', onClick: () => toast('打开文件', 'info') },
+                  { label: '', separator: true as const },
+                  { label: '退出', danger: true, onClick: () => toast('退出菜单', 'warn') },
+                ],
+              },
+              {
+                label: '编辑',
+                items: [
+                  { label: '复制', onClick: () => toast('复制', 'success') },
+                  { label: '剪切', onClick: () => toast('剪切', 'success') },
+                ],
+              },
+              {
+                label: '帮助',
+                content: <div style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>帮助面板内容</div>,
+              },
+            ]}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §27 NavigationMenu                                */}
+      {/* ================================================ */}
+      <Section
+        id="navigationMenu"
+        title="§27 NavigationMenu"
+        description="导航菜单，支持普通链接与展开面板。"
+      >
+        <Row label="导航示例">
+          <NavigationMenu
+            items={[
+              { label: '首页', onClick: () => toast('进入首页', 'info') },
+              {
+                label: '工具',
+                content: (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                    <Button variant="subtle" onClick={() => toast('音频转码', 'info')}>
+                      音频转码
+                    </Button>
+                    <Button variant="subtle" onClick={() => toast('图片转码', 'info')}>
+                      图片转码
+                    </Button>
+                  </div>
+                ),
+              },
+              { label: '关于', onClick: () => toast('关于 Pancake', 'info') },
+            ]}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §28 Progress                                       */}
+      {/* ================================================ */}
+      <Section
+        id="progress"
+        title="§28 Progress"
+        description="进度条，展示任务完成度。"
+      >
+        <Row label="普通进度">
+          <div style={{ width: '100%', maxWidth: 320 }}>
+            <Progress value={65} />
+          </div>
+        </Row>
+        <Row label="接近完成">
+          <div style={{ width: '100%', maxWidth: 320 }}>
+            <Progress value={92} />
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §29 RadioGroup                                     */}
+      {/* ================================================ */}
+      <Section
+        id="radioGroup"
+        title="§29 RadioGroup"
+        description="单选组，键盘方向键可切换选项。"
+      >
+        <Row label="单选">
+          <RadioGroup
+            value={radioValue}
+            onChange={setRadioValue}
+            label="偏好主题"
+            options={[
+              { value: 'option-1', label: '跟随系统' },
+              { value: 'option-2', label: '深色' },
+              { value: 'option-3', label: '浅色' },
+            ]}
+          />
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §30 Separator                                      */}
+      {/* ================================================ */}
+      <Section
+        id="separator"
+        title="§30 Separator"
+        description="横向或纵向视觉分隔线。"
+      >
+        <Row label="横向">
+          <div style={{ width: 200 }}>
+            <Separator />
+          </div>
+        </Row>
+        <Row label="纵向">
+          <div style={{ height: 48, display: 'flex' }}>
+            <Separator orientation="vertical" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §31 Slider                                         */}
+      {/* ================================================ */}
+      <Section
+        id="slider"
+        title="§31 Slider"
+        description="滑块，适合音量、亮度、数值范围等场景。"
+      >
+        <Row label="受控滑块">
+          <div style={{ width: '100%', maxWidth: 320 }}>
+            <Slider
+              value={sliderValue}
+              onValueChange={setSliderValue}
+              label="数值"
+              min={0}
+              max={100}
+            />
+            <span style={{ color: 'var(--muted)', fontSize: 'var(--text-xs)' }}>
+              当前值：{sliderValue.join(', ')}
+            </span>
+          </div>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §32 Slot                                           */}
+      {/* ================================================ */}
+      <Section
+        id="slot"
+        title="§32 Slot"
+        description="把父级 props 合并到子元素上的透传封装。"
+      >
+        <Row label="Slot 包裹按钮">
+          <Slot onClick={() => toast('Slot 事件已合并', 'info')}>
+            <Button variant="secondary">点击测试 Slot</Button>
+          </Slot>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §33 Toggle                                         */}
+      {/* ================================================ */}
+      <Section
+        id="toggle"
+        title="§33 Toggle"
+        description="按压态按钮，适合图标开关。"
+      >
+        <Row label="按压开关">
+          <Toggle pressed={togglePressed} onPressedChange={setTogglePressed} aria-label="切换通知">
+            <VscBell size={16} />
+          </Toggle>
+          <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
+            {togglePressed ? '已开启' : '已关闭'}
+          </span>
+        </Row>
+        <Row label="禁用">
+          <Toggle disabled aria-label="禁用切换">
+            <VscBell size={16} />
+          </Toggle>
+        </Row>
+      </Section>
+
+      {/* ================================================ */}
+      {/* §34 VisuallyHidden                                 */}
+      {/* ================================================ */}
+      <Section
+        id="visuallyHidden"
+        title="§34 VisuallyHidden"
+        description="视觉隐藏但保留给读屏器访问的内容。"
+      >
+        <Row label="读屏专用文本">
+          <span style={{ color: 'var(--muted)', fontSize: 'var(--text-sm)' }}>
+            下面内容只对读屏器可见：
+          </span>
+          <VisuallyHidden>这是一段屏幕阅读器可访问但页面不可见的文本。</VisuallyHidden>
         </Row>
       </Section>
     </div>

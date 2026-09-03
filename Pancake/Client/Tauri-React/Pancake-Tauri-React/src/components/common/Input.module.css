@@ -26,9 +26,7 @@
   outline: none;
   /* number 类型跟随当前主题色，避免 dark 模式下出现白色背景箭头 */
   color-scheme: var(--color-scheme);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 /* ---- number 输入框箭头主题化（Chrome/Edge） ---- */
@@ -98,7 +96,6 @@
 
 .field:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.15);
 }
 
 .field:disabled {
@@ -108,10 +105,6 @@
 
 .field.hasError {
   border-color: var(--color-error);
-}
-
-.field.hasError:focus {
-  box-shadow: 0 0 0 2px rgba(var(--color-error-rgb), 0.15);
 }
 
 .textarea {

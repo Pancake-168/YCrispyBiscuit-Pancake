@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import * as RadixLabel from '@radix-ui/react-label';
 import * as RadixSwitch from '@radix-ui/react-switch';
 import styles from './Switch.module.css';
 
@@ -28,9 +29,10 @@ export default function Switch({ checked, onChange, label, disabled = false }: S
         <RadixSwitch.Thumb className={styles.thumb} />
       </RadixSwitch.Root>
       {label && (
-        <label className={styles.label} htmlFor={generatedId}>
+        // 使用 Radix Label 而不是原生 label，保持封装内不直接写原生控件
+        <RadixLabel.Root className={styles.label} htmlFor={generatedId}>
           {label}
-        </label>
+        </RadixLabel.Root>
       )}
     </div>
   );

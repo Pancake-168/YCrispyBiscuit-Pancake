@@ -1,0 +1,14 @@
+.root {
+  flex-shrink: 0;
+  background: var(--glass-brd);
+}
+
+.horizontal {
+  width: 100%;
+  height: 1px;
+}
+
+.vertical {
+  height: 100%;
+  width: 1px;
+}

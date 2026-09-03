@@ -29,14 +29,11 @@
   padding: 6px 10px;
   cursor: pointer;
   outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .trigger:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.15);
 }
 
 .trigger:disabled {
@@ -63,7 +60,6 @@
   border: 1px solid var(--glass-brd);
   backdrop-filter: blur(var(--blur-panel));
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
   overflow: hidden;
   z-index: 110;
   max-height: var(--radix-select-content-available-height, 260px); /* 窗口小时限制高度 */

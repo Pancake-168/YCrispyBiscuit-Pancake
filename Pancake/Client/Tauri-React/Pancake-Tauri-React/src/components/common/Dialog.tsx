@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import * as RadixDialog from '@radix-ui/react-dialog';
 import { VscClose } from 'react-icons/vsc';
+import Button from './Button';
 import styles from './Dialog.module.css';
 
 interface DialogProps {
@@ -39,13 +40,14 @@ export default function Dialog({
           )}
           <div className={styles.body}>{children}</div>
           <RadixDialog.Close asChild>
-            <button
+            <Button
+              variant="subtle"
               className="icon-btn"
               aria-label="关闭"
               style={{ position: 'absolute', top: 'var(--spacing-lg)', right: 'var(--spacing-lg)' }}
             >
               <VscClose size={16} />
-            </button>
+            </Button>
           </RadixDialog.Close>
         </RadixDialog.Content>
       </RadixDialog.Portal>

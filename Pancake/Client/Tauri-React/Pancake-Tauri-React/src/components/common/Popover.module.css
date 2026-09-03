@@ -3,7 +3,6 @@
   border: 1px solid var(--glass-brd);
   backdrop-filter: blur(var(--blur-panel));
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
   z-index: 50;
   animation: popoverIn 0.2s ease;
 }
