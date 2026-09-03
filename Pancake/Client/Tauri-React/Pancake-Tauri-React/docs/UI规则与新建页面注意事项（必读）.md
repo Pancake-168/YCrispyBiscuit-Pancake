@@ -177,7 +177,7 @@
 
 ### 第三层：组件规范
 
-项目共有 **46 个通用组件**，统一从 `src/components/common/index.ts` 导出：
+项目共有 **44 个通用组件**，统一从 `src/components/common/index.ts` 导出：
 
 **基础组件（§1-§17）**
 
@@ -199,42 +199,38 @@
 16. EmptyState
 17. Skeleton
 
-**Radix 封装组件（§18-§34）**
+**Radix 封装组件（§18-§32）**
 
 18. Accordion
 19. AlertDialog
 20. AspectRatio
-21. Avatar
-22. Checkbox
-23. Collapsible
-24. HoverCard
-25. Label
-26. Menubar
-27. NavigationMenu
-28. Progress
-29. RadioGroup
-30. Separator
-31. Slider
-32. Slot
-33. Toggle
-34. VisuallyHidden
+21. Checkbox
+22. Collapsible
+23. HoverCard
+24. Label
+25. Menubar
+26. NavigationMenu
+27. Progress
+28. RadioGroup
+29. Separator
+30. Slider
+31. Toggle
+32. VisuallyHidden
+    **扩展控件（§33-§44）**
 
-**扩展控件（§35-§46）**
-
-35. Drawer
-36. SegmentedControl
-37. Rating
-38. Breadcrumb
-39. Combobox
-40. CommandPalette
-41. Stepper
-42. Toolbar
-43. Calendar
-44. DatePicker
-45. TreeSelect
-46. Cascader
-
-详细规范见 [基础组件规范.md](基础组件规范.md)，完整用法示例见 [DemoPage.tsx](../src/views/DemoPage.tsx)。
+33. Drawer
+34. SegmentedControl
+35. Rating
+36. Breadcrumb
+37. Combobox
+38. CommandPalette
+39. Stepper
+40. Toolbar
+41. Calendar
+42. DatePicker
+43. TreeSelect
+44. Cascader
+    详细规范见 [基础组件规范.md](基础组件规范.md)，完整用法示例见 [DemoPage.tsx](../src/views/DemoPage.tsx)。
 
 #### 硬性约束
 
@@ -316,7 +312,7 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 
 1. 新建页面**不需要自己写外层布局容器**。`MainPage` 已经提供 `.app-content` 作为滚动区，非首页还自动渲染 `RouterBar` 导航栏。页面组件直接写自己的内容即可。
 2. **先看两个关键参考文件**：
-   - [DemoPage.tsx](../src/views/DemoPage.tsx) — 所有 46 个通用组件的完整用法示例，是写新页面最重要的参考
+   - [DemoPage.tsx](../src/views/DemoPage.tsx) — 所有 44 个通用组件的完整用法示例，是写新页面最重要的参考
    - [基础组件规范.md](基础组件规范.md) — 每个组件的 props 接口和样式要求
 
 ### 二、样式规则（最重要）
@@ -328,7 +324,7 @@ index.css（全局类 .glass / .btn.* / .pill.* / 布局框架）
 
 ### 三、组件复用
 
-7. 先查 `src/components/common/index.ts` 是否已有可用组件。目前已有 46 个 common 组件，直接复用，不要重复造轮子。
+7. 先查 `src/components/common/index.ts` 是否已有可用组件。目前已有 44 个 common 组件，直接复用，不要重复造轮子。
 8. 全局样式类 `.glass`、`.btn.*`、`.pill.*`、`.icon-btn` 在简单场景直接使用，不需要额外 CSS。
 9. 新通用组件放 `src/components/common/`，从 `index.ts` 统一导出。页面私有组件放页面目录内。
 

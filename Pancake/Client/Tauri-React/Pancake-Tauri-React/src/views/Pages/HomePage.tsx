@@ -1,14 +1,12 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-import { VscGithub } from 'react-icons/vsc';
-import { SiQq } from 'react-icons/si';
 import Carousel from '@/components/HomePageCarousel';
 import { Pancake_Tools } from '@/composables/FunctionList';
 import { IconContainer } from '@/components/common';
 import { isTauri } from '@/utils/isTauri';
 import { useThemeStore } from '@/stores/theme.store';
 import styles from './HomePage.module.css';
+import { getIcon } from '@/icons';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -46,7 +44,7 @@ export default function HomePage() {
       weather: '/weather',
       bilibili_login: '/bilibili_login',
       web_embed: '/web_embed',
-      demo:'/demo'
+      demo: '/demo',
     };
     return base.map((t) => ({
       ...t,
@@ -109,7 +107,7 @@ export default function HomePage() {
               <IconContainer
                 size={sizes.iconSize}
                 shape="circle"
-                src={<VscGithub size={sizes.iconInner1} />}
+                src={getIcon('github', sizes.iconInner1)}
               />
             </a>
             <a
@@ -122,7 +120,7 @@ export default function HomePage() {
               <IconContainer
                 size={sizes.iconSize}
                 shape="circle"
-                src={<SiQq size={sizes.iconInner2} />}
+                src={getIcon('qq', sizes.iconInner2)}
               />
             </a>
           </div>
@@ -143,7 +141,10 @@ export default function HomePage() {
 
         {/* 向下滚动提示 */}
         <div className={styles.scrollHint} onClick={scrollToSecond}>
-          <MdKeyboardArrowDown size={sizes.scrollIcon} />
+          <IconContainer
+            size={sizes.scrollIcon}
+            src={getIcon('keyboardArrowDown', sizes.scrollIcon)}
+          />
         </div>
       </div>
 

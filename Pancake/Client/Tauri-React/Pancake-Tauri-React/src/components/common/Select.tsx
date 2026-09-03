@@ -1,7 +1,8 @@
 import { useId } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
-import { VscChevronDown } from 'react-icons/vsc';
+import IconContainer from './IconContainer';
 import styles from './Select.module.css';
+import { getIcon } from '@/icons';
 
 interface SelectOption {
   value: string;
@@ -48,7 +49,7 @@ export default function Select({
             {options.find((o) => o.value === value)?.label}
           </RadixSelect.Value>
           <RadixSelect.Icon>
-            <VscChevronDown className={styles.chevron} />
+            <IconContainer size={16} src={getIcon('chevronDown', 16, styles.chevron)} />
           </RadixSelect.Icon>
         </RadixSelect.Trigger>
 

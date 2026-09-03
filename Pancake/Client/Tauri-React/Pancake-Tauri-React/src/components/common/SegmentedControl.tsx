@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import * as RadixRadioGroup from '@radix-ui/react-radio-group';
+import RadioGroup from './RadioGroup';
 import styles from './SegmentedControl.module.css';
 
 interface SegmentedOption {
@@ -18,7 +18,7 @@ interface SegmentedControlProps {
 
 /**
  * SegmentedControl — 分段选择器。
- * 使用 Radix RadioGroup 做单选语义，选中态通过 data-state 高亮。
+ * 基于公共 RadioGroup 实现单选语义，选中态通过 data-state 高亮。
  */
 export default function SegmentedControl({
   value,
@@ -28,23 +28,21 @@ export default function SegmentedControl({
   className = '',
 }: SegmentedControlProps) {
   return (
-    <RadixRadioGroup.Root
-      className={`${styles.root} ${className}`}
+    <RadioGroup
       value={value}
-      onValueChange={onChange}
+      onChange={onChange}
+      options={options.map((option) => ({
+        value: option.value,
+        content: option.label,
+        disabled: option.disabled,
+      }))}
       disabled={disabled}
-    >
-      {options.map((option) => (
-        <RadixRadioGroup.Item
-          key={option.value}
-          value={option.value}
-          disabled={disabled || option.disabled}
-          className={styles.item}
-        >
-          {option.label}
-        </RadixRadioGroup.Item>
-      ))}
-    </RadixRadioGroup.Root>
+      bare
+      wrapOptions={false}
+      className={className}
+      groupClassName={styles.root}
+      itemClassName={styles.item}
+    />
   );
 }
 

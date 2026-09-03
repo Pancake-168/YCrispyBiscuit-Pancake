@@ -231,3 +231,8 @@
   border-radius: var(--radius-md);
   background: rgba(var(--accent-rgb), 0.06);
 }
+
+.convertButton {
+  width: 100%;
+  margin-top: var(--spacing-md);
+}

@@ -3,6 +3,8 @@
   align-items: center;
   gap: 2px;
   padding: 2px;
+  width: fit-content;
+  min-width: max-content;
   background: var(--input-bg);
   border: 1px solid var(--glass-brd);
   border-radius: var(--radius-md);
@@ -12,7 +14,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 12px;
+  flex: 1 0 auto;
+  min-width: max-content;
+  padding: 6px 18px;
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -21,6 +25,7 @@
   font-size: var(--text-sm);
   font-weight: 600;
   line-height: 1.4;
+  white-space: nowrap;
   cursor: pointer;
   outline: none;
   transition:

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef, useEffect, type ReactNode } from 'react';
-import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { IconContainer } from '@/components/common';
 import styles from './index.module.css';
+import { getIcon } from '@/icons';
 
 export interface CarouselItem {
   id: string;
@@ -142,7 +142,7 @@ export default function Carousel({
         <IconContainer
           size={arrowSize}
           shape="circle"
-          src={<MdKeyboardArrowUp size={arrowIconSize} />}
+          src={getIcon('keyboardArrowUp', arrowIconSize)}
         />
       </button>
 
@@ -154,7 +154,7 @@ export default function Carousel({
         <IconContainer
           size={arrowSize}
           shape="circle"
-          src={<MdKeyboardArrowDown size={arrowIconSize} />}
+          src={getIcon('keyboardArrowDown', arrowIconSize)}
         />
       </button>
 
@@ -190,12 +190,12 @@ export default function Carousel({
               renderItem(item, realIndex, isActive)
             ) : (
               <>
-                <img
+                <IconContainer
+                  size={imageSize}
+                  shape="rounded"
                   className={styles.cardImage}
                   src={item.image}
                   alt={item.title}
-                  style={{ width: imageSize, height: imageSize }}
-                  draggable={false}
                 />
                 <div className={styles.cardText}>
                   <span className={`${styles.cardTitle} ${isActive ? styles.cardTitleActive : ''}`}>

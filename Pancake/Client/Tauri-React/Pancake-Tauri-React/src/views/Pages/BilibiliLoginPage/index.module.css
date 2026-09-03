@@ -189,3 +189,7 @@
   user-select: text;
   -webkit-user-select: text;
 }
+
+.actionButton {
+  width: 200px;
+}

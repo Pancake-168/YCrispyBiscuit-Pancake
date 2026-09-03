@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import * as RadixAccordion from '@radix-ui/react-accordion';
-import { VscChevronDown } from 'react-icons/vsc';
+import IconContainer from './IconContainer';
 import styles from './Accordion.module.css';
+import { getIcon } from '@/icons';
 
 interface AccordionItem {
   value: string;
@@ -44,7 +45,7 @@ export default function Accordion({
             <RadixAccordion.Trigger className={styles.trigger}>
               <span className={styles.triggerText}>{item.trigger}</span>
               {/* 展开方向箭头，data-state 变化时由 CSS 旋转 */}
-              <VscChevronDown className={styles.chevron} />
+              <IconContainer size={16} src={getIcon('chevronDown', 16, styles.chevron)} />
             </RadixAccordion.Trigger>
           </RadixAccordion.Header>
           <RadixAccordion.Content className={styles.content}>

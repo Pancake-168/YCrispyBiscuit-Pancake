@@ -1,7 +1,9 @@
 import { useCallback, useState, useEffect, type ReactNode } from 'react';
 import * as RadixToast from '@radix-ui/react-toast';
-import { VscClose } from 'react-icons/vsc';
+import Button from './Button';
+import IconContainer from './IconContainer';
 import styles from './Toast.module.css';
+import { getIcon } from '@/icons';
 
 type ToastVariant = 'success' | 'error' | 'warn' | 'info';
 
@@ -116,18 +118,15 @@ function ToastItem({
       }}
     >
       {/* 左边色点 — 复用全局 .pill 色值逻辑 */}
-      <div
-        className={pillClass}
-        style={{ width: 8, height: 8, padding: 0, minWidth: 8, borderRadius: '50%' }}
-      />
+      <div className={`${pillClass} ${styles.dot}`} />
       <span className={styles.message}>{t.message}</span>
       {t.action && (
-        <button className={styles.action} onClick={t.action.onClick}>
+        <Button variant="subtle" className={styles.action} onClick={t.action.onClick}>
           {t.action.label}
-        </button>
+        </Button>
       )}
       <RadixToast.Close className={styles.close} aria-label="关闭">
-        <VscClose size={14} />
+        <IconContainer size={14} src={getIcon('close', 14)} />
       </RadixToast.Close>
     </RadixToast.Root>
   );

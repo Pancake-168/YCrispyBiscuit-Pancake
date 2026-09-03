@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { VscChevronRight } from 'react-icons/vsc';
 import Button from './Button';
+import IconContainer from './IconContainer';
 import styles from './Breadcrumb.module.css';
+import { getIcon } from '@/icons';
 
 interface BreadcrumbItem {
   label: ReactNode;
@@ -35,7 +36,9 @@ export default function Breadcrumb({ items, className = '' }: BreadcrumbProps) {
             ) : (
               <span className={styles.muted}>{item.label}</span>
             )}
-            {!isLast && <VscChevronRight className={styles.separator} />}
+            {!isLast && (
+              <IconContainer size={16} src={getIcon('chevronRight', 16, styles.separator)} />
+            )}
           </span>
         );
       })}

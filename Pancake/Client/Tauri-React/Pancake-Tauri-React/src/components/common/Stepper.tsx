@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { VscCheck } from 'react-icons/vsc';
 import Button from './Button';
+import IconContainer from './IconContainer';
 import styles from './Stepper.module.css';
+import { getIcon } from '@/icons';
 
 interface StepItem {
   title: ReactNode;
@@ -38,7 +39,7 @@ export default function Stepper({ steps, current, onChange, className = '' }: St
               onClick={() => onChange?.(index)}
               aria-current={isActive ? 'step' : undefined}
             >
-              {isCompleted ? <VscCheck size={14} /> : index + 1}
+              {isCompleted ? <IconContainer size={14} src={getIcon('check', 14)} /> : index + 1}
             </Button>
             <div className={styles.text}>
               <span className={styles.title}>{step.title}</span>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import * as RadixPopover from '@radix-ui/react-popover';
+import Popover from './Popover';
 import Button from './Button';
 import styles from './Cascader.module.css';
 
@@ -72,49 +72,50 @@ export default function Cascader({
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      <RadixPopover.Root
+      <Popover
         open={open}
         onOpenChange={(next) => {
           // 打开时把当前已选路径作为浏览起点
           if (next) setActivePath(value);
           setOpen(next);
         }}
-      >
-        <RadixPopover.Trigger asChild>
+        contentClassName={styles.content}
+        bareContent
+        align="start"
+        sideOffset={4}
+        showArrow={false}
+        trigger={
           <Button variant="secondary" block className={styles.trigger}>
             <span className={selectedLabels.length ? styles.text : styles.placeholder}>
               {selectedLabels.length ? selectedLabels.join(' / ') : placeholder}
             </span>
           </Button>
-        </RadixPopover.Trigger>
-        <RadixPopover.Portal>
-          <RadixPopover.Content className={styles.content} align="start" sideOffset={4}>
-            <div className={styles.columns}>
-              {columns.map((column, columnIndex) => (
-                <div className={styles.column} key={columnIndex}>
-                  {column.map((option) => {
-                    const isActive = activePath[columnIndex] === option.value;
-                    const hasChildren = Boolean(option.children?.length);
-                    return (
-                      <Button
-                        key={option.value}
-                        variant="subtle"
-                        block
-                        className={`${styles.option} ${isActive ? styles.active : ''}`}
-                        disabled={option.disabled}
-                        onClick={() => selectOption(columnIndex, option)}
-                      >
-                        <span className={styles.optionText}>{option.label}</span>
-                        {hasChildren && <span className={styles.arrow}>›</span>}
-                      </Button>
-                    );
-                  })}
-                </div>
-              ))}
+        }
+      >
+        <div className={styles.columns}>
+          {columns.map((column, columnIndex) => (
+            <div className={styles.column} key={columnIndex}>
+              {column.map((option) => {
+                const isActive = activePath[columnIndex] === option.value;
+                const hasChildren = Boolean(option.children?.length);
+                return (
+                  <Button
+                    key={option.value}
+                    variant="subtle"
+                    block
+                    className={`${styles.option} ${isActive ? styles.active : ''}`}
+                    disabled={option.disabled}
+                    onClick={() => selectOption(columnIndex, option)}
+                  >
+                    <span className={styles.optionText}>{option.label}</span>
+                    {hasChildren && <span className={styles.arrow}>›</span>}
+                  </Button>
+                );
+              })}
             </div>
-          </RadixPopover.Content>
-        </RadixPopover.Portal>
-      </RadixPopover.Root>
+          ))}
+        </div>
+      </Popover>
     </div>
   );
 }

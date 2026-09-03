@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import * as RadixCollapsible from '@radix-ui/react-collapsible';
-import { VscChevronDown } from 'react-icons/vsc';
+import IconContainer from './IconContainer';
 import styles from './Collapsible.module.css';
+import { getIcon } from '@/icons';
 
 interface CollapsibleProps {
   trigger: ReactNode;
@@ -35,7 +36,7 @@ export default function Collapsible({
       <RadixCollapsible.Trigger className={styles.trigger}>
         <span>{trigger}</span>
         {/* 箭头方向通过 data-state 在 CSS 中旋转 */}
-        <VscChevronDown className={styles.chevron} />
+        <IconContainer size={16} src={getIcon('chevronDown', 16, styles.chevron)} />
       </RadixCollapsible.Trigger>
       <RadixCollapsible.Content className={styles.content}>
         <div className={styles.contentInner}>{children}</div>

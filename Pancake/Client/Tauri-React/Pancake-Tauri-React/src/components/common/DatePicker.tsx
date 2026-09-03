@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import * as RadixPopover from '@radix-ui/react-popover';
-import { VscCalendar } from 'react-icons/vsc';
 import Button from './Button';
 import Calendar from './Calendar';
+import IconContainer from './IconContainer';
+import Popover from './Popover';
 import styles from './DatePicker.module.css';
+import { getIcon } from '@/icons';
 
 interface DatePickerProps {
   value?: Date;
@@ -28,7 +29,7 @@ function formatDate(date?: Date) {
 
 /**
  * DatePicker — 日期选择。
- * 使用 Radix Popover 承载 Calendar，选择日期后关闭并回填文本。
+ * 使用 Popover 承载 Calendar，选择日期后关闭并回填文本。
  */
 export default function DatePicker({
   value,
@@ -47,41 +48,42 @@ export default function DatePicker({
   return (
     <div className={`${styles.wrapper} ${className}`}>
       {label && <span className={styles.label}>{label}</span>}
-      <RadixPopover.Root
+      <Popover
         open={open}
         onOpenChange={(next) => {
           if (disabled) return;
           setOpen(next);
         }}
-      >
-        <RadixPopover.Trigger asChild>
+        contentClassName={styles.content}
+        bareContent
+        align="start"
+        sideOffset={4}
+        showArrow={false}
+        trigger={
           <Button
             variant="secondary"
             className={styles.trigger}
             disabled={disabled}
             aria-label="选择日期"
           >
-            <VscCalendar className={styles.icon} />
+            <IconContainer size={16} src={getIcon('calendar', 16, styles.icon)} />
             <span className={display ? styles.text : styles.placeholder}>
               {display || placeholder}
             </span>
           </Button>
-        </RadixPopover.Trigger>
-        <RadixPopover.Portal>
-          <RadixPopover.Content className={styles.content} align="start" sideOffset={4}>
-            <Calendar
-              value={value}
-              defaultValue={defaultValue}
-              onChange={(date) => {
-                onChange?.(date);
-                setOpen(false);
-              }}
-              min={min}
-              max={max}
-            />
-          </RadixPopover.Content>
-        </RadixPopover.Portal>
-      </RadixPopover.Root>
+        }
+      >
+        <Calendar
+          value={value}
+          defaultValue={defaultValue}
+          onChange={(date) => {
+            onChange?.(date);
+            setOpen(false);
+          }}
+          min={min}
+          max={max}
+        />
+      </Popover>
     </div>
   );
 }

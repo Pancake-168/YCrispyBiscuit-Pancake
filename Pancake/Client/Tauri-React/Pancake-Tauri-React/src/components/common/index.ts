@@ -47,9 +47,6 @@ export type { AlertDialogProps } from './AlertDialog';
 export { default as AspectRatio } from './AspectRatio';
 export type { AspectRatioProps } from './AspectRatio';
 
-export { default as Avatar } from './Avatar';
-export type { AvatarProps } from './Avatar';
-
 export { default as Checkbox } from './Checkbox';
 export type { CheckboxProps } from './Checkbox';
 
@@ -79,9 +76,6 @@ export type { SeparatorProps } from './Separator';
 
 export { default as Slider } from './Slider';
 export type { SliderProps } from './Slider';
-
-export { default as Slot } from './Slot';
-export type { SlotProps } from './Slot';
 
 export { default as Toggle } from './Toggle';
 export type { ToggleProps } from './Toggle';

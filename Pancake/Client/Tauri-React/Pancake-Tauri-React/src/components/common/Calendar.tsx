@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
 import Button from './Button';
+import IconContainer from './IconContainer';
 import styles from './Calendar.module.css';
+import { getIcon } from '@/icons';
 
 interface CalendarProps {
   value?: Date;
@@ -91,7 +92,7 @@ export default function Calendar({
           onClick={() => changeMonth(-1)}
           aria-label="上个月"
         >
-          <VscChevronLeft size={16} />
+          <IconContainer size={16} src={getIcon('chevronLeft', 16)} />
         </Button>
         <span className={styles.title}>
           {year} 年 {month + 1} 月
@@ -102,7 +103,7 @@ export default function Calendar({
           onClick={() => changeMonth(1)}
           aria-label="下个月"
         >
-          <VscChevronRight size={16} />
+          <IconContainer size={16} src={getIcon('chevronRight', 16)} />
         </Button>
       </div>
       <div className={styles.weekRow}>

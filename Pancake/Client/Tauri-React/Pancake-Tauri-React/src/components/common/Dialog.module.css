@@ -83,3 +83,9 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+.closeButton {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+}

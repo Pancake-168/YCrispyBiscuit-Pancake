@@ -30,6 +30,7 @@
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s ease;
+  gap: var(--spacing-sm);
 }
 
 .trigger:focus {
@@ -69,6 +70,7 @@
 .item {
   display: flex;
   align-items: center;
+  gap: var(--spacing-sm);
   padding: 6px 10px;
   font-size: var(--text-base);
   color: var(--text);

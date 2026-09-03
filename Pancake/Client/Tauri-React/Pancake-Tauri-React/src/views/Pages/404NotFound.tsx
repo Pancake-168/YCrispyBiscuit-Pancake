@@ -1,7 +1,7 @@
-import { VscError } from 'react-icons/vsc';
 import { EmptyState, IconContainer, Button } from '@/components/common';
 import { useNavigate } from 'react-router-dom';
 import styles from './404NotFound.module.css';
+import { getIcon } from '@/icons';
 
 /**
  * 404 — 路由未匹配时的回退页面。
@@ -12,7 +12,7 @@ export default function NotFound() {
   return (
     <div className={styles.wrapper}>
       <EmptyState
-        icon={<IconContainer size={48} src={<VscError size={48} />} />}
+        icon={<IconContainer size={48} src={getIcon('error', 48)} />}
         title="页面不存在"
         description="请检查网址是否正确"
         action={

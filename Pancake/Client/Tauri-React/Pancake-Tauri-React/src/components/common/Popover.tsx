@@ -5,8 +5,14 @@ import styles from './Popover.module.css';
 interface PopoverProps {
   trigger: ReactNode;
   children: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   side?: 'top' | 'right' | 'bottom' | 'left';
   align?: 'start' | 'center' | 'end';
+  sideOffset?: number;
+  contentClassName?: string;
+  showArrow?: boolean;
+  bareContent?: boolean;
 }
 
 /**
@@ -16,18 +22,31 @@ interface PopoverProps {
 export default function Popover({
   trigger,
   children,
+  open,
+  onOpenChange,
   side = 'bottom',
   align = 'center',
+  sideOffset = 6,
+  contentClassName = '',
+  showArrow = true,
+  bareContent = false,
 }: PopoverProps) {
   return (
-    <RadixPopover.Root>
+    <RadixPopover.Root open={open} onOpenChange={onOpenChange}>
       <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
       <RadixPopover.Portal>
-        <RadixPopover.Content className={styles.content} side={side} align={align} sideOffset={6}>
+        <RadixPopover.Content
+          className={bareContent ? contentClassName : `${styles.content} ${contentClassName}`}
+          side={side}
+          align={align}
+          sideOffset={sideOffset}
+        >
           {children}
-          <RadixPopover.Arrow className={styles.arrow} />
+          {showArrow && <RadixPopover.Arrow className={styles.arrow} />}
         </RadixPopover.Content>
       </RadixPopover.Portal>
     </RadixPopover.Root>
   );
 }
+
+export type { PopoverProps };

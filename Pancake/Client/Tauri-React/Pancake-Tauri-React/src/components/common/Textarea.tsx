@@ -1,6 +1,6 @@
 import { useId, type TextareaHTMLAttributes } from 'react';
-import * as RadixLabel from '@radix-ui/react-label';
 import styles from './Input.module.css';
+import Label from './Label';
 
 interface TextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
   value: string;
@@ -37,9 +37,9 @@ export default function Textarea({
     <div className={`${styles.wrapper} ${className}`}>
       {label && (
         // 使用 Radix Label 替代原生 label，保证可访问性行为一致
-        <RadixLabel.Root className={styles.label} htmlFor={textareaId}>
+        <Label className={styles.label} htmlFor={textareaId}>
           {label}
-        </RadixLabel.Root>
+        </Label>
       )}
       <textarea
         id={textareaId}

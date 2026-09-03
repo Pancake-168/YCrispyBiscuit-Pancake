@@ -1,12 +1,15 @@
-import { useId, type ReactNode } from 'react';
-import * as RadixLabel from '@radix-ui/react-label';
+import { Fragment, useId, type ReactNode } from 'react';
 import * as RadixRadioGroup from '@radix-ui/react-radio-group';
 import styles from './RadioGroup.module.css';
+import Label from './Label';
 
 interface RadioOption {
   value: string;
-  label: ReactNode;
+  label?: ReactNode;
+  content?: ReactNode;
   disabled?: boolean;
+  hideIndicator?: boolean;
+  itemClassName?: string;
 }
 
 interface RadioGroupProps {
@@ -16,6 +19,11 @@ interface RadioGroupProps {
   label?: string;
   disabled?: boolean;
   className?: string;
+  groupClassName?: string;
+  optionClassName?: string;
+  itemClassName?: string;
+  bare?: boolean;
+  wrapOptions?: boolean;
 }
 
 /**
@@ -29,34 +37,64 @@ export default function RadioGroup({
   label,
   disabled = false,
   className = '',
+  groupClassName = '',
+  optionClassName = '',
+  itemClassName = '',
+  bare = false,
+  wrapOptions = true,
 }: RadioGroupProps) {
   const generatedId = useId();
+
+  const renderItem = (option: RadioOption) => {
+    const optionId = `${generatedId}-${option.value}`;
+    const hasContent = option.content !== undefined;
+    const item = (
+      <RadixRadioGroup.Item
+        id={optionId}
+        value={option.value}
+        disabled={disabled || option.disabled}
+        className={`${styles.item} ${itemClassName} ${option.itemClassName ?? ''}`}
+      >
+        {hasContent ? (
+          option.content
+        ) : (
+          <>{!option.hideIndicator && <RadixRadioGroup.Indicator className={styles.indicator} />}</>
+        )}
+      </RadixRadioGroup.Item>
+    );
+
+    if (!wrapOptions) return item;
+
+    return (
+      <div className={`${styles.option} ${optionClassName}`} key={option.value}>
+        {item}
+        {!hasContent && option.label !== undefined && (
+          <Label className={styles.optionLabel} htmlFor={optionId}>
+            {option.label}
+          </Label>
+        )}
+      </div>
+    );
+  };
+
+  const root = (
+    <RadixRadioGroup.Root
+      value={value}
+      onValueChange={onChange}
+      className={bare ? groupClassName : `${styles.group} ${groupClassName}`}
+    >
+      {options.map((option) => (
+        <Fragment key={option.value}>{renderItem(option)}</Fragment>
+      ))}
+    </RadixRadioGroup.Root>
+  );
+
+  if (bare) return root;
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
       {label && <span className={styles.label}>{label}</span>}
-      <RadixRadioGroup.Root value={value} onValueChange={onChange} className={styles.group}>
-        {options.map((option) => {
-          const optionId = `${generatedId}-${option.value}`;
-          return (
-            <div className={styles.option} key={option.value}>
-              <RadixRadioGroup.Item
-                id={optionId}
-                value={option.value}
-                disabled={disabled || option.disabled}
-                className={styles.item}
-              >
-                {/* 选中时显示内圆点 */}
-                <RadixRadioGroup.Indicator className={styles.indicator} />
-              </RadixRadioGroup.Item>
-              {/* 使用 Radix Label 替代原生 label */}
-              <RadixLabel.Root className={styles.optionLabel} htmlFor={optionId}>
-                {option.label}
-              </RadixLabel.Root>
-            </div>
-          );
-        })}
-      </RadixRadioGroup.Root>
+      {root}
     </div>
   );
 }

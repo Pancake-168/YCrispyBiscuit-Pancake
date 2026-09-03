@@ -23,7 +23,7 @@ import {
 } from '@/services/PictureSwitch';
 import type { FormatsResponse, ConvertResultItem } from '@/services/PictureSwitch';
 import styles from './index.module.css';
-import { VscAdd, VscTrash, VscCloudDownload, VscWarning, VscCheck } from 'react-icons/vsc';
+import { getIcon } from '@/icons';
 
 const log = createLogger('PictureSwitchPage.tsx', 'PictureSwitchPage');
 
@@ -422,7 +422,7 @@ export default function PictureSwitchPage() {
             />
           ) : (
             <div className={styles.dropZoneContent}>
-              <IconContainer size={20} src={<VscAdd size={20} />} />
+              <IconContainer size={20} src={getIcon('add', 20)} />
               <span>点击或拖拽继续添加</span>
               <span className={styles.dropZoneCount}>已选: {files.length} 个</span>
             </div>
@@ -540,7 +540,7 @@ export default function PictureSwitchPage() {
                   onChange={(v) => setMaxWidth(Number(v) || 0)}
                   type="number"
                   placeholder="宽"
-                  style={{ width: 80 }}
+                  className={styles.sizeInput}
                 />
                 <span className={styles.sizeSep}>×</span>
                 <Input
@@ -548,7 +548,7 @@ export default function PictureSwitchPage() {
                   onChange={(v) => setMaxHeight(Number(v) || 0)}
                   type="number"
                   placeholder="高"
-                  style={{ width: 80 }}
+                  className={styles.sizeInput}
                 />
                 <span className={styles.sizeUnit}>px</span>
               </div>
@@ -565,7 +565,7 @@ export default function PictureSwitchPage() {
                   onChange={(v) => setExactWidth(Number(v) || 0)}
                   type="number"
                   placeholder="宽"
-                  style={{ width: 80 }}
+                  className={styles.sizeInput}
                 />
                 <span className={styles.sizeSep}>×</span>
                 <Input
@@ -573,7 +573,7 @@ export default function PictureSwitchPage() {
                   onChange={(v) => setExactHeight(Number(v) || 0)}
                   type="number"
                   placeholder="高"
-                  style={{ width: 80 }}
+                  className={styles.sizeInput}
                 />
                 <span className={styles.sizeUnit}>px</span>
               </div>
@@ -626,7 +626,7 @@ export default function PictureSwitchPage() {
             loading={status === 'converting'}
             loadingText={`转换中 (${files.length} 个)...`}
             onClick={handleConvert}
-            style={{ width: '100%', marginTop: 'var(--spacing-md)' }}
+            className={styles.convertButton}
           >
             开始转换 ({files.length} 个)
           </Button>
@@ -655,7 +655,7 @@ export default function PictureSwitchPage() {
                 </span>
                 <Button
                   variant="subtle"
-                  icon={<IconContainer size={14} src={<VscTrash size={14} />} />}
+                  icon={<IconContainer size={14} src={getIcon('trash', 14)} />}
                   onClick={clearFiles}
                 >
                   清空
@@ -663,7 +663,13 @@ export default function PictureSwitchPage() {
               </div>
               {files.map((f) => (
                 <div key={f.id} className={styles.fileRow}>
-                  <img className={styles.fileThumb} src={f.thumbnailUrl} alt={f.name} />
+                  <IconContainer
+                    size={36}
+                    shape="rounded"
+                    className={styles.fileThumb}
+                    src={f.thumbnailUrl}
+                    alt={f.name}
+                  />
                   <div className={styles.fileInfo}>
                     <span className={styles.fileName}>{f.name}</span>
                     <span className={styles.fileMeta}>
@@ -672,7 +678,7 @@ export default function PictureSwitchPage() {
                   </div>
                   <Button
                     variant="subtle"
-                    icon={<IconContainer size={14} src={<VscTrash size={14} />} />}
+                    icon={<IconContainer size={14} src={getIcon('trash', 14)} />}
                     onClick={() => removeFile(f.id)}
                     title="移除"
                   />
@@ -692,7 +698,7 @@ export default function PictureSwitchPage() {
                   {taskId && results.length > 1 && (
                     <Button
                       variant="subtle"
-                      icon={<IconContainer size={14} src={<VscCloudDownload size={14} />} />}
+                      icon={<IconContainer size={14} src={getIcon('cloudDownload', 14)} />}
                       onClick={handleDownloadBatch}
                     >
                       下载全部 (ZIP)
@@ -707,13 +713,13 @@ export default function PictureSwitchPage() {
                     {r.status === 'success' ? (
                       <IconContainer
                         size={20}
-                        src={<VscCheck size={20} />}
+                        src={getIcon('check', 20)}
                         className={styles.resultIconSuccess}
                       />
                     ) : (
                       <IconContainer
                         size={20}
-                        src={<VscWarning size={20} />}
+                        src={getIcon('warning', 20)}
                         className={styles.resultIconError}
                       />
                     )}
@@ -738,7 +744,7 @@ export default function PictureSwitchPage() {
                     {r.status === 'success' && taskId && (
                       <Button
                         variant="subtle"
-                        icon={<IconContainer size={14} src={<VscCloudDownload size={14} />} />}
+                        icon={<IconContainer size={14} src={getIcon('cloudDownload', 14)} />}
                         onClick={() => handleDownloadSingle(r.index, r.converted_name)}
                       />
                     )}

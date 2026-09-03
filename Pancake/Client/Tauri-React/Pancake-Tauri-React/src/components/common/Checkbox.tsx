@@ -1,8 +1,9 @@
 import { useId } from 'react';
 import * as RadixCheckbox from '@radix-ui/react-checkbox';
-import * as RadixLabel from '@radix-ui/react-label';
-import { VscCheck } from 'react-icons/vsc';
+import IconContainer from './IconContainer';
 import styles from './Checkbox.module.css';
+import Label from './Label';
+import { getIcon } from '@/icons';
 
 interface CheckboxProps {
   checked: boolean;
@@ -30,14 +31,14 @@ export default function Checkbox({ checked, onChange, label, disabled = false }:
       >
         <RadixCheckbox.Indicator className={styles.indicator}>
           {/* 勾选图标放在 Indicator 内，只有选中态才渲染 */}
-          <VscCheck size={12} />
+          <IconContainer size={12} src={getIcon('check', 12)} />
         </RadixCheckbox.Indicator>
       </RadixCheckbox.Root>
       {label && (
         // 使用 Radix Label 而不是原生 label，保持封装内不直接写原生控件
-        <RadixLabel.Root className={styles.label} htmlFor={generatedId}>
+        <Label className={styles.label} htmlFor={generatedId}>
           {label}
-        </RadixLabel.Root>
+        </Label>
       )}
     </div>
   );

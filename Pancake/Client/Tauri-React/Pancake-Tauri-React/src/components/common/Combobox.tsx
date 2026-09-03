@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import * as RadixPopover from '@radix-ui/react-popover';
-import { VscChevronDown, VscSearch } from 'react-icons/vsc';
 import Button from './Button';
 import Input from './Input';
 import ScrollArea from './ScrollArea';
+import IconContainer from './IconContainer';
+import Popover from './Popover';
 import styles from './Combobox.module.css';
+import { getIcon } from '@/icons';
 
 interface ComboboxOption {
   value: string;
@@ -25,7 +26,7 @@ interface ComboboxProps {
 
 /**
  * Combobox — 可输入过滤的下拉选择框。
- * 使用 Radix Popover 承载弹层，Input 负责输入，选中后回填 option.label。
+ * 使用 Popover 承载弹层，Input 负责输入，选中后回填 option.label。
  */
 export default function Combobox({
   value,
@@ -38,12 +39,10 @@ export default function Combobox({
   className = '',
 }: ComboboxProps) {
   const selectedLabel = options.find((option) => option.value === value)?.label ?? '';
-  // draft 表示用户正在输入的文本；未输入时回退到受控 value 对应的 label
   const [draft, setDraft] = useState<string | null>(null);
   const [committedValue, setCommittedValue] = useState(value);
   const [open, setOpen] = useState(false);
 
-  // 受控 value 变化时，清除尚未提交的输入草稿
   if (committedValue !== value) {
     setCommittedValue(value);
     setDraft(null);
@@ -58,7 +57,6 @@ export default function Combobox({
   }, [query, options]);
 
   const selectOption = (option: ComboboxOption) => {
-    // 选中后清除草稿，让显示值回到受控 value 的 label
     setDraft(null);
     onChange(option.value);
     setOpen(false);
@@ -67,17 +65,20 @@ export default function Combobox({
   return (
     <div className={`${styles.wrapper} ${className}`}>
       {label && <span className={styles.label}>{label}</span>}
-      <RadixPopover.Root
+      <Popover
         open={open}
         onOpenChange={(next) => {
-          // 禁用状态下不允许展开
           if (disabled) return;
           setOpen(next);
         }}
-      >
-        <RadixPopover.Trigger asChild>
+        contentClassName={styles.content}
+        bareContent
+        align="start"
+        sideOffset={4}
+        showArrow={false}
+        trigger={
           <div className={styles.trigger}>
-            <VscSearch className={styles.searchIcon} />
+            <IconContainer size={16} className={styles.searchIcon} src={getIcon('search', 16)} />
             <Input
               className={styles.input}
               value={query}
@@ -88,34 +89,30 @@ export default function Combobox({
               placeholder={placeholder}
               disabled={disabled}
             />
-            <VscChevronDown className={styles.chevron} />
+            <IconContainer size={16} className={styles.chevron} src={getIcon('chevronDown', 16)} />
           </div>
-        </RadixPopover.Trigger>
-        <RadixPopover.Portal>
-          <RadixPopover.Content className={styles.content} align="start" sideOffset={4}>
-            {filtered.length > 0 ? (
-              <ScrollArea maxHeight={220}>
-                <div className={styles.list}>
-                  {filtered.map((option) => (
-                    <Button
-                      key={option.value}
-                      variant="subtle"
-                      block
-                      className={styles.option}
-                      disabled={option.disabled}
-                      onClick={() => selectOption(option)}
-                    >
-                      {option.label}
-                    </Button>
-                  ))}
-                </div>
-              </ScrollArea>
-            ) : (
-              <div className={styles.empty}>{emptyText}</div>
-            )}
-          </RadixPopover.Content>
-        </RadixPopover.Portal>
-      </RadixPopover.Root>
+        }
+      >
+        {filtered.length > 0 ? (
+          <ScrollArea maxHeight={220}>
+            <div className={styles.list}>
+              {filtered.map((option) => (
+                <Button
+                  key={option.value}
+                  variant="subtle"
+                  className={styles.option}
+                  disabled={option.disabled}
+                  onClick={() => selectOption(option)}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          </ScrollArea>
+        ) : (
+          <div className={styles.empty}>{emptyText}</div>
+        )}
+      </Popover>
     </div>
   );
 }

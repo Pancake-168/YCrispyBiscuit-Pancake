@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import * as RadixPopover from '@radix-ui/react-popover';
-import { VscChevronDown, VscChevronRight } from 'react-icons/vsc';
+import Popover from './Popover';
 import Button from './Button';
 import ScrollArea from './ScrollArea';
+import IconContainer from './IconContainer';
 import styles from './TreeSelect.module.css';
+import { getIcon } from '@/icons';
 
 interface TreeSelectOption {
   value: string;
@@ -66,7 +67,11 @@ function renderTreeNodes({
               onClick={() => toggleExpanded(node.value)}
               aria-label={isExpanded ? '折叠' : '展开'}
             >
-              {isExpanded ? <VscChevronDown size={14} /> : <VscChevronRight size={14} />}
+              {isExpanded ? (
+                <IconContainer size={14} src={getIcon('chevronDown', 14)} />
+              ) : (
+                <IconContainer size={14} src={getIcon('chevronRight', 14)} />
+              )}
             </Button>
           ) : (
             <span className={styles.spacer} />
@@ -128,36 +133,40 @@ export default function TreeSelect({
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      <RadixPopover.Root open={open} onOpenChange={setOpen}>
-        <RadixPopover.Trigger asChild>
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+        contentClassName={styles.content}
+        bareContent
+        align="start"
+        sideOffset={4}
+        showArrow={false}
+        trigger={
           <Button variant="secondary" block className={styles.trigger}>
             <span className={selectedPath?.length ? styles.text : styles.placeholder}>
               {selectedPath?.length ? selectedPath.join(' / ') : placeholder}
             </span>
           </Button>
-        </RadixPopover.Trigger>
-        <RadixPopover.Portal>
-          <RadixPopover.Content className={styles.content} align="start" sideOffset={4}>
-            <ScrollArea maxHeight={280}>
-              {options.length > 0 ? (
-                renderTreeNodes({
-                  nodes: options,
-                  depth: 0,
-                  expanded,
-                  toggleExpanded,
-                  selectedValue: value,
-                  onSelect: (nextValue) => {
-                    onChange(nextValue);
-                    setOpen(false);
-                  },
-                })
-              ) : (
-                <div className={styles.empty}>{emptyText}</div>
-              )}
-            </ScrollArea>
-          </RadixPopover.Content>
-        </RadixPopover.Portal>
-      </RadixPopover.Root>
+        }
+      >
+        <ScrollArea maxHeight={280}>
+          {options.length > 0 ? (
+            renderTreeNodes({
+              nodes: options,
+              depth: 0,
+              expanded,
+              toggleExpanded,
+              selectedValue: value,
+              onSelect: (nextValue) => {
+                onChange(nextValue);
+                setOpen(false);
+              },
+            })
+          ) : (
+            <div className={styles.empty}>{emptyText}</div>
+          )}
+        </ScrollArea>
+      </Popover>
     </div>
   );
 }

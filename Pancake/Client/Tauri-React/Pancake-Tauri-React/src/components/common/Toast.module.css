@@ -90,3 +90,11 @@
     transform: translateX(100%);
   }
 }
+
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  min-width: 8px;
+  border-radius: 50%;
+}

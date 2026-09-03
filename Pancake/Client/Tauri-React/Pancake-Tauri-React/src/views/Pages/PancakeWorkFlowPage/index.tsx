@@ -8,10 +8,10 @@ import {
   Skeleton,
   toast,
 } from '@/components/common';
-import { VscFolder, VscFolderOpened, VscRefresh, VscFolderLibrary } from 'react-icons/vsc';
 import { getMMDWorkflow, openAllMMDFolders, openSingleMMDFolder } from '@/services/PCmethods';
 import type { PCmethodsWorkflow } from '@/services/PCmethods';
 import styles from './index.module.css';
+import { getIcon } from '@/icons';
 
 const log = createLogger('PancakeWorkFlowPage.tsx', 'PancakeWorkFlowPage');
 
@@ -82,7 +82,7 @@ export default function PancakeWorkFlowPage() {
         <h1 className={styles.title}>松饼</h1>
         <Button
           variant="subtle"
-          icon={<IconContainer size={14} src={<VscRefresh size={14} />} />}
+          icon={<IconContainer size={14} src={getIcon('refresh', 14)} />}
           loading={loading}
           onClick={fetchWorkflows}
         >
@@ -96,13 +96,13 @@ export default function PancakeWorkFlowPage() {
         </div>
       ) : workflows.length === 0 ? (
         <EmptyState
-          icon={<IconContainer size={48} src={<VscFolderLibrary size={48} />} />}
+          icon={<IconContainer size={48} src={getIcon('folderLibrary', 48)} />}
           title="暂无工作流"
           description="点击刷新按钮获取工作流配置"
           action={
             <Button
               variant="primary"
-              icon={<IconContainer size={14} src={<VscRefresh size={14} />} />}
+              icon={<IconContainer size={14} src={getIcon('refresh', 14)} />}
               onClick={fetchWorkflows}
             >
               刷新
@@ -116,7 +116,11 @@ export default function PancakeWorkFlowPage() {
               <section key={workflow.name} className={styles.workflowCard}>
                 <div className={styles.workflowHeader}>
                   <div className={styles.workflowNameRow}>
-                    <VscFolderOpened size={20} className={styles.workflowIcon} />
+                    <IconContainer
+                      size={20}
+                      className={styles.workflowIcon}
+                      src={getIcon('folderOpened', 20)}
+                    />
                     <h2 className={styles.workflowName}>{workflow.name}</h2>
                   </div>
                   <Button
@@ -131,7 +135,11 @@ export default function PancakeWorkFlowPage() {
                 <div className={styles.folderList}>
                   {workflow.folder.map((folder) => (
                     <div key={folder.name} className={styles.folderItem}>
-                      <VscFolder size={18} className={styles.folderIcon} />
+                      <IconContainer
+                        size={18}
+                        className={styles.folderIcon}
+                        src={getIcon('folder', 18)}
+                      />
                       <div className={styles.folderInfo}>
                         <span className={styles.folderName}>{folder.name}</span>
                         <span className={styles.folderPath}>{folder.path}</span>

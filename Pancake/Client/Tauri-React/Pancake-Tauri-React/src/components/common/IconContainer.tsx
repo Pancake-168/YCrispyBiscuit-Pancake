@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
-import { VscQuestion } from 'react-icons/vsc';
 import styles from './IconContainer.module.css';
+import { getIcon } from '@/icons';
 
 interface IconContainerProps {
   size: number;
@@ -46,9 +46,7 @@ export default function IconContainer({
 
   // 图片地址 — 加载失败时显示 fallback
   const defaultFallback = (
-    <div className={styles.fallback}>
-      <VscQuestion size={Math.round(size * 0.45)} />
-    </div>
+    <div className={styles.fallback}>{getIcon('question', Math.round(size * 0.45))}</div>
   );
 
   if (imgError) {

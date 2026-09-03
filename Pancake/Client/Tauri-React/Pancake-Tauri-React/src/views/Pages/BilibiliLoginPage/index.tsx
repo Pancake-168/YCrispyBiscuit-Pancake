@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createLogger } from '@/utils/logger';
 import { Button, Textarea, EmptyState, Tabs, IconContainer, toast } from '@/components/common';
-import { VscCopy } from 'react-icons/vsc';
 import {
   getLoginUrl,
   pollLogin,
@@ -14,6 +13,7 @@ import {
 } from '@/services/Bilibili';
 import type { BilibiliPayload } from '@/services/Bilibili';
 import styles from './index.module.css';
+import { getIcon } from '@/icons';
 
 const log = createLogger('BilibiliLoginPage.tsx', 'BilibiliLoginPage');
 
@@ -230,7 +230,7 @@ export default function BilibiliLoginPage() {
                       variant="primary"
                       loading={loginStatus === 'loading'}
                       onClick={handleGetQr}
-                      style={{ width: 200 }}
+                      className={styles.actionButton}
                     >
                       {qrcodeImage ? '重新获取二维码' : '获取二维码'}
                     </Button>
@@ -254,7 +254,7 @@ export default function BilibiliLoginPage() {
                       variant="primary"
                       loading={cookieLoading}
                       onClick={handleCookieLogin}
-                      style={{ width: 200 }}
+                      className={styles.actionButton}
                     >
                       使用 Cookie 登录
                     </Button>
@@ -364,7 +364,7 @@ function JsonSection({ title, data }: { title: string; data: BilibiliPayload }) 
         <span className={styles.jsonTitle}>{title}</span>
         <Button
           variant="subtle"
-          icon={<IconContainer size={14} src={<VscCopy size={14} />} />}
+          icon={<IconContainer size={14} src={getIcon('copy', 14)} />}
           onClick={handleCopy}
         >
           复制
