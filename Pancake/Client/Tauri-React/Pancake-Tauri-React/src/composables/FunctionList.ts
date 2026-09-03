@@ -40,4 +40,10 @@ export const Pancake_Tools: CarouselItem[] = [
     title: 'AI 助手',
     subtitle: '内嵌本地 AI 对话',
   },
+  {
+    id: 'demo',
+    image: `${BASE}1.png`,
+    title: 'demo',
+    subtitle: '全量组件模板',
+  },
 ];

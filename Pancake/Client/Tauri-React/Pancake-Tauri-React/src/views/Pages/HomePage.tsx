@@ -46,6 +46,7 @@ export default function HomePage() {
       weather: '/weather',
       bilibili_login: '/bilibili_login',
       web_embed: '/web_embed',
+      demo:'/demo'
     };
     return base.map((t) => ({
       ...t,
@@ -89,7 +90,7 @@ export default function HomePage() {
             className={styles.homePageAvatar}
             size={sizes.avatarSize}
             shape="circle"
-            src={`${import.meta.env.BASE_URL}3.jpg`}
+            src={`${import.meta.env.BASE_URL}3.png`}
             alt="Pancake"
           />
 
