@@ -61,7 +61,7 @@ export default function WeatherPage() {
       if (res.ok) {
         const list = res.data.cities;
         setCities(list);
-        if (list.length > 0) setSelectedId(list[0][0]);
+        if (list.length > 0) setSelectedId("58457");
       } else {
         toast(res.error ?? '获取城市列表失败', 'error');
       }
